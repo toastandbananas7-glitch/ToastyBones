@@ -5,42 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ToastyBones</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rock+Salt&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Rock Salt', cursive;
+    }
+    h1, h2 {
+      font-family: 'Rubik Mono One', sans-serif;
+    }
+  </style>
 </head>
-<body class="bg-black text-gray-200 font-sans">
+<body class="bg-black text-gray-200">
+
   <!-- Hero Section -->
   <section class="relative h-screen flex items-center justify-center text-center overflow-hidden">
     <img src="Background.png" alt="Background" class="absolute inset-0 w-full h-full object-cover opacity-40">
+    <img src="grunge-texture.png" alt="Grunge Overlay" class="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-overlay pointer-events-none">
     <div class="relative z-10 flex flex-col items-center">
-    <h1 class="text-5xl md:text-7xl font-extrabold tracking-widest text-pink-500 drop-shadow-[0_0_20px_rgba(255,0,128,0.7)]">
+      <h1 class="text-5xl md:text-7xl font-extrabold text-pink-500 animate-pulse drop-shadow-[0_0_25px_rgba(255,0,128,0.9)] tracking-widest">
         ToastyBones
       </h1>
-      <p class="mt-4 text-lg md:text-xl text-gray-300">New Release! "Mystery Clown" Out Now!</p>
+      <p class="mt-4 text-xl text-gray-300">💀 New Release! "Mystery Clown" ⚡ Out Now!</p>
+      <a href="#listen" class="mt-6 px-6 py-3 bg-pink-600 text-black font-bold rounded-full shadow-lg hover:bg-yellow-400 transition">
+        ⚡ Stream It Now ⚡
+      </a>
     </div>
   </section>
 
   <!-- Bio Section -->
   <section class="py-16 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-yellow-400 drop-shadow-[0_0_10px_rgba(255,255,0,0.6)]">
+    <h2 class="text-4xl font-bold mb-6 text-yellow-400 drop-shadow-[0_0_10px_rgba(255,255,0,0.6)]">
       About
     </h2>
     <p class="max-w-2xl mx-auto text-lg text-gray-300 leading-relaxed">
-      I make songs on Suno AI with my own lyrics and sometimes my own riffs!
+      I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
     </p>
+    <blockquote class="mt-6 italic text-red-400">"Turn up the distortion and let the chaos sing."</blockquote>
   </section>
 
   <!-- Streaming Links -->
-  <section class="py-16 px-6 bg-black text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-green-400 drop-shadow-[0_0_10px_rgba(0,255,128,0.7)]">
+  <section id="listen" class="py-16 px-6 bg-black text-center">
+    <h2 class="text-4xl font-bold mb-8 text-green-400 drop-shadow-[0_0_10px_rgba(0,255,128,0.7)]">
       Listen Now
     </h2>
     <div class="flex justify-center gap-10">
       <!-- Spotify -->
-      <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" class="transform transition hover:scale-110">
+      <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" class="transform transition hover:scale-110 hover:rotate-3 hover:text-yellow-300">
         <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" 
              alt="Spotify" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,255,128,0.7)]">
       </a>
       <!-- YouTube Music -->
-      <a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank" class="transform transition hover:scale-110">
+      <a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank" class="transform transition hover:scale-110 hover:-rotate-3 hover:text-pink-300">
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/YouTube_music_icon.svg" 
              alt="YouTube Music" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(255,0,0,0.7)]">
       </a>
@@ -49,22 +64,20 @@
 
   <!-- Merch Section -->
   <section class="py-16 px-6 bg-gradient-to-b from-gray-900 to-black text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-pink-400 drop-shadow-[0_0_10px_rgba(255,0,128,0.7)]">
+    <h2 class="text-4xl font-bold mb-6 text-pink-400 drop-shadow-[0_0_10px_rgba(255,0,128,0.7)]">
       Merch
     </h2>
-    <p class="text-lg text-gray-400 italic">Coming Soon...</p>
+    <p class="text-lg text-gray-400 italic">Coming Soon... 🧷</p>
   </section>
 
   <!-- Footer -->
-  <footer class="py-6 bg-black text-center text-gray-500 text-sm">
+  <footer class="py-6 bg-black text-center text-gray-500 text-sm border-t-4 border-pink-500">
+    <p class="uppercase tracking-widest">Stay Loud. Stay Toasty. 💀</p>
     © <span id="year"></span> ToastyBones. All rights reserved.
   </footer>
 
   <script>
-    // auto-update year
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
-
-
