@@ -7,6 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rock+Salt&display=swap" rel="stylesheet">
   <style>
+
+.fixed-top-shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  z-index: 50;
+  pointer-events: none;
+}
     body {
       font-family: 'Rock Salt', cursive;
       background-image: url('Background.png');
@@ -116,7 +127,6 @@
   </div>
 </section>
 
-
   <!-- Merch Section -->
   <section class="py-16 px-6 bg-gradient-to-b from-gray-900 to-black text-center">
     <h2 class="text-4xl font-bold mb-6 text-pink-400 text-shadow">Merch</h2>
@@ -161,6 +171,7 @@
   </script>
 </body>
 </html>
+
 
 
 
