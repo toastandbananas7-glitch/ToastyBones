@@ -32,6 +32,38 @@
         -1px  1px 0 #fff,
          1px  1px 0 #fff;
     }
+    .crt-scanlines {
+      position: relative;
+      overflow: hidden;
+    }
+    .crt-scanlines::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+    .flicker {
+      animation: flicker 1.5s infinite;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 22%, 24%, 55% {
+        opacity: 0.85;
+      }
+    }
   </style>
 </head>
 <body class="text-gray-200 text-outline">
@@ -40,7 +72,7 @@
   <section class="relative h-screen flex items-center justify-center text-center overflow-hidden px-4">
     <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
     <div class="relative z-10 flex flex-col items-center">
-      <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest">
+      <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest flicker">
         🔥 NEW RELEASE 🔥
       </h1>
       <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
@@ -49,7 +81,7 @@
              class="w-56 sm:w-64 md:w-72 h-auto object-cover rounded-xl border-4 border-pink-500 shadow-xl hover:border-yellow-400">
       </a>
       <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-         class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition">
+         class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition flicker">
         🎧 Listen to Mystery Clown on Spotify
       </a>
     </div>
@@ -57,7 +89,7 @@
 
   <!-- Bio Section -->
   <section class="py-16 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
-    <h2 class="text-4xl font-bold mb-6 text-yellow-400">About</h2>
+    <h2 class="text-4xl font-bold mb-6 text-yellow-400 flicker">About</h2>
     <p class="max-w-2xl mx-auto text-lg text-gray-300 leading-relaxed">
       I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
     </p>
@@ -66,24 +98,32 @@
 
   <!-- Albums Carousel Section -->
   <section class="py-20 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
-    <h2 class="text-4xl font-bold mb-10 text-blue-400">Albums</h2>
+    <h2 class="text-4xl font-bold mb-10 text-blue-400 flicker">Albums</h2>
     <div class="overflow-x-auto scrollbar-hide">
       <div class="flex gap-8 px-4 snap-x snap-mandatory overflow-x-scroll">
         <!-- Album Items -->
-        <!-- (Your album cards go here — unchanged from your previous version) -->
-        <!-- Example: -->
         <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
-          <img src="mysteryclown.png" alt="Mystery Clown" class="w-full h-72 object-cover rounded-xl shadow-lg">
+          <div class="crt-scanlines rounded-xl overflow-hidden">
+            <img src="mysteryclown.png" alt="Mystery Clown" class="w-full h-72 object-cover">
+          </div>
           <p class="mt-2 text-pink-400 font-bold text-lg">Mystery Clown</p>
         </a>
-        <!-- Add the rest of your albums here -->
+        <!-- Repeat for each album -->
+        <!-- Example: -->
+        <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-1">
+          <div class="crt-scanlines rounded-xl overflow-hidden">
+            <img src="BIGDUMP.png" alt="Big Dump" class="w-full h-72 object-cover">
+          </div>
+          <p class="mt-2 text-yellow-400 font-bold text-lg">Big Dump</p>
+        </a>
+        <!-- Add the rest of your albums here using the same structure -->
       </div>
     </div>
   </section>
 
   <!-- Full Playlist Section -->
   <section class="py-20 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
-    <h2 class="text-4xl font-bold mb-8 text-red-400">
+    <h2 class="text-4xl font-bold mb-8 text-red-400 flicker">
       🎥 Full ToastyBones Playlist
     </h2>
     <p class="text-lg text-gray-300 italic mb-6">
@@ -101,13 +141,13 @@
 
   <!-- Merch Section -->
   <section class="py-16 px-6 bg-gradient-to-b from-gray-900 to-black text-center">
-    <h2 class="text-4xl font-bold mb-6 text-pink-400">Merch</h2>
+    <h2 class="text-4xl font-bold mb-6 text-pink-400 flicker">Merch</h2>
     <p class="text-lg text-gray-400 italic">Coming Soon...</p>
   </section>
 
   <!-- Streaming Links -->
   <section id="listen" class="py-16 px-6 bg-black text-center">
-    <h2 class="text-4xl font-bold mb-8 text-green-400">Listen Now</h2>
+    <h2 class="text-4xl font-bold mb-8 text-green-400 flicker">Listen Now</h2>
     <div class="flex flex-wrap justify-center gap-10">
       <!-- Spotify -->
       <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" class="transform transition hover:scale-110 hover:rotate-3 hover:text-yellow-300">
@@ -134,6 +174,11 @@
     <p class="uppercase tracking-widest">🍞☠️</p>
     <p>© <span id="year"></span> ToastyBones. All rights reserved.</p>
   </footer>
+
+  <!-- Sticky Now Playing Bar -->
+  <div class="fixed bottom-0 left-0 w-full bg-black bg-opacity-80 text-pink-400 text-center py-3 text-lg font-bold tracking-wide border-t-4 border-pink-500 shadow-xl z-50 animate-pulse text-outline flicker">
+    🎶 Now Playing: Mystery Clown — ToastyBones 💀
+  </div>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
