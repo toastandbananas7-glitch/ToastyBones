@@ -30,13 +30,32 @@
 <body class="text-gray-200">
 
   <!-- Hero Section -->
-  <section class="relative h-screen flex items-center justify-center text-center overflow-hidden">
-    <div class="relative z-10 flex flex-col items-center">
-      <p class="mt-4 text-3xl text-gray-300 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)]">
-        💀 New Release! <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="text-pink-400 underline hover:text-yellow-300 transition">Mystery Clown</a> ⚡ Out Now!
-      </p>
-    </div>
-  </section>
+<!-- New Release Hero Section -->
+<section class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+  <!-- Dark overlay for readability -->
+  <div class="absolute inset-0 bg-black opacity-50 z-0"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 flex flex-col items-center">
+    <h1 class="text-6xl md:text-8xl font-extrabold text-pink-500 drop-shadow-[0_0_30px_rgba(255,0,128,0.9)] animate-pulse tracking-widest">
+      🔥 NEW RELEASE 🔥
+    </h1>
+
+    <!-- Album Cover with Hover Sparks -->
+    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
+       class="mt-8 transform transition hover:scale-110 hover:rotate-1 hover:drop-shadow-[0_0_25px_rgba(255,255,0,0.8)]">
+      <img src="mysteryclown.png" alt="Mystery Clown Album Cover"
+           class="w-72 h-72 object-cover rounded-xl border-4 border-pink-500 shadow-xl hover:border-yellow-400">
+    </a>
+
+    <!-- Link Text with Neon Glow -->
+    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
+       class="mt-6 text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition drop-shadow-[0_0_10px_rgba(255,255,0,0.8)]">
+      🎧 Listen to "Mystery Clown" on Spotify
+    </a>
+  </div>
+</section>
+
 
   <!-- Bio Section -->
   <section class="py-16 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
@@ -135,6 +154,7 @@
   </script>
 </body>
 </html>
+
 
 
 
