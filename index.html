@@ -4,11 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ToastyBones</title>
+
+  <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- SEO Meta -->
   <meta name="description" content="ToastyBones - AI-powered music with flair. Listen now!">
+  <meta name="theme-color" content="#111827">
+
+  <!-- Open Graph (for Facebook, Discord, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com">
   <meta property="og:title" content="ToastyBones">
-  <meta property="og:image" content="mysteryclown.png">
   <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
+  <meta property="og:image" content="mysteryclown.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ToastyBones">
+  <meta name="twitter:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
+  <meta name="twitter:image" content="mysteryclown.png">
+
+  <!-- Preload Background Image -->
+  <link rel="preload" as="image" href="Background.png">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -31,7 +51,11 @@
       },
     }
   </script>
+
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rock+Salt&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles -->
   <style>
     body {
       background-image: url('Background.png');
@@ -70,6 +94,7 @@
   </div>
 </section>
 
+
 <!-- Bio Section -->
 <section class="py-16 px-6 text-center">
   <h2 class="text-4xl font-rubik font-bold mb-6 text-yellow-400 animate-flicker drop-shadow-md">About</h2>
@@ -82,36 +107,67 @@
 <!-- Albums Carousel Section -->
 <section class="py-20 px-6 text-center">
   <h2 class="text-4xl font-rubik font-bold mb-10 text-blue-400 animate-flicker drop-shadow-md">Albums</h2>
-  <div class="max-w-7xl mx-auto overflow-hidden">
-    <div class="album-carousel flex gap-8 px-4 snap-x snap-mandatory overflow-x-scroll scrollbar-hide scroll-smooth h-[300px] items-center">
-      <!-- Album Cards -->
+  <div class="relative max-w-7xl mx-auto overflow-hidden">
+    <!-- Gradient fade edges -->
+    <div class="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black via-transparent pointer-events-none z-10"></div>
+    <div class="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black via-transparent pointer-events-none z-10"></div>
+
+    <!-- Carousel -->
+    <div class="album-carousel flex gap-8 px-4 snap-x snap-mandatory overflow-x-scroll overflow-y-hidden scrollbar-hide scroll-smooth h-[280px] items-center relative z-20">
+      <!-- Album Card -->
       <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:rotate-1">
-        <img src="mysteryclown.png" alt="Mystery Clown" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-pink-400 font-bold text-lg drop-shadow-md">Mystery Clown</p>
+        <img src="mysteryclown.png" alt="Mystery Clown" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Mystery Clown</p>
       </a>
+
       <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:-rotate-1">
-        <img src="BIGDUMP.png" alt="Big Dump" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-yellow-400 font-bold text-lg drop-shadow-md">Big Dump</p>
+        <img src="BIGDUMP.png" alt="Big Dump" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Big Dump</p>
       </a>
+
       <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:rotate-2">
-        <img src="pant.png" alt="Fully Panted" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-green-400 font-bold text-lg drop-shadow-md">Fully Panted</p>
+        <img src="pant.png" alt="Fully Panted" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Fully Panted</p>
       </a>
+
       <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:-rotate-2">
-        <img src="ear-aid.png" alt="Ear-aid" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-red-400 font-bold text-lg drop-shadow-md">Ear-aid</p>
+        <img src="ear-aid.png" alt="Ear-aid" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Ear-aid</p>
       </a>
+
       <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:rotate-3">
-        <img src="IsleBeans.png" alt="Isle of Beans" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-purple-400 font-bold text-lg drop-shadow-md">Isle of Beans</p>
+        <img src="IsleBeans.png" alt="Isle of Beans" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Isle of Beans</p>
       </a>
+
       <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:-rotate-3">
-        <img src="prog.png" alt="Unscheduled Programming" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-blue-400 font-bold text-lg drop-shadow-md">Unscheduled Programming</p>
+        <img src="prog.png" alt="Unscheduled Programming" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Unscheduled Programming</p>
       </a>
+
       <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-110 hover:rotate-1">
-        <img src="loveydovey.png" alt="Lovey Dovey" class="w-full h-full object-cover rounded-xl">
-        <p class="mt-2 text-pink-300 font-bold text-lg drop-shadow-md">Lovey Dovey</p>
+        <img src="loveydovey.png" alt="Lovey Dovey" class="w-full h-64 object-cover rounded-xl">
+        <p class="mt-2 text-white font-bold text-lg bg-black/40 px-3 py-1 rounded-md inline-block drop-shadow-md">Lovey Dovey</p>
+<script>
+  const carousel = document.querySelector('.album-carousel');
+  let scrollSpeed = 0.5;
+  let isPaused = false;
+
+  function smoothScroll() {
+    if (!isPaused) {
+      carousel.scrollLeft += scrollSpeed;
+      if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
+        carousel.scrollLeft = 0;
+      }
+    }
+  }
+
+  carousel.addEventListener('mouseenter', () => isPaused = true);
+  carousel.addEventListener('mouseleave', () => isPaused = false);
+
+  setInterval(smoothScroll, 20);
+</script>
+
       </a>
     </div>
   </div>
@@ -120,7 +176,7 @@
 <!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
   <h2 class="text-4xl font-rubik font-bold mb-8 text-red-400 animate-flicker drop-shadow-md">🎥 Full ToastyBones Playlist</h2>
-  <p class="text-lg italic mb-6 drop-shadow-md">
+  <p class="text-lg italic mb-6 text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md inline-block">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
   <div class="max-w-4xl w-full mx-auto" style="aspect-ratio: 16 / 9;">
@@ -133,11 +189,13 @@
   </div>
 </section>
 
+
 <!-- Merch Section -->
 <section class="py-16 px-6 text-center">
   <h2 class="text-4xl font-rubik font-bold mb-6 text-pink-400 animate-flicker drop-shadow-md">Merch</h2>
-  <p class="text-lg text-gray-200 italic drop-shadow-md">Coming Soon...</p>
+  <p class="text-lg text-white italic bg-black/40 px-4 py-2 rounded-md drop-shadow-md inline-block">Coming Soon...</p>
 </section>
+
 
 <!-- Listen Now Section -->
 <section id="listen" class="py-16 px-6 text-center">
@@ -203,3 +261,4 @@
 </script>
 </body>
 </html>
+
