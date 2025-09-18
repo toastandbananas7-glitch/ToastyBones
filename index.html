@@ -4,11 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ToastyBones</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta name="description" content="ToastyBones - AI-powered music with flair. Listen now!">
+  <meta property="og:title" content="ToastyBones">
+  <meta property="og:image" content="mysteryclown.png">
+  <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            rock: ['"Rock Salt"', 'cursive'],
+            rubik: ['"Rubik Mono One"', 'sans-serif'],
+          },
+          animation: {
+            flicker: 'flicker 1.5s infinite',
+          },
+          keyframes: {
+            flicker: {
+              '0%, 19%, 21%, 23%, 25%, 54%, 56%, 100%': { opacity: '1' },
+              '20%, 22%, 24%, 55%': { opacity: '0.85' },
+            },
+          },
+        },
+      },
+    }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rock+Salt&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Rock Salt', cursive;
       background-image: url('Background.png');
       background-size: cover;
       background-position: center;
@@ -16,11 +41,6 @@
       background-repeat: no-repeat;
       color: white;
     }
-
-    h2 {
-      font-family: 'Rubik Mono One', sans-serif;
-    }
-
     .scrollbar-hide::-webkit-scrollbar {
       display: none;
     }
@@ -28,36 +48,23 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-
-    .soft-shadow {
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-    }
-
-    .flicker {
-      animation: flicker 1.5s infinite;
-    }
-
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-      20%, 22%, 24%, 55% { opacity: 0.85; }
-    }
   </style>
 </head>
-<body>
+<body class="font-rock">
 
 <!-- Hero Section -->
 <section class="relative min-h-[80vh] flex items-center justify-center text-center px-4">
   <div class="relative z-10 flex flex-col items-center">
-    <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest flicker soft-shadow">
+    <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest animate-flicker drop-shadow-md">
       🔥 NEW RELEASE 🔥
     </h1>
-    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
+    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" aria-label="Mystery Clown Album on Spotify"
        class="mt-8 transform transition hover:scale-110 hover:rotate-1">
       <img src="mysteryclown.png" alt="Mystery Clown Album Cover"
            class="w-56 sm:w-64 md:w-72 h-auto object-cover rounded-xl border-4 border-pink-500 shadow-xl hover:border-yellow-400">
     </a>
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-       class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition flicker soft-shadow">
+       class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition animate-flicker drop-shadow-md">
       🎧 Listen to Mystery Clown on Spotify
     </a>
   </div>
@@ -65,73 +72,73 @@
 
 <!-- Bio Section -->
 <section class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-bold mb-6 text-yellow-400 flicker soft-shadow">About</h2>
-  <p class="max-w-2xl mx-auto text-lg leading-relaxed soft-shadow">
+  <h2 class="text-4xl font-rubik font-bold mb-6 text-yellow-400 animate-flicker drop-shadow-md">About</h2>
+  <p class="max-w-2xl mx-auto text-lg leading-relaxed drop-shadow-md">
     I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
   </p>
-  <blockquote class="mt-6 italic text-red-400 soft-shadow">I'm Just Stupid!</blockquote>
+  <blockquote class="mt-6 italic text-red-400 drop-shadow-md">I'm Just Stupid!</blockquote>
 </section>
 
 <!-- Albums Carousel Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-bold mb-10 text-blue-400 flicker soft-shadow">Albums</h2>
+  <h2 class="text-4xl font-rubik font-bold mb-10 text-blue-400 animate-flicker drop-shadow-md">Albums</h2>
   <div class="overflow-x-auto scrollbar-hide">
     <div class="flex gap-8 px-4 snap-x snap-mandatory overflow-x-scroll">
       <!-- Album Cards -->
-      <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
-        <div class="rounded-xl overflow-hidden relative">
+      <!-- Repeatable album card structure -->
+      <!-- Each card below follows the same pattern -->
+      <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" aria-label="Mystery Clown Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
+        <div class="rounded-xl overflow-hidden">
           <img src="mysteryclown.png" alt="Mystery Clown" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-pink-400 font-bold text-lg soft-shadow">Mystery Clown</p>
+        <p class="mt-2 text-pink-400 font-bold text-lg drop-shadow-md">Mystery Clown</p>
       </a>
-      <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-1">
-        <div class="rounded-xl overflow-hidden relative">
+      <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank" aria-label="Big Dump Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-1">
+        <div class="rounded-xl overflow-hidden">
           <img src="BIGDUMP.png" alt="Big Dump" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-yellow-400 font-bold text-lg soft-shadow">Big Dump</p>
+        <p class="mt-2 text-yellow-400 font-bold text-lg drop-shadow-md">Big Dump</p>
       </a>
-      <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-2">
-        <div class="rounded-xl overflow-hidden relative">
+      <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank" aria-label="Fully Panted Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-2">
+        <div class="rounded-xl overflow-hidden">
           <img src="pant.png" alt="Fully Panted" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-green-400 font-bold text-lg soft-shadow">Fully Panted</p>
+        <p class="mt-2 text-green-400 font-bold text-lg drop-shadow-md">Fully Panted</p>
       </a>
-      <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-2">
-        <div class="rounded-xl overflow-hidden relative">
+      <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank" aria-label="Ear-aid Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-2">
+        <div class="rounded-xl overflow-hidden">
           <img src="ear-aid.png" alt="Ear-aid" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-red-400 font-bold text-lg soft-shadow">Ear-aid</p>
+        <p class="mt-2 text-red-400 font-bold text-lg drop-shadow-md">Ear-aid</p>
       </a>
-      <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-3">
-        <div class="rounded-xl overflow-hidden relative">
+      <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank" aria-label="Isle of Beans Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-3">
+        <div class="rounded-xl overflow-hidden">
           <img src="IsleBeans.png" alt="Isle of Beans" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-purple-400 font-bold text-lg soft-shadow">Isle of Beans</p>
+        <p class="mt-2 text-purple-400 font-bold text-lg drop-shadow-md">Isle of Beans</p>
       </a>
-      <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-3">
-        <div class="rounded-xl overflow-hidden relative">
+      <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank" aria-label="Unscheduled Programming Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-3">
+        <div class="rounded-xl overflow-hidden">
           <img src="prog.png" alt="Unscheduled Programming" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-blue-400 font-bold text-lg soft-shadow">Unscheduled Programming</p>
+        <p class="mt-2 text-blue-400 font-bold text-lg drop-shadow-md">Unscheduled Programming</p>
       </a>
-      <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
-        <div class="rounded-xl overflow-hidden relative">
+      <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank" aria-label="Lovey Dovey Album" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
+        <div class="rounded-xl overflow-hidden">
           <img src="loveydovey.png" alt="Lovey Dovey" class="w-full h-72 object-cover">
         </div>
-        <p class="mt-2 text-pink-300 font-bold text-lg soft-shadow">Lovey Dovey</p>
+        <p class="mt-2 text-pink-300 font-bold text-lg drop-shadow-md">Lovey Dovey</p>
       </a>
-    </div>
-  </div>
-</section>
+
 
 <!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-bold mb-8 text-red-400 flicker soft-shadow">🎥 Full ToastyBones Playlist</h2>
-  <p class="text-lg italic mb-6 soft-shadow">
+  <h2 class="text-4xl font-rubik font-bold mb-8 text-red-400 animate-flicker drop-shadow-md">🎥 Full ToastyBones Playlist</h2>
+  <p class="text-lg italic mb-6 drop-shadow-md">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
-  <div class="flex justify-center">
-    <iframe width="100%" height="380" class="max-w-4xl w-full rounded-xl shadow-xl border-4 border-red-500"
+  <div class="aspect-w-16 aspect-h-9 max-w-4xl w-full mx-auto">
+    <iframe class="w-full h-full rounded-xl shadow-xl border-4 border-red-500"
       src="https://www.youtube.com/embed/videoseries?list=PLd8X6j7xmS7XzGVhvOkULomTfNVh9fQST"
       title="ToastyBones Playlist" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -140,42 +147,48 @@
   </div>
 </section>
 
+<!-- Merch Section -->
 <section class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-bold mb-6 text-pink-400 flicker soft-shadow">Merch</h2>
-  <p class="text-lg text-gray-200 italic soft-shadow">Coming Soon...</p>
+  <h2 class="text-4xl font-rubik font-bold mb-6 text-pink-400 animate-flicker drop-shadow-md">Merch</h2>
+  <p class="text-lg text-gray-200 italic drop-shadow-md">Coming Soon...</p>
 </section>
 
-
+<!-- Listen Now Section -->
 <section id="listen" class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-bold mb-8 text-green-400 flicker soft-shadow">Listen Now</h2>
+  <h2 class="text-4xl font-rubik font-bold mb-8 text-green-400 animate-flicker drop-shadow-md">Listen Now</h2>
   <div class="flex flex-wrap justify-center gap-10">
     <!-- Spotify -->
-    <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" class="transform transition hover:scale-110 hover:rotate-3 hover:text-yellow-300">
+    <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" aria-label="ToastyBones on Spotify"
+       class="transform transition hover:scale-110 hover:rotate-3 hover:text-yellow-300">
       <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" 
            alt="Spotify" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,255,128,0.7)]">
-      <p class="mt-2 text-green-400 font-bold soft-shadow">Spotify</p>
+      <p class="mt-2 text-green-400 font-bold drop-shadow-md">Spotify</p>
     </a>
     <!-- Deezer -->
-    <a href="https://www.deezer.com/us/artist/341627971#" target="_blank" class="transform transition hover:scale-110 hover:rotate-2 hover:text-purple-300">
+    <a href="https://www.deezer.com/us/artist/341627971#" target="_blank" aria-label="ToastyBones on Deezer"
+       class="transform transition hover:scale-110 hover:rotate-2 hover:text-purple-300">
       <img src="deezer.png" alt="Deezer" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(128,0,255,0.7)]">
-      <p class="mt-2 text-purple-400 font-bold soft-shadow">Deezer</p>
+      <p class="mt-2 text-purple-400 font-bold drop-shadow-md">Deezer</p>
     </a>
     <!-- YouTube Music -->
-    <a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank" class="transform transition hover:scale-110 hover:-rotate-3 hover:text-pink-300">
+    <a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank" aria-label="ToastyBones on YouTube Music"
+       class="transform transition hover:scale-110 hover:-rotate-3 hover:text-pink-300">
       <img src="Youtube_Music_icon.svg" alt="YouTube Music" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(255,0,0,0.7)]">
-      <p class="mt-2 text-red-400 font-bold soft-shadow">YT Music</p>
+      <p class="mt-2 text-red-400 font-bold drop-shadow-md">YT Music</p>
     </a>
     <!-- Suno -->
-    <a href="https://suno.com/@toastybones" target="_blank" class="transform transition hover:scale-110 hover:rotate-1 hover:text-blue-300">
+    <a href="https://suno.com/@toastybones" target="_blank" aria-label="ToastyBones on Suno"
+       class="transform transition hover:scale-110 hover:rotate-1 hover:text-blue-300">
       <img src="https://suno.com/favicon.ico" alt="Suno" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,128,255,0.7)]">
-      <p class="mt-2 text-blue-400 font-bold soft-shadow">Suno</p>
+      <p class="mt-2 text-blue-400 font-bold drop-shadow-md">Suno</p>
     </a>
   </div>
 </section>
 
+<!-- Footer -->
 <footer class="py-6 text-center text-gray-300 text-sm">
-  <p class="uppercase tracking-widest soft-shadow">🍞☠️</p>
-  <p class="soft-shadow">© <span id="year"></span> ToastyBones. All rights reserved.</p>
+  <p class="uppercase tracking-widest drop-shadow-md">🍞☠️</p>
+  <p class="drop-shadow-md">© <span id="year"></span> ToastyBones. All rights reserved.</p>
 </footer>
 
 <script>
