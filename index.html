@@ -36,6 +36,7 @@
     .flicker {
       animation: flicker 1.5s infinite;
     }
+
     @keyframes flicker {
       0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
       20%, 22%, 24%, 55% { opacity: 0.85; }
@@ -44,27 +45,23 @@
 </head>
 <body>
 
-
-<!-- New Release Hero Section -->
+<!-- Hero Section -->
 <section class="relative min-h-[80vh] flex items-center justify-center text-center px-4">
   <div class="relative z-10 flex flex-col items-center">
     <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest flicker soft-shadow">
       🔥 NEW RELEASE 🔥
     </h1>
-
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
        class="mt-8 transform transition hover:scale-110 hover:rotate-1">
       <img src="mysteryclown.png" alt="Mystery Clown Album Cover"
            class="w-56 sm:w-64 md:w-72 h-auto object-cover rounded-xl border-4 border-pink-500 shadow-xl hover:border-yellow-400">
     </a>
-
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
        class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition flicker soft-shadow">
       🎧 Listen to Mystery Clown on Spotify
     </a>
   </div>
 </section>
-
 
 <!-- Bio Section -->
 <section class="py-16 px-6 text-center">
@@ -75,62 +72,48 @@
   <blockquote class="mt-6 italic text-red-400 soft-shadow">I'm Just Stupid!</blockquote>
 </section>
 
-
 <!-- Albums Carousel Section -->
 <section class="py-20 px-6 text-center">
   <h2 class="text-4xl font-bold mb-10 text-blue-400 flicker soft-shadow">Albums</h2>
-
   <div class="overflow-x-auto scrollbar-hide">
     <div class="flex gap-8 px-4 snap-x snap-mandatory overflow-x-scroll">
-      <!-- Mystery Clown -->
+      <!-- Album Cards -->
       <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
         <div class="rounded-xl overflow-hidden relative">
           <img src="mysteryclown.png" alt="Mystery Clown" class="w-full h-72 object-cover">
         </div>
         <p class="mt-2 text-pink-400 font-bold text-lg soft-shadow">Mystery Clown</p>
       </a>
-
-      <!-- Big Dump -->
       <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-1">
         <div class="rounded-xl overflow-hidden relative">
           <img src="BIGDUMP.png" alt="Big Dump" class="w-full h-72 object-cover">
         </div>
         <p class="mt-2 text-yellow-400 font-bold text-lg soft-shadow">Big Dump</p>
       </a>
-
-      <!-- Fully Panted -->
       <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-2">
         <div class="rounded-xl overflow-hidden relative">
           <img src="pant.png" alt="Fully Panted" class="w-full h-72 object-cover">
         </div>
         <p class="mt-2 text-green-400 font-bold text-lg soft-shadow">Fully Panted</p>
       </a>
-
-      <!-- Ear-aid -->
       <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-2">
         <div class="rounded-xl overflow-hidden relative">
           <img src="ear-aid.png" alt="Ear-aid" class="w-full h-72 object-cover">
         </div>
         <p class="mt-2 text-red-400 font-bold text-lg soft-shadow">Ear-aid</p>
       </a>
-
-      <!-- Isle of Beans -->
       <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-3">
         <div class="rounded-xl overflow-hidden relative">
           <img src="IsleBeans.png" alt="Isle of Beans" class="w-full h-72 object-cover">
         </div>
         <p class="mt-2 text-purple-400 font-bold text-lg soft-shadow">Isle of Beans</p>
       </a>
-
-      <!-- Unscheduled Programming -->
       <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:-rotate-3">
         <div class="rounded-xl overflow-hidden relative">
           <img src="prog.png" alt="Unscheduled Programming" class="w-full h-72 object-cover">
         </div>
         <p class="mt-2 text-blue-400 font-bold text-lg soft-shadow">Unscheduled Programming</p>
       </a>
-
-      <!-- Lovey Dovey -->
       <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank" class="snap-center flex-shrink-0 w-72 transform transition hover:scale-105 hover:rotate-1">
         <div class="rounded-xl overflow-hidden relative">
           <img src="loveydovey.png" alt="Lovey Dovey" class="w-full h-72 object-cover">
@@ -141,12 +124,9 @@
   </div>
 </section>
 
-
-<!-- Full Playlist Section -->
+<!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-bold mb-8 text-red-400 flicker soft-shadow">
-    🎥 Full ToastyBones Playlist
-  </h2>
+  <h2 class="text-4xl font-bold mb-8 text-red-400 flicker soft-shadow">🎥 Full ToastyBones Playlist</h2>
   <p class="text-lg italic mb-6 soft-shadow">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
@@ -160,15 +140,12 @@
   </div>
 </section>
 
-
-<!-- Merch Section -->
 <section class="py-16 px-6 text-center">
   <h2 class="text-4xl font-bold mb-6 text-pink-400 flicker soft-shadow">Merch</h2>
   <p class="text-lg text-gray-200 italic soft-shadow">Coming Soon...</p>
 </section>
 
 
-<!-- Streaming Links -->
 <section id="listen" class="py-16 px-6 text-center">
   <h2 class="text-4xl font-bold mb-8 text-green-400 flicker soft-shadow">Listen Now</h2>
   <div class="flex flex-wrap justify-center gap-10">
@@ -196,8 +173,6 @@
   </div>
 </section>
 
-
-<!-- Footer -->
 <footer class="py-6 text-center text-gray-300 text-sm">
   <p class="uppercase tracking-widest soft-shadow">🍞☠️</p>
   <p class="soft-shadow">© <span id="year"></span> ToastyBones. All rights reserved.</p>
@@ -208,16 +183,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
