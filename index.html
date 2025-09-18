@@ -14,40 +14,59 @@
       background-position: center;
       background-attachment: fixed;
       background-repeat: no-repeat;
+      color: white;
     }
+
     h2 {
       font-family: 'Rubik Mono One', sans-serif;
     }
+
     .scrollbar-hide::-webkit-scrollbar {
       display: none;
     }
+
     .scrollbar-hide {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
 
+    .crt-scanlines {
+      position: relative;
+      overflow: hidden;
     }
-.crt-scanlines {
-  position: relative;
-  overflow: hidden;
-}
 
-.crt-scanlines::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.04) 0px,
-    rgba(255, 255, 255, 0.04) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  pointer-events: none;
-  z-index: 2;
+    .crt-scanlines::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.04) 0px,
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .soft-shadow {
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .flicker {
+      animation: flicker 1.5s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 22%, 24%, 55% {
+        opacity: 0.85;
       }
     }
   </style>
@@ -57,7 +76,7 @@
 <!-- New Release Hero Section -->
 <section class="relative h-screen flex items-center justify-center text-center overflow-hidden px-4">
   <div class="relative z-10 flex flex-col items-center">
-    <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest flicker">
+    <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest flicker soft-shadow">
       🔥 NEW RELEASE 🔥
     </h1>
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
@@ -66,7 +85,7 @@
            class="w-56 sm:w-64 md:w-72 h-auto object-cover rounded-xl border-4 border-pink-500 shadow-xl hover:border-yellow-400">
     </a>
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-       class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition flicker">
+       class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition flicker soft-shadow">
       🎧 Listen to Mystery Clown on Spotify
     </a>
   </div>
@@ -74,12 +93,15 @@
 
 <!-- Bio Section -->
 <section class="py-16 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
-  <h2 class="text-4xl font-bold mb-6 text-yellow-400 flicker">About</h2>
-  <p class="max-w-2xl mx-auto text-lg text-gray-300 leading-relaxed">
-    I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
-  </p>
-  <blockquote class="mt-6 italic text-red-400">I'm Just Stupid!</blockquote>
+  <h2 class="text-4xl font-bold mb-6 text-yellow-400 flicker soft-shadow">About</h2>
+  <div class="max-w-2xl mx-auto bg-black bg-opacity-60 p-4 rounded-lg">
+    <p class="text-white text-lg leading-relaxed soft-shadow">
+      I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
+    </p>
+    <blockquote class="mt-6 italic text-red-400 soft-shadow">I'm Just Stupid!</blockquote>
+  </div>
 </section>
+
 
 <!-- Albums Carousel Section -->
 <section class="py-20 px-6 bg-gradient-to-b from-black via-gray-900 to-black text-center">
@@ -200,6 +222,7 @@
   </script>
 </body>
 </html>
+
 
 
 
