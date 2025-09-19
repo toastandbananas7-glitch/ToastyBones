@@ -52,13 +52,23 @@
   <!-- Custom Styles -->
   <style>
 
-.marquee {
-  white-space: nowrap;
+.marquee-wrapper {
+  width: 100%;
   overflow: hidden;
-  display: inline-block;
-  animation: scroll-left 12s linear infinite;
   position: relative;
 }
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left 15s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
 
 @keyframes scroll-left {
   0% { transform: translateX(100%); }
@@ -164,13 +174,16 @@
 <body class="font-tech">
 
 <!-- Scrolling Banner -->
-<div class="fixed bottom-0 left-0 w-full bg-black text-white py-2 z-50 overflow-hidden border-t-4 border-pink-500">
+<div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-50 border-t-4 border-pink-500 overflow-hidden">
   <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="block w-full">
-    <p class="marquee font-orbitron text-lg text-yellow-300 drop-shadow-md hover:text-pink-300 transition" data-text="🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧">
-      🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧
-    </p>
+    <div class="marquee-wrapper">
+      <p class="marquee font-orbitron text-lg text-yellow-300 drop-shadow-md hover:text-pink-300 transition" data-text="🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧">
+        🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧 🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧 🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧
+      </p>
+    </div>
   </a>
 </div>
+
 
 
 <!-- Hero Section -->
@@ -375,6 +388,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 
 
 
