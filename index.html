@@ -151,20 +151,45 @@
         transform: translateX(-100%);
       }
     }
+
+.marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 2.5rem;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%; /* Push it offscreen to the right */
+  animation: scrollBanner 20s linear infinite;
+}
+
+@keyframes scrollBanner {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
   </style>
 </head>
 <body class="font-tech">
 
 <!-- Scrolling Banner -->
-<div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-50 border-t-4 border-pink-500 overflow-hidden">
+<div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-50 border-t-4 border-pink-500">
   <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="block w-full">
-    <div class="marquee-track">
-      <span class="marquee-text font-orbitron text-yellow-300 text-lg drop-shadow-md hover:text-pink-300 transition">
+    <div class="marquee-wrapper">
+      <div class="marquee-content font-orbitron text-yellow-300 text-lg drop-shadow-md hover:text-pink-300 transition">
         🎧 MYSTERY CLOWN OUT NOW ON SPOTIFY 🎧 &nbsp; 🎧 MYSTERY CLOWN OUT NOW ON SPOTIFY 🎧 &nbsp; 🎧 MYSTERY CLOWN OUT NOW ON SPOTIFY 🎧
-      </span>
+      </div>
     </div>
   </a>
 </div>
+
 
 
 <!-- Hero Section -->
@@ -369,6 +394,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 
 
 
