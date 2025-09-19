@@ -52,6 +52,27 @@
   <!-- Custom Styles -->
   <style>
 
+.marquee-container {
+  position: relative;
+  width: 100%;
+  height: 1.5rem;
+  overflow: hidden;
+}
+
+.marquee-text {
+  animation: scrollBanner 20s linear infinite;
+}
+
+@keyframes scrollBanner {
+  0% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+
 .marquee-wrapper {
   width: 100%;
   overflow: hidden;
@@ -176,13 +197,14 @@
 <!-- Scrolling Banner -->
 <div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-50 border-t-4 border-pink-500 overflow-hidden">
   <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="block w-full">
-    <div class="marquee-wrapper">
-      <p class="marquee font-orbitron text-lg text-yellow-300 drop-shadow-md hover:text-pink-300 transition" data-text="🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧">
-        🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧 🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧 🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧
-      </p>
+    <div class="marquee-container relative w-full h-6 overflow-hidden">
+      <div class="marquee-text absolute whitespace-nowrap font-orbitron text-yellow-300 text-lg drop-shadow-md hover:text-pink-300 transition">
+        🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧 &nbsp; 🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧 &nbsp; 🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧
+      </div>
     </div>
   </a>
 </div>
+
 
 
 
@@ -388,6 +410,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 
 
 
