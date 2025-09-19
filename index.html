@@ -51,6 +51,56 @@
 
   <!-- Custom Styles -->
   <style>
+.glitch {
+  position: relative;
+  color: white;
+  font-weight: bold;
+  font-size: 1.125rem;
+  text-shadow: 0 0 2px #fff, 0 0 5px #f0f, 0 0 10px #0ff;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: white;
+  background: transparent;
+}
+
+.glitch::before {
+  animation: glitchTop 1.5s infinite linear alternate-reverse;
+  top: -2px;
+  clip-path: inset(0 0 50% 0);
+}
+
+.glitch::after {
+  animation: glitchBottom 1.5s infinite linear alternate-reverse;
+  top: 2px;
+  clip-path: inset(50% 0 0 0);
+}
+
+@keyframes glitchTop {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitchBottom {
+  0% { transform: translate(0); }
+  20% { transform: translate(2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(1px, -1px); }
+  80% { transform: translate(-1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+
     body {
       background-image: url('Background.png');
       background-size: cover;
@@ -105,96 +155,105 @@
   <h2 class="text-4xl font-orbitron font-bold mb-10 text-blue-400 animate-flicker drop-shadow-md">Albums</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
 
-    <!-- Mystery Clown -->
-    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="mysteryclown.png" alt="Mystery Clown" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Mystery Clown</p>
-        </div>
-      </div>
-    </a>
+<!-- Mystery Clown -->
+<a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
+   class="group transform transition hover:scale-105 hover:rotate-1">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="mysteryclown.png" alt="Mystery Clown" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Mystery Clown">Mystery Clown</p>
+    </div>
+  </div>
+</a>
 
-    <!-- Big Dump -->
-    <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
-       class="group transform transition hover:scale-105 hover:-rotate-1">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="BIGDUMP.png" alt="Big Dump" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Big Dump</p>
-        </div>
-      </div>
-    </a>
 
-    <!-- Fully Panted -->
-    <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-2">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="pant.png" alt="Fully Panted" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Fully Panted</p>
-        </div>
-      </div>
-    </a>
+<!-- Big Dump -->
+<a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
+   class="group transform transition hover:scale-105 hover:-rotate-1">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="BIGDUMP.png" alt="Big Dump" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Big Dump">Big Dump</p>
+    </div>
+  </div>
+</a>
 
-    <!-- Ear-aid -->
-    <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
-       class="group transform transition hover:scale-105 hover:-rotate-2">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="ear-aid.png" alt="Ear-aid" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Ear-aid</p>
-        </div>
-      </div>
-    </a>
 
-    <!-- Isle of Beans -->
-    <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-3">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="IsleBeans.png" alt="Isle of Beans" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Isle of Beans</p>
-        </div>
-      </div>
-    </a>
 
-    <!-- Unscheduled Programming -->
-    <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
-       class="group transform transition hover:scale-105 hover:-rotate-3">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="prog.png" alt="Unscheduled Programming" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Unscheduled Programming</p>
-        </div>
-      </div>
-    </a>
+<!-- Fully Panted -->
+<a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
+   class="group transform transition hover:scale-105 hover:rotate-2">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="pant.png" alt="Fully Panted" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Fully Panted">Fully Panted</p>
+    </div>
+  </div>
+</a>
 
-    <!-- Lovey Dovey -->
-    <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1">
-      <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
-        <div class="flex-1 flex items-center justify-center p-2">
-          <img src="loveydovey.png" alt="Lovey Dovey" class="max-h-full max-w-full object-contain">
-        </div>
-        <div class="bg-black/70 py-2">
-          <p class="text-white font-rubik font-bold text-lg drop-shadow-md">Lovey Dovey</p>
-        </div>
-      </div>
-    </a>
+
+<!-- Ear-aid -->
+<a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
+   class="group transform transition hover:scale-105 hover:-rotate-2">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="ear-aid.png" alt="Ear-aid" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Ear-aid">Ear-aid</p>
+    </div>
+  </div>
+</a>
+
+
+ <!-- Isle of Beans -->
+<a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
+   class="group transform transition hover:scale-105 hover:rotate-3">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="IsleBeans.png" alt="Isle of Beans" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Isle of Beans">Isle of Beans</p>
+    </div>
+  </div>
+</a>
+
+
+<!-- Unscheduled Programming -->
+<a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
+   class="group transform transition hover:scale-105 hover:-rotate-3">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="prog.png" alt="Unscheduled Programming" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Unscheduled Programming">Unscheduled Programming</p>
+    </div>
+  </div>
+</a>
+
+
+
+<!-- Lovey Dovey -->
+<a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
+   class="group transform transition hover:scale-105 hover:rotate-1">
+  <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-2">
+      <img src="loveydovey.png" alt="Lovey Dovey" class="max-h-full max-w-full object-contain">
+    </div>
+    <div class="bg-black/70 py-2">
+      <p class="glitch font-tech drop-shadow-md" data-text="Lovey Dovey">Lovey Dovey</p>
+    </div>
+  </div>
+</a>
+
 
   </div>
 </section>
@@ -267,6 +326,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 
 
 
