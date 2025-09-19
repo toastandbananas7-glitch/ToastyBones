@@ -11,22 +11,19 @@
   <!-- SEO Meta -->
   <meta name="description" content="ToastyBones - AI-powered music with flair. Listen now!">
   <meta name="theme-color" content="#111827">
-
-  <!-- Open Graph (for Facebook, Discord, etc.) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yourdomain.com">
   <meta property="og:title" content="ToastyBones">
   <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
   <meta property="og:image" content="mysteryclown.png">
-
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="ToastyBones">
   <meta name="twitter:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
   <meta name="twitter:image" content="mysteryclown.png">
-
-  <!-- Preload Background Image -->
   <link rel="preload" as="image" href="Background.png">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -35,8 +32,8 @@
       theme: {
         extend: {
           fontFamily: {
-            rock: ['"Rock Salt"', 'cursive'],
-            rubik: ['"Rubik Mono One"', 'sans-serif'],
+            tech: ['"Share Tech Mono"', 'monospace'],
+            orbitron: ['"Orbitron"', 'sans-serif'],
           },
           animation: {
             flicker: 'flicker 1.5s infinite',
@@ -51,9 +48,6 @@
       },
     }
   </script>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rock+Salt&display=swap" rel="stylesheet">
 
   <!-- Custom Styles -->
   <style>
@@ -74,12 +68,12 @@
     }
   </style>
 </head>
-<body class="font-rock">
+<body class="font-tech">
 
 <!-- Hero Section -->
 <section class="relative min-h-[80vh] flex items-center justify-center text-center px-4">
   <div class="relative z-10 flex flex-col items-center">
-    <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold text-pink-500 animate-pulse tracking-widest animate-flicker drop-shadow-md">
+    <h1 class="text-4xl sm:text-6xl md:text-8xl font-orbitron text-pink-500 animate-pulse tracking-widest animate-flicker drop-shadow-md">
       🔥 NEW RELEASE 🔥
     </h1>
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" aria-label="Mystery Clown Album on Spotify"
@@ -94,23 +88,24 @@
   </div>
 </section>
 
-
-<!-- Bio Section -->
+<!-- About Section -->
 <section class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-rubik font-bold mb-6 text-yellow-400 animate-flicker drop-shadow-md">About</h2>
-  <p class="max-w-2xl mx-auto text-lg leading-relaxed drop-shadow-md">
+  <h2 class="text-4xl font-orbitron font-bold mb-6 text-yellow-400 animate-flicker drop-shadow-md">About</h2>
+  <p class="max-w-2xl mx-auto text-lg leading-relaxed text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md">
     I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
   </p>
-  <blockquote class="mt-6 italic text-red-400 drop-shadow-md">I'm Just Stupid!</blockquote>
+  <blockquote class="mt-6 italic font-bold text-white text-lg bg-black/40 px-4 py-2 inline-block rounded-md drop-shadow-md">
+    I'm Just Stupid!
+  </blockquote>
 </section>
 
 
 <!-- Albums Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-rubik font-bold mb-10 text-blue-400 animate-flicker drop-shadow-md">Albums</h2>
+  <h2 class="text-4xl font-orbitron font-bold mb-10 text-blue-400 animate-flicker drop-shadow-md">Albums</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
 
-    <!-- Album Card -->
+    <!-- Mystery Clown -->
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
        class="group transform transition hover:scale-105 hover:rotate-1">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
@@ -123,6 +118,7 @@
       </div>
     </a>
 
+    <!-- Big Dump -->
     <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
        class="group transform transition hover:scale-105 hover:-rotate-1">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
@@ -135,6 +131,7 @@
       </div>
     </a>
 
+    <!-- Fully Panted -->
     <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
        class="group transform transition hover:scale-105 hover:rotate-2">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
@@ -147,6 +144,7 @@
       </div>
     </a>
 
+    <!-- Ear-aid -->
     <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
        class="group transform transition hover:scale-105 hover:-rotate-2">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
@@ -159,6 +157,7 @@
       </div>
     </a>
 
+    <!-- Isle of Beans -->
     <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
        class="group transform transition hover:scale-105 hover:rotate-3">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
@@ -171,6 +170,7 @@
       </div>
     </a>
 
+    <!-- Unscheduled Programming -->
     <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
        class="group transform transition hover:scale-105 hover:-rotate-3">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
@@ -183,6 +183,7 @@
       </div>
     </a>
 
+    <!-- Lovey Dovey -->
     <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
        class="group transform transition hover:scale-105 hover:rotate-1">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
@@ -198,9 +199,10 @@
   </div>
 </section>
 
+
 <!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-rubik font-bold mb-8 text-red-400 animate-flicker drop-shadow-md">🎥 Full ToastyBones Playlist</h2>
+  <h2 class="text-4xl font-orbitron font-bold mb-8 text-red-400 animate-flicker drop-shadow-md">🎥 Full ToastyBones Playlist</h2>
   <p class="text-lg italic mb-6 text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md inline-block">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
@@ -214,17 +216,16 @@
   </div>
 </section>
 
-
 <!-- Merch Section -->
 <section class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-rubik font-bold mb-6 text-pink-400 animate-flicker drop-shadow-md">Merch</h2>
+  <h2 class="text-4xl font-orbitron font-bold mb-6 text-pink-400 animate-flicker drop-shadow-md">Merch</h2>
   <p class="text-lg text-white italic bg-black/40 px-4 py-2 rounded-md drop-shadow-md inline-block">Coming Soon...</p>
 </section>
 
 
 <!-- Listen Now Section -->
 <section id="listen" class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-rubik font-bold mb-8 text-green-400 animate-flicker drop-shadow-md">Listen Now</h2>
+  <h2 class="text-4xl font-orbitron font-bold mb-8 text-green-400 animate-flicker drop-shadow-md">Listen Now</h2>
   <div class="flex flex-wrap justify-center gap-10">
     <!-- Spotify -->
     <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" aria-label="ToastyBones on Spotify"
@@ -233,18 +234,21 @@
            alt="Spotify" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,255,128,0.7)]">
       <p class="mt-2 text-green-400 font-bold drop-shadow-md">Spotify</p>
     </a>
+
     <!-- Deezer -->
     <a href="https://www.deezer.com/us/artist/341627971#" target="_blank" aria-label="ToastyBones on Deezer"
        class="transform transition hover:scale-110 hover:rotate-2 hover:text-purple-300">
       <img src="deezer.png" alt="Deezer" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(128,0,255,0.7)]">
       <p class="mt-2 text-purple-400 font-bold drop-shadow-md">Deezer</p>
     </a>
+
     <!-- YouTube Music -->
     <a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank" aria-label="ToastyBones on YouTube Music"
        class="transform transition hover:scale-110 hover:-rotate-3 hover:text-pink-300">
       <img src="Youtube_Music_icon.svg" alt="YouTube Music" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(255,0,0,0.7)]">
       <p class="mt-2 text-red-400 font-bold drop-shadow-md">YT Music</p>
     </a>
+
     <!-- Suno -->
     <a href="https://suno.com/@toastybones" target="_blank" aria-label="ToastyBones on Suno"
        class="transform transition hover:scale-110 hover:rotate-1 hover:text-blue-300">
@@ -256,36 +260,13 @@
 
 <!-- Footer -->
 <footer class="py-6 text-center text-gray-300 text-sm">
-  <p class="uppercase tracking-widest drop-shadow-md">🍞☠️</p>
-  <p class="drop-shadow-md">© <span id="year"></span> ToastyBones. All rights reserved.</p>
+  <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
+  <p class="drop-shadow-md font-tech">© <span id="year"></span> ToastyBones. All rights reserved.</p>
 </footer>
 
-<!-- Scripts -->
 <script>
-  // Update year
   document.getElementById("year").textContent = new Date().getFullYear();
-
-  // Smooth autoscroll for carousel
-  const carousel = document.querySelector('.album-carousel');
-  let scrollSpeed = 0.5; // pixels per tick
-  let isPaused = false;
-
-  function smoothScroll() {
-    if (!isPaused) {
-      carousel.scrollLeft += scrollSpeed;
-      if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
-        carousel.scrollLeft = 0;
-      }
-    }
-  }
-
-  carousel.addEventListener('mouseenter', () => isPaused = true);
-  carousel.addEventListener('mouseleave', () => isPaused = false);
-
-  setInterval(smoothScroll, 20); // smoother and slower
 </script>
-</body>
-</html>
 
 
 
