@@ -51,6 +51,24 @@
 
   <!-- Custom Styles -->
   <style>
+
+.outlined {
+  color: white;
+  font-weight: bold;
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000;
+}
+.neon {
+  color: #fff;
+  text-shadow:
+    0 0 5px #0ff,
+    0 0 10px #0ff,
+    0 0 20px #0ff;
+}
+
 .glitch {
   position: relative;
   color: white;
@@ -152,7 +170,7 @@
 
 <!-- Albums Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-orbitron font-bold mb-10 text-blue-400 animate-flicker drop-shadow-md">Albums</h2>
+<h2 class="text-4xl font-orbitron outlined animate-flicker mb-10">Albums</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
 
 <!-- Mystery Clown -->
@@ -261,7 +279,7 @@
 
 <!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="text-4xl font-orbitron font-bold mb-8 text-red-400 animate-flicker drop-shadow-md">🎥 Full ToastyBones Playlist</h2>
+ <h2 class="text-4xl font-orbitron outlined animate-flicker mb-10">Full ToastyBones Playlist</h2>
   <p class="text-lg italic mb-6 text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md inline-block">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
@@ -277,14 +295,14 @@
 
 <!-- Merch Section -->
 <section class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-orbitron font-bold mb-6 text-pink-400 animate-flicker drop-shadow-md">Merch</h2>
+  <h2 class="text-4xl font-orbitron outlined animate-flicker mb-10">Merch</h2>
  <p class="glitch font-tech text-lg bg-black/40 px-4 py-2 rounded-md drop-shadow-md inline-block" data-text="Coming Soon...">Coming Soon...</p>
 </section>
 
 
 <!-- Listen Now Section -->
 <section id="listen" class="py-16 px-6 text-center">
-  <h2 class="text-4xl font-orbitron font-bold mb-8 text-green-400 animate-flicker drop-shadow-md">Listen Now</h2>
+  <h2 class="text-4xl font-orbitron outlined animate-flicker mb-10">Listen Now</h2>
   <div class="flex flex-wrap justify-center gap-10">
     <!-- Spotify -->
     <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" aria-label="ToastyBones on Spotify"
@@ -326,6 +344,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 
 
 
