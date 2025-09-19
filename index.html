@@ -129,20 +129,6 @@
       100% { transform: translate(0); }
     }
 
-    .marquee-track {
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      height: 2rem;
-    }
-
-    .marquee-text {
-      display: inline-block;
-      white-space: nowrap;
-      animation: scrollBanner 20s linear infinite;
-      will-change: transform;
-    }
-
     @keyframes scrollBanner {
       0% {
         transform: translateX(100%);
@@ -190,6 +176,8 @@
   </a>
 </div>
 
+<!-- Spacer for breathing room -->
+<section class="min-h-[50vh]"></section>
 
 
 <!-- Hero Section -->
@@ -385,6 +373,8 @@
   </div>
 </section>
 
+
+
 <!-- Footer -->
 <footer class="py-6 text-center text-gray-300 text-sm">
   <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
@@ -394,7 +384,8 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
-
+</body>
+</html>
 
 
 
