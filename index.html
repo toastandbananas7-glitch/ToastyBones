@@ -52,6 +52,19 @@
   <!-- Custom Styles -->
   <style>
 
+.marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: scroll-left 12s linear infinite;
+  position: relative;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
 .section-title {
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
@@ -150,6 +163,16 @@
 </head>
 <body class="font-tech">
 
+<!-- Scrolling Banner -->
+<div class="fixed bottom-0 left-0 w-full bg-black text-white py-2 z-50 overflow-hidden border-t-4 border-pink-500">
+  <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="block w-full">
+    <p class="marquee font-orbitron text-lg text-yellow-300 drop-shadow-md hover:text-pink-300 transition" data-text="🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧">
+      🎧 LISTEN TO MYSTERY CLOWN ON SPOTIFY 🎧
+    </p>
+  </a>
+</div>
+
+
 <!-- Hero Section -->
 <section class="relative min-h-[80vh] flex items-center justify-center text-center px-4">
   <div class="relative z-10 flex flex-col items-center">
@@ -160,10 +183,6 @@
        class="mt-8 transform transition hover:scale-110 hover:rotate-1">
       <img src="mysteryclown.png" alt="Mystery Clown Album Cover"
            class="w-56 sm:w-64 md:w-72 h-auto object-cover rounded-xl border-4 border-pink-500 shadow-xl hover:border-yellow-400">
-    </a>
-    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-       class="mt-6 text-xl sm:text-2xl md:text-3xl text-yellow-300 font-bold underline hover:text-pink-400 transition animate-flicker drop-shadow-md">
-      🎧 Listen to Mystery Clown on Spotify
     </a>
   </div>
 </section>
@@ -356,6 +375,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 
 
 
