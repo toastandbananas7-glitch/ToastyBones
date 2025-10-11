@@ -51,14 +51,15 @@
 
   <!-- Custom Styles -->
   <style>
-    body {
-      background-image: url('wyde.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      color: white;
-    }
+body {
+  background-image: url('./wyde.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: black; /* fallback */
+}
+
 
     .scrollbar-hide::-webkit-scrollbar {
       display: none;
@@ -220,6 +221,9 @@
     
   </style>
 </head>
+
+  <link rel="preload" href="wyde.png" as="image" type="image/png">
+
 <body class="font-tech">
   
 <!-- Desktop Floating Button -->
@@ -497,6 +501,7 @@
 </script>
 </body>
 </html>
+
 
 
 
