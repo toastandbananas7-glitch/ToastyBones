@@ -103,6 +103,40 @@
   opacity: 1;
 }
 
+.glitch-hover {
+  position: relative;
+  color: inherit;
+  font-weight: bold;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+}
+.glitch-hover::before,
+.glitch-hover::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: inherit;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.glitch-hover:hover::before {
+  animation: glitchTop 1.5s infinite linear alternate-reverse;
+  top: -2px;
+  clip-path: inset(0 0 50% 0);
+  opacity: 1;
+}
+.glitch-hover:hover::after {
+  animation: glitchBottom 1.5s infinite linear alternate-reverse;
+  top: 2px;
+  clip-path: inset(50% 0 0 0);
+  opacity: 1;
+}
+
+    
 
     @keyframes glitchTop {
       0% { transform: translate(0); }
@@ -455,6 +489,7 @@
 </script>
 </body>
 </html>
+
 
 
 
