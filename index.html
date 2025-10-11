@@ -52,174 +52,145 @@
   <!-- Custom Styles -->
   <style>
 body {
-  background-image: url('Background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: black;
-}
-
-
-
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: bold;
-      font-size: 2.25rem;
-      margin-bottom: 2.5rem;
-      text-shadow:
-        -2px -2px 0 #000,
-         2px -2px 0 #000,
-        -2px  2px 0 #000,
-         2px  2px 0 #000;
-    }
-
-    .glitch {
-      position: relative;
-      color: white;
-      font-weight: bold;
-      font-size: 1.125rem;
-      text-shadow: 0 0 2px #fff, 0 0 5px #f0f, 0 0 10px #0ff;
-    }
-
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      color: white;
-      background: transparent;
-    }
-
-    .glitch::before {
-      animation: glitchTop 1.5s infinite linear alternate-reverse;
-      top: -2px;
-      clip-path: inset(0 0 50% 0);
-    }
-
-    .glitch::after {
-      animation: glitchBottom 1.5s infinite linear alternate-reverse;
-      top: 2px;
-      clip-path: inset(50% 0 0 0);
-    }
-
-    @keyframes glitchTop {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, -2px); }
-      40% { transform: translate(2px, 2px); }
-      60% { transform: translate(-1px, 1px); }
-      80% { transform: translate(1px, -1px); }
-      100% { transform: translate(0); }
-    }
-
-    @keyframes glitchBottom {
-      0% { transform: translate(0); }
-      20% { transform: translate(2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(1px, -1px); }
-      80% { transform: translate(-1px, 1px); }
-      100% { transform: translate(0); }
-    }
-
-    @keyframes scrollBanner {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-
-.marquee-wrapper {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  height: 2.5rem;
-}
-
-.marquee-content {
-  display: inline-block;
-  white-space: nowrap;
-  padding-left: 100%; /* Push it offscreen to the right */
-  animation: scrollBanner 20s linear infinite;
-}
-
-@keyframes scrollBanner {
-  0% {
-    transform: translateX(0);
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-image: url('Background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: black; /* fallback */
   }
-  100% {
-    transform: translateX(-100%);
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
-}
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
-.glitch-text {
-  position: relative;
-  color: yellow;
-  text-shadow: 0 0 2px #fff, 0 0 5px #f0f, 0 0 10px #0ff;
-  font-weight: bold;
-}
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    font-size: 2.25rem;
+    margin-bottom: 2.5rem;
+    text-shadow:
+      -2px -2px 0 #000,
+       2px -2px 0 #000,
+      -2px  2px 0 #000,
+       2px  2px 0 #000;
+  }
 
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  color: yellow;
-  background: transparent;
-}
+  .glitch {
+    position: relative;
+    color: white;
+    font-weight: bold;
+    font-size: 1.125rem;
+    text-shadow: 0 0 2px #fff, 0 0 5px #f0f, 0 0 10px #0ff;
+  }
 
-.glitch-text::before {
-  animation: glitchTop 1.5s infinite linear alternate-reverse;
-  top: -2px;
-  clip-path: inset(0 0 50% 0);
-}
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    color: white;
+    background: transparent;
+  }
 
-.glitch-text::after {
-  animation: glitchBottom 1.5s infinite linear alternate-reverse;
-  top: 2px;
-  clip-path: inset(50% 0 0 0);
-}
+  .glitch::before {
+    animation: glitchTop 1.5s infinite linear alternate-reverse;
+    top: -2px;
+    clip-path: inset(0 0 50% 0);
+  }
 
-@keyframes glitchTop {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, -2px); }
-  40% { transform: translate(2px, 2px); }
-  60% { transform: translate(-1px, 1px); }
-  80% { transform: translate(1px, -1px); }
-  100% { transform: translate(0); }
-}
+  .glitch::after {
+    animation: glitchBottom 1.5s infinite linear alternate-reverse;
+    top: 2px;
+    clip-path: inset(50% 0 0 0);
+  }
 
-@keyframes glitchBottom {
-  0% { transform: translate(0); }
-  20% { transform: translate(2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(1px, -1px); }
-  80% { transform: translate(-1px, 1px); }
-  100% { transform: translate(0); }
-}
+  @keyframes glitchTop {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, -2px); }
+    40% { transform: translate(2px, 2px); }
+    60% { transform: translate(-1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+  }
 
-@keyframes animate-glitch {
-  0% { transform: translate(0); }
-  25% { transform: translate(-1px, 1px); }
-  50% { transform: translate(1px, -1px); }
-  75% { transform: translate(-1px, -1px); }
-  100% { transform: translate(0); }
-}
+  @keyframes glitchBottom {
+    0% { transform: translate(0); }
+    20% { transform: translate(2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(1px, -1px); }
+    80% { transform: translate(-1px, 1px); }
+    100% { transform: translate(0); }
+  }
 
-    
-  </style>
+  @keyframes scrollBanner {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .marquee-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 2.5rem;
+  }
+
+  .marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: scrollBanner 20s linear infinite;
+  }
+
+  .glitch-text {
+    position: relative;
+    color: yellow;
+    text-shadow: 0 0 2px #fff, 0 0 5px #f0f, 0 0 10px #0ff;
+    font-weight: bold;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    color: yellow;
+    background: transparent;
+  }
+
+  .glitch-text::before {
+    animation: glitchTop 1.5s infinite linear alternate-reverse;
+    top: -2px;
+    clip-path: inset(0 0 50% 0);
+  }
+
+  .glitch-text::after {
+    animation: glitchBottom 1.5s infinite linear alternate-reverse;
+    top: 2px;
+    clip-path: inset(50% 0 0 0);
+  }
+
+  @keyframes animate-glitch {
+    0% { transform: translate(0); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -1px); }
+    100% { transform: translate(0); }
+  }
+</style>
+
 </head>
 
   <link rel="preload" href="Background.png" as="image" type="image/png">
@@ -503,6 +474,7 @@ body {
 </script>
 </body>
 </html>
+
 
 
 
