@@ -55,24 +55,10 @@ body {
   background-image: url('./Background.png');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   background-color: black; /* fallback */
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url('./Background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: -1;
-}
-    
 
     .scrollbar-hide::-webkit-scrollbar {
       display: none;
@@ -516,6 +502,7 @@ body::before {
 </script>
 </body>
 </html>
+
 
 
 
