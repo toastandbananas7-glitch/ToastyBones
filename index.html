@@ -53,16 +53,18 @@
   <style>
 body {
 <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-image: url('Background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: black; /* fallback */
-  }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-image: url('Background.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: black !important;
+}
+
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -193,8 +195,6 @@ body {
 
 </head>
 
-  <link rel="preload" href="Background.png" as="image" type="image/png">
-
 <body class="font-tech">
 
 
@@ -202,10 +202,12 @@ body {
 <!-- Desktop Floating Button -->
 <div class="hidden sm:block">
   <a href="https://toastybonesmerch.printful.me/" target="_blank"
-     class="fixed top-1/2 left-4 transform -translate-y-1/2 z-50 w-[18rem] px-6 py-3 text-lg font-orbitron text-yellow-300 bg-pink-600 rounded-lg shadow-xl hover:bg-yellow-400 hover:text-black transition duration-300 glitch-text text-center"
+     class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-[18rem] px-6 py-3 text-lg font-orbitron text-yellow-300 bg-pink-600 rounded-lg shadow-xl hover:bg-yellow-400 hover:text-black transition duration-300 glitch-text text-center"
      data-text="Check out the new merch! 🛒">
+    Check out the new merch! 🛒
   </a>
 </div>
+
 
 <!-- Mobile Bottom Banner -->
 <div class="sm:hidden">
@@ -216,7 +218,7 @@ body {
 </div>
 
 <!-- Scrolling Banner: New Release -->
-<div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-50 border-t-4 border-yellow-400">
+  <div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-50 border-t-4 border-yellow-400">
   <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank" class="block w-full">
     <div class="marquee-wrapper">
       <div class="marquee-content font-orbitron text-yellow-300 text-lg drop-shadow-md hover:text-pink-300 transition">
@@ -225,6 +227,7 @@ body {
     </div>
   </a>
 </div>
+
 
 
 <!-- Spacer for breathing room -->
@@ -476,6 +479,7 @@ body {
 </script>
 </body>
 </html>
+
 
 
 
