@@ -50,10 +50,10 @@
 
   <!-- Custom Styles -->
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
+ html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   background-image: url('hween.png');
   background-size: cover;
   background-position: center;
@@ -62,45 +62,47 @@
   background-color: black;
 }
 
-    }
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  font-size: 2.25rem;
+  margin-bottom: 2.5rem;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
 
-    .section-title {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: bold;
-      font-size: 2.25rem;
-      margin-bottom: 2.5rem;
-      text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-    }
+.glitch-hover {
+  position: relative;
+  color: inherit;
+  font-weight: bold;
+}
 
-    .glitch-text {
-      position: relative;
-      color: yellow;
-      text-shadow: 0 0 2px #fff, 0 0 5px #f0f, 0 0 10px #0ff;
-      font-weight: bold;
-    }
+.glitch-hover::before,
+.glitch-hover::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: inherit;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
-    .glitch-text::before,
-    .glitch-text::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      color: yellow;
-      background: transparent;
-    }
+.glitch-hover:hover::before {
+  animation: glitchTop 1.5s infinite linear alternate-reverse;
+  top: -2px;
+  clip-path: inset(0 0 50% 0);
+  opacity: 1;
+}
 
-    .glitch-text::before {
-      animation: glitchTop 1.5s infinite linear alternate-reverse;
-      top: -2px;
-      clip-path: inset(0 0 50% 0);
-    }
+.glitch-hover:hover::after {
+  animation: glitchBottom 1.5s infinite linear alternate-reverse;
+  top: 2px;
+  clip-path: inset(50% 0 0 0);
+  opacity: 1;
+}
 
-    .glitch-text::after {
-      animation: glitchBottom 1.5s infinite linear alternate-reverse;
-      top: 2px;
-      clip-path: inset(50% 0 0 0);
-    }
 
     @keyframes glitchTop {
       0% { transform: translate(0); }
@@ -154,6 +156,7 @@
 
 
 
+
 <!-- Mobile Bottom Banner -->
 <div class="fixed bottom-0 left-0 w-full sm:hidden z-50">
   <a href="https://toastybonesmerch.printful.me/" target="_blank"
@@ -164,31 +167,32 @@
 
   
 
-<!-- Scrolling Banner -->
-<div class="sticky bottom-0 left-0 w-full bg-black text-white py-2 z-40 border-t-4 border-yellow-400">
-  <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank" class="block w-full">
-    <div class="marquee-wrapper">
-      <div class="marquee-content font-orbitron text-yellow-300 text-lg drop-shadow-md hover:text-pink-300 transition">
-        ☠️ BONEY HOLLOW — OUT NOW ON SPOTIFY ☠️ &nbsp; ☠️ BONEY HOLLOW — OUT NOW ON SPOTIFY ☠️ &nbsp; ☠️ BONEY HOLLOW — OUT NOW ON SPOTIFY ☠️
-      </div>
-    </div>
+<!-- Mobile Bottom Banner -->
+<div class="fixed bottom-0 left-0 w-full sm:hidden z-50">
+  <a href="https://toastybonesmerch.printful.me/" target="_blank"
+     class="block w-full px-4 py-3 text-center text-sm font-orbitron text-yellow-300 bg-pink-600 shadow-inner">
+    🛒 Check out the new merch!
   </a>
 </div>
+
 
 
   <!-- Spacer for breathing room -->
 <section class="min-h-[50vh]"></section>
 
 <!-- Hero Section -->
-<div class="mt-10 text-center">
+<div class="mt-10 text-center bg-black/60 py-10 rounded-xl mx-4">
+  <h1 class="text-3xl font-orbitron text-yellow-300 drop-shadow-md mb-4 animate-flicker">☠ BONEY HOLLOW ☠</h1>
+  <p class="text-white italic mb-6">A Halloween Special</p>
   <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
-     class="inline-block px-6 py-3 bg-black border-2 border-yellow-400 rounded-lg text-yellow-300 font-orbitron text-xl hover:text-pink-300 hover:border-pink-300 transition animate-flicker drop-shadow-md">
-    ☠️ BONEY HOLLOW — OUT NOW ON SPOTIFY ☠️
+     class="inline-block px-8 py-4 bg-yellow-400 text-black font-orbitron text-xl rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
+    Listen Now on Spotify
   </a>
-  <div class="mt-4">
+  <div class="mt-6">
     <img src="atbhs.png" alt="Boney Hollow Album Cover" class="mx-auto max-w-xs rounded-lg border-4 border-yellow-400 shadow-lg">
   </div>
 </div>
+
 
 
   <!-- About Section -->
@@ -209,30 +213,32 @@
   <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 max-w-6xl mx-auto">
 
 
-
     <!-- Boney Hollow -->
 <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="bh.png" alt="Boney Hollow" class="max-h-full max-w-full object-contain">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="bh.png" alt="Boney Hollow"
+           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Boney Hollow">Boney Hollow</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Boney Hollow">Boney Hollow</p>
     </div>
   </div>
 </a>
 
 
+
     <!-- Sharing Socks with Strangers -->
 <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="ssws.png" alt="Sharing Socks with Strangers" class="max-h-full max-w-full object-contain">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="ssws.png" alt="Sharing Socks with Strangers"
+           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Sharing Socks with Strangers">Sharing Socks with Strangers</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Sharing Socks with Strangers">Sharing Socks with Strangers</p>
     </div>
   </div>
 </a>
@@ -241,12 +247,13 @@
     <!-- Man's Breath -->
 <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="MANSBREATH.png" alt="Man's Breath" class="max-h-full max-w-full object-contain">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="MANSBREATH.png" alt="Man's Breath"
+           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Man's Breath">Man's Breath</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Man's Breath">Man's Breath</p>
     </div>
   </div>
 </a>
@@ -269,12 +276,13 @@
     <!-- Mystery Clown -->
 <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="mysteryclown.png" alt="Mystery Clown" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="mysteryclown.png" alt="Mystery Clown"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Mystery Clown">Mystery Clown</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Mystery Clown">Mystery Clown</p>
     </div>
   </div>
 </a>
@@ -284,40 +292,45 @@
     <!-- Big Dump -->
 <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
    class="group transform transition hover:scale-105 hover:-rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="BIGDUMP.png" alt="Big Dump" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="BIGDUMP.png" alt="Big Dump"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Big Dump">Big Dump</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Big Dump">Big Dump</p>
     </div>
   </div>
 </a>
+
 
 
     <!-- Fully Panted -->
 <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="pant.png" alt="Fully Panted" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="pant.png" alt="Fully Panted"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Fully Panted">Fully Panted</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Fully Panted">Fully Panted</p>
     </div>
   </div>
 </a>
 
 
+
     <!-- Ear-aid -->
 <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
    class="group transform transition hover:scale-105 hover:-rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="ear-aid.png" alt="Ear-aid" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="ear-aid.png" alt="Ear-aid"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Ear-aid">Ear-aid</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Ear-aid">Ear-aid</p>
     </div>
   </div>
 </a>
@@ -326,26 +339,29 @@
     <!-- Lovey Dovey -->
 <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="loveydovey.png" alt="Lovey Dovey" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="loveydovey.png" alt="Lovey Dovey"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Lovey Dovey">Lovey Dovey</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Lovey Dovey">Lovey Dovey</p>
     </div>
   </div>
 </a>
 
 
+
     <!-- Isle of Beans -->
 <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
    class="group transform transition hover:scale-105 hover:rotate-3">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="IsleBeans.png" alt="Isle of Beans" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="IsleBeans.png" alt="Isle of Beans"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Isle of Beans">Isle of Beans</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Isle of Beans">Isle of Beans</p>
     </div>
   </div>
 </a>
@@ -354,12 +370,13 @@
     <!-- Unscheduled Programming -->
 <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
    class="group transform transition hover:scale-105 hover:-rotate-3">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="prog.png" alt="Unscheduled Programming" class="h-full w-full object-cover" onerror="this.style.display='none'">
+  <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
+    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+      <img src="prog.png" alt="Unscheduled Programming"
+           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
     </div>
     <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="Unscheduled Programming">Unscheduled Programming</p>
+      <p class="glitch-hover font-tech drop-shadow-md" data-text="Unscheduled Programming">Unscheduled Programming</p>
     </div>
   </div>
 </a>
@@ -432,6 +449,7 @@
 </script>
 </body>
 </html>
+
 
 
 
