@@ -175,19 +175,21 @@
       animation: scrollBanner 20s linear infinite;
     }
 
-    @media (max-width: 640px) {
-  .glitch {
+@media (max-width: 640px) {
+  .glitch-hover {
     font-size: 1rem;
     text-shadow: none;
     white-space: normal;
     overflow: visible;
+    position: static;
   }
 
-  .glitch::before,
-  .glitch::after {
-    display: none;
+  .glitch-hover::before,
+  .glitch-hover::after {
+    display: none !important;
   }
 }
+
 
   </style>
 </head>
@@ -504,6 +506,7 @@
 </script>
 </body>
 </html>
+
 
 
 
