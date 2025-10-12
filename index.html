@@ -177,16 +177,28 @@
 
 @media (max-width: 640px) {
   .glitch-hover {
-    font-size: 1rem;
+    font-size: 0.875rem;
+    color: yellow;
     text-shadow: none;
+    position: relative;
+    z-index: 10;
+    display: block;
+    padding: 0.25rem 0.5rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 0.25rem;
     white-space: normal;
-    overflow: visible;
-    position: static;
+    word-break: break-word;
   }
 
   .glitch-hover::before,
   .glitch-hover::after {
     display: none !important;
+  }
+
+  .bg-black\/70 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -506,6 +518,7 @@
 </script>
 </body>
 </html>
+
 
 
 
