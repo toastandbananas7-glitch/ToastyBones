@@ -176,7 +176,9 @@
     }
 
 @media (max-width: 640px) {
-  .glitch-hover {
+  .glitch-hover,
+  .glitch-text,
+  .glitch {
     font-size: 0.875rem;
     color: yellow;
     text-shadow: none;
@@ -188,10 +190,15 @@
     border-radius: 0.25rem;
     white-space: normal;
     word-break: break-word;
+    text-align: center;
   }
 
   .glitch-hover::before,
-  .glitch-hover::after {
+  .glitch-hover::after,
+  .glitch-text::before,
+  .glitch-text::after,
+  .glitch::before,
+  .glitch::after {
     display: none !important;
   }
 
@@ -201,6 +208,7 @@
     align-items: center;
   }
 }
+
 
 
   </style>
@@ -518,6 +526,7 @@
 </script>
 </body>
 </html>
+
 
 
 
