@@ -151,8 +151,54 @@
      2px -2px 0 #000,
     -2px  2px 0 #000,
      2px  2px 0 #000;
-  animation: headerPulse 2s infinite ease-in-out;
+  animation: glitchHeader 1.2s infinite;
 }
+
+.section-title::before,
+.section-title::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  color: #ff00ff;
+  background: transparent;
+  overflow: hidden;
+  clip-path: inset(0 0 50% 0);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.section-title::before {
+  top: -2px;
+  animation: glitchHeaderBefore 1.2s infinite linear alternate-reverse;
+}
+
+.section-title::after {
+  top: 2px;
+  animation: glitchHeaderAfter 1.2s infinite linear alternate-reverse;
+}
+
+@keyframes glitchHeader {
+  0% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitchHeaderBefore {
+  0% { transform: translate(-2px, -2px); }
+  50% { transform: translate(2px, 2px); }
+  100% { transform: translate(-1px, 1px); }
+}
+
+@keyframes glitchHeaderAfter {
+  0% { transform: translate(2px, 2px); }
+  50% { transform: translate(-2px, -2px); }
+  100% { transform: translate(1px, -1px); }
+}
+
 
 @keyframes headerPulse {
   0%   { transform: scale(1); color: #fffb00; text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #0ff; }
@@ -298,7 +344,7 @@
 
   <!-- About Section -->
 <section class="py-16 px-6 text-center">
-  <h2 class="section-title text-yellow-400 animate-flicker">About</h2>
+  <h2 class="section-title" data-text="About">About</h2>
   <p class="max-w-2xl mx-auto text-lg leading-relaxed text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md">
     I make songs on Suno AI with my own lyrics and sometimes my own riffs! 🎶
   </p>
@@ -310,7 +356,7 @@
 
   <!-- Albums Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="section-title text-blue-400 animate-flicker">Albums</h2>
+<h2 class="section-title" data-text="Albums">Albums</h2>
   <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 max-w-6xl mx-auto">
 
 
@@ -488,7 +534,7 @@
 
   <!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
-  <h2 class="section-title text-red-400 animate-flicker">🎥 Full ToastyBones Playlist</h2>
+<h2 class="section-title" data-text="🎥 Full ToastyBones Playlist">🎥 Full ToastyBones Playlist</h2>
   <p class="text-lg italic mb-6 text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md inline-block">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
@@ -505,7 +551,7 @@
 
   <!-- Listen Now Section -->
 <section id="listen" class="py-16 px-6 text-center">
-  <h2 class="section-title text-green-400 animate-flicker">Listen Now</h2>
+ <h2 class="section-title" data-text="Listen Now">Listen Now</h2>
   <div class="flex flex-wrap justify-center gap-10">
     <!-- Spotify -->
     <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" aria-label="ToastyBones on Spotify"
@@ -550,6 +596,7 @@
 </script>
 </body>
 </html>
+
 
 
 
