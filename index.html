@@ -135,6 +135,30 @@
   clip-path: inset(50% 0 0 0);
   opacity: 1;
 }
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  font-size: 2.25rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  position: relative;
+  color: #fffb00;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #f0f,
+    0 0 20px #0ff,
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000;
+  animation: headerPulse 2s infinite ease-in-out;
+}
+
+@keyframes headerPulse {
+  0%   { transform: scale(1); color: #fffb00; text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #0ff; }
+  50%  { transform: scale(1.05); color: #ff00ff; text-shadow: 0 0 10px #ff00ff, 0 0 20px #0ff, 0 0 30px #fff; }
+  100% { transform: scale(1); color: #fffb00; text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #0ff; }
+}
 
     
 
@@ -526,6 +550,7 @@
 </script>
 </body>
 </html>
+
 
 
 
