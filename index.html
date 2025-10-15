@@ -309,18 +309,16 @@
   <h1 class="text-2xl font-orbitron drop-shadow-md">☠ BONEY HOLLOW — OUT NOW ON SPOTIFY ☠</h1>
 </div>
 
-
-<!-- Infinite Merch Carousel Banner -->
-<a href="https://toastybonesmerch.printful.me/" target="_blank" class="block w-full overflow-hidden bg-black z-50 fixed top-0 left-0 h-[20vh] sm:h-[30vh]">
+<!-- Shrinked Merch Banner -->
+<a href="https://toastybonesmerch.printful.me/" target="_blank" id="merchBanner"
+   class="fixed top-0 left-0 w-full h-[12vh] sm:h-[18vh] z-50 overflow-hidden bg-black transition-opacity duration-500">
   <div class="w-max animate-scroll flex items-center h-full">
-    <img src="merchcarousel.png" alt="ToastyBones Merch Carousel" class="h-full object-cover pointer-events-none">
-    <img src="merchcarousel.png" alt="" class="h-full object-cover pointer-events-none">
-    <img src="merchcarousel.png" alt="" class="h-full object-cover pointer-events-none">
-    <!-- Repeat as needed to fill the loop -->
+    <img src="merchcarousel.jpeg" alt="ToastyBones Merch" class="h-full object-cover pointer-events-none">
+    <img src="merchcarousel.jpeg" alt="" class="h-full object-cover pointer-events-none">
+    <img src="merchcarousel.jpeg" alt="" class="h-full object-cover pointer-events-none">
   </div>
 </a>
 
-  
 <!-- Scroll Animation -->
 <style>
   @keyframes scroll {
@@ -332,6 +330,20 @@
   }
 </style>
 
+<!-- Scroll Hide Script -->
+<script>
+  let banner = document.getElementById('merchBanner');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    if (currentScroll > lastScroll) {
+      banner.style.opacity = '0'; // Hide on scroll down
+    } else {
+      banner.style.opacity = '1'; // Show on scroll up
+    }
+    lastScroll = currentScroll;
+  });
+</script>
 
   
 <!-- Hero Section -->
@@ -647,6 +659,7 @@
 </script>
 </body>
 </html>
+
 
 
 
