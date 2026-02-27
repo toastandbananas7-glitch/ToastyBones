@@ -379,6 +379,286 @@
       cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='4' fill='%23fffb00'/%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%23ff00ff' stroke-width='1.5' opacity='0.8'/%3E%3C/svg%3E") 12 12, crosshair;
     }
     a, button { cursor: pointer; }
+
+    /* ============ CHANNEL CHANGE OVERLAY ============ */
+    #channel-change {
+      position: fixed;
+      inset: 0;
+      z-index: 99998;
+      pointer-events: none;
+      opacity: 0;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #channel-change.active {
+      animation: channelFlash 0.45s ease-out forwards;
+    }
+
+    @keyframes channelFlash {
+      0%   { opacity: 1; background: white; clip-path: inset(45% 0); }
+      20%  { opacity: 0.9; background: white; clip-path: inset(0% 0); }
+      40%  { opacity: 0.7; background: repeating-linear-gradient(0deg, #000 0px, #000 2px, #fff 2px, #fff 4px); clip-path: inset(0% 0); }
+      70%  { opacity: 0.3; }
+      100% { opacity: 0; }
+    }
+
+    /* ============ RANDOM GLITCH BURST ============ */
+    #glitch-burst {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    #glitch-burst.active {
+      animation: burstAnim 0.6s steps(1) forwards;
+    }
+
+    @keyframes burstAnim {
+      0%   { opacity: 1; background: repeating-linear-gradient(90deg, transparent 0, transparent 40px, rgba(255,0,255,0.08) 40px, rgba(255,0,255,0.08) 42px); transform: translateX(0); }
+      15%  { transform: translateX(-6px) skewX(-2deg); background: repeating-linear-gradient(90deg, transparent 0, transparent 30px, rgba(0,255,255,0.1) 30px, rgba(0,255,255,0.1) 32px); }
+      30%  { transform: translateX(8px) skewX(1deg); }
+      45%  { transform: translateX(-4px); background: repeating-linear-gradient(0deg, transparent 0, transparent 20px, rgba(255,255,0,0.06) 20px, rgba(255,255,0,0.06) 22px); }
+      60%  { transform: translateX(3px) skewX(-1deg); }
+      80%  { transform: translateX(0); opacity: 0.4; }
+      100% { opacity: 0; transform: translateX(0); }
+    }
+
+    /* ============ ON AIR BADGE ============ */
+    #on-air {
+      position: fixed;
+      top: calc(10vh + 0.6rem);
+      right: 1rem;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #cc0000;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      font-weight: bold;
+      letter-spacing: 0.15em;
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.25rem;
+      box-shadow: 0 0 10px rgba(255,0,0,0.6);
+      text-transform: uppercase;
+    }
+
+    #on-air .dot {
+      width: 7px;
+      height: 7px;
+      background: #ff4444;
+      border-radius: 50%;
+      animation: onAirBlink 1s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes onAirBlink {
+      0%, 100% { opacity: 1; box-shadow: 0 0 6px #ff0000; }
+      50%       { opacity: 0.2; box-shadow: none; }
+    }
+
+    /* ============ MERCH BANNER PULSE ============ */
+    @keyframes merchPulse {
+      0%, 85%, 100% { box-shadow: none; }
+      88%  { box-shadow: 0 0 30px 8px rgba(255,0,200,0.5), inset 0 0 20px rgba(255,255,0,0.15); }
+      92%  { box-shadow: 0 0 15px 4px rgba(255,200,0,0.4); }
+      96%  { box-shadow: 0 0 30px 8px rgba(255,0,200,0.5); }
+    }
+
+    .hidden.sm\\:block a {
+      animation: merchPulse 6s ease-in-out infinite;
+    }
+
+    /* ============ NEW BADGE ============ */
+    .new-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ff0080;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.55rem;
+      font-weight: bold;
+      padding: 0.25rem 0.45rem;
+      border-radius: 0.25rem;
+      z-index: 10;
+      letter-spacing: 0.08em;
+      box-shadow: 0 0 10px rgba(255,0,128,0.7);
+      animation: badgePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,0,128,0.7); }
+      50%       { transform: scale(1.1); box-shadow: 0 0 20px rgba(255,0,128,1); }
+    }
+
+    /* ============ SPOTIFY PREVIEW POPUP ============ */
+    .spotify-preview {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      background: #111;
+      border: 2px solid #1db954;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(29,185,84,0.4);
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateX(-50%) translateY(8px);
+    }
+
+    .spotify-preview.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Make album card wrappers relative for preview positioning */
+    .album-card-wrap {
+      position: relative;
+    }
+
+    /* ============ EMAIL SIGNUP ============ */
+    #email-signup {
+      max-width: 480px;
+      margin: 3rem auto 0;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #fffb00;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 0 20px rgba(255,251,0,0.2);
+      text-align: center;
+    }
+
+    #email-signup h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #fffb00;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 0 8px #ff00ff;
+      letter-spacing: 0.1em;
+    }
+
+    #email-signup p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .tuner-wrap {
+      display: flex;
+      gap: 0;
+      border: 2px solid #fffb00;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255,251,0,0.2);
+    }
+
+    .tuner-wrap input[type="email"] {
+      flex: 1;
+      background: #000;
+      color: #fffb00;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      border: none;
+      outline: none;
+      padding: 0.6rem 0.8rem;
+      min-width: 0;
+    }
+
+    .tuner-wrap input[type="email"]::placeholder { color: rgba(255,251,0,0.35); }
+
+    .tuner-wrap button {
+      background: #fffb00;
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: bold;
+      border: none;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+
+    .tuner-wrap button:hover { background: #ff00cc; color: white; }
+
+    #signup-confirm {
+      display: none;
+      color: #1db954;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ============ KONAMI / SECRET MESSAGE ============ */
+    #secret-msg {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.92);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    #secret-msg.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #secret-msg .secret-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1rem, 4vw, 2rem);
+      color: #fffb00;
+      text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+      animation: secretPulse 1s ease-in-out infinite;
+    }
+
+    #secret-msg .secret-sub {
+      font-family: 'Share Tech Mono', monospace;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+    }
+
+    #secret-msg .close-secret {
+      margin-top: 1rem;
+      background: transparent;
+      border: 2px solid #fffb00;
+      color: #fffb00;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 0.5rem 1.5rem;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    #secret-msg .close-secret:hover { background: #fffb00; color: #000; }
+
+    @keyframes secretPulse {
+      0%, 100% { text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff; }
+      50%       { text-shadow: 0 0 40px #fffb00, 0 0 80px #ff00ff; }
+    }
   </style>
 </head>
 
@@ -388,6 +668,27 @@
 <div id="crt-overlay" aria-hidden="true">
   <div class="noise-layer"></div>
   <div class="phosphor-tint"></div>
+</div>
+
+<!-- Channel Change Flash Overlay -->
+<div id="channel-change" aria-hidden="true"></div>
+
+<!-- Random Glitch Burst Overlay -->
+<div id="glitch-burst" aria-hidden="true"></div>
+
+<!-- ON AIR Badge -->
+<div id="on-air" aria-hidden="true">
+  <span class="dot"></span>
+  ON AIR
+</div>
+
+<!-- Konami Secret Message -->
+<div id="secret-msg" role="dialog" aria-modal="true" aria-label="Secret message">
+  <div class="secret-text">☠️ YOU FOUND THE SECRET ☠️</div>
+  <div class="secret-text" style="font-size:clamp(0.8rem,3vw,1.4rem); margin-top:-0.5rem;">TOASTYBONES SEES YOU</div>
+  <div class="secret-sub">The bones are always toasty. Always.</div>
+  <div class="secret-sub" style="font-size:0.7rem; opacity:0.5;">↑↑↓↓←→←→BA — you know what you did</div>
+  <button class="close-secret" onclick="closeSecret()">[ DISMISS ]</button>
 </div>
 
 <!-- CRT Toggle Button -->
@@ -459,8 +760,11 @@
   <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 max-w-6xl mx-auto">
 
     <!-- Hilariously Unfortunate -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.05s">
+    <span class="new-badge">🔥 NEW</span>
     <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.05s">
+       data-spotify="5QsBEo2w5hLwTcXbEVtVzI"
+       class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate"
@@ -471,10 +775,16 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview" data-album="5QsBEo2w5hLwTcXbEVtVzI">
+      <iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5QsBEo2w5hLwTcXbEVtVzI?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    </div>
 
     <!-- Big Dump 2: Return of the Dump -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.10s">
     <a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.10s">
+       data-spotify="7A2epK5YtI0AwzekuFQa2J"
+       class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="bd2rotd.png" alt="Big Dump 2"
@@ -485,10 +795,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7A2epK5YtI0AwzekuFQa2J?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Spobbly Not -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.15s">
     <a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.15s">
+       data-spotify="4Se3IXXD8jRjuleluQTjf3"
+       class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="spobbly not.png" alt="Spobbly Not"
@@ -499,10 +813,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/4Se3IXXD8jRjuleluQTjf3?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- The Great Indoors -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.20s">
     <a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.20s">
+       data-spotify="5WK8CM8TwDUx45Rg7c2fpJ"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="TGInew.png" alt="The Great Indoors"
@@ -513,10 +831,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5WK8CM8TwDUx45Rg7c2fpJ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Festive Flush -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
     <a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.25s">
+       data-spotify="7HeRXhxoE7icXWhmiP5E7D"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="ffalbum.png" alt="Festive Flush"
@@ -527,10 +849,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7HeRXhxoE7icXWhmiP5E7D?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Midnight Suppository -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.30s">
     <a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.30s">
+       data-spotify="3JeNJkrFjTzBE8jGq1yreC"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="ms.png" alt="Midnight Suppository"
@@ -541,10 +867,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/3JeNJkrFjTzBE8jGq1yreC?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Black and Blue and Punk All Over -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.35s">
     <a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.35s">
+       data-spotify="0K25mUKLkCKuRhuHJpM8t6"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="babapao.png" alt="Black and Blue and Punk All Over"
@@ -555,10 +885,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0K25mUKLkCKuRhuHJpM8t6?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Boney Hollow -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.40s">
     <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.40s">
+       data-spotify="6QM22TUsasDgIHFZn9Niba"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="bh.png" alt="Boney Hollow"
@@ -569,10 +903,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/6QM22TUsasDgIHFZn9Niba?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Sharing Socks with Strangers -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.45s">
     <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.45s">
+       data-spotify="0Hln1Bc6ametJ7lZumtjxZ"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="ssws.png" alt="Sharing Socks with Strangers"
@@ -583,10 +921,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0Hln1Bc6ametJ7lZumtjxZ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Man's Breath (FIXED Spotify link) -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.50s">
     <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ?si=l-5ju3bIQwW4eAxgYCAqJg" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.50s">
+       data-spotify="0Hln1Bc6ametJ7lZumtjxZ"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="MANSBREATH.png" alt="Man's Breath"
@@ -597,10 +939,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0Hln1Bc6ametJ7lZumtjxZ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- The Legend of Duke -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.55s">
     <a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.55s">
+       data-spotify="2r1UbSHTPFJrIH6KVF4Jb4"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-2">
           <img src="LOD.png" alt="The Legend of Duke" class="h-full w-full object-cover" onerror="this.style.display='none'">
@@ -610,10 +956,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/2r1UbSHTPFJrIH6KVF4Jb4?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Mystery Clown -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.60s">
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.60s">
+       data-spotify="5vGODrEiQ8cCVhT9mX8Ky4"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="mysteryclown.png" alt="Mystery Clown"
@@ -624,10 +974,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5vGODrEiQ8cCVhT9mX8Ky4?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Big Dump -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
     <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
-       class="group transform transition hover:scale-105 hover:-rotate-1 card-pop" style="animation-delay:0.65s">
+       data-spotify="4yBkE9cfP1uA04eIVViCnn"
+       class="album-link group transform transition hover:scale-105 hover:-rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="BIGDUMP.png" alt="Big Dump"
@@ -638,10 +992,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/4yBkE9cfP1uA04eIVViCnn?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Fully Panted -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.70s">
     <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.70s">
+       data-spotify="3pibb5ZqPdmBje3Q50cgrC"
+       class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="pant.png" alt="Fully Panted"
@@ -652,10 +1010,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/3pibb5ZqPdmBje3Q50cgrC?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Ear-aid -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.75s">
     <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
-       class="group transform transition hover:scale-105 hover:-rotate-2 card-pop" style="animation-delay:0.75s">
+       data-spotify="0tzXB3flhk3Z8nKl4EoqaV"
+       class="album-link group transform transition hover:scale-105 hover:-rotate-2 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="ear-aid.png" alt="Ear-aid"
@@ -666,10 +1028,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0tzXB3flhk3Z8nKl4EoqaV?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Lovey Dovey -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.80s">
     <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.80s">
+       data-spotify="7KtMV76L80Pz6JMR1dErog"
+       class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="loveydovey.png" alt="Lovey Dovey"
@@ -680,10 +1046,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7KtMV76L80Pz6JMR1dErog?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Isle of Beans -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.85s">
     <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
-       class="group transform transition hover:scale-105 hover:rotate-3 card-pop" style="animation-delay:0.85s">
+       data-spotify="68OQ78AmvTIEAolpFfPr2e"
+       class="album-link group transform transition hover:scale-105 hover:rotate-3 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="IsleBeans.png" alt="Isle of Beans"
@@ -694,10 +1064,14 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/68OQ78AmvTIEAolpFfPr2e?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
     <!-- Unscheduled Programming -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.90s">
     <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
-       class="group transform transition hover:scale-105 hover:-rotate-3 card-pop" style="animation-delay:0.90s">
+       data-spotify="7oOB89lOQ15eaTMWuGXd2j"
+       class="album-link group transform transition hover:scale-105 hover:-rotate-3 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
           <img src="prog.png" alt="Unscheduled Programming"
@@ -708,6 +1082,8 @@
         </div>
       </div>
     </a>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7oOB89lOQ15eaTMWuGXd2j?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+    </div>
 
   </div><!-- end grid -->
 </section>
@@ -761,6 +1137,17 @@
   </div>
 </section>
 
+<!-- Email Signup -->
+<div id="email-signup">
+  <h3>📡 TUNE IN TO NEW RELEASES</h3>
+  <p>Drop your frequency. Get notified when new bones drop.</p>
+  <div class="tuner-wrap">
+    <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email">
+    <button onclick="handleSignup()">TUNE IN</button>
+  </div>
+  <p id="signup-confirm">✅ SIGNAL RECEIVED. SEE YOU ON THE OTHER SIDE.</p>
+</div>
+
 <!-- Disclaimer -->
 <div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10">
   ⚠️ ToastyBones commissions blend human creativity with AI-generated production.
@@ -777,10 +1164,10 @@
 </footer>
 
 <script>
-  // Footer year
+  // ============ FOOTER YEAR ============
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // Scroll-hide merch banner
+  // ============ SCROLL-HIDE MERCH BANNER ============
   const banner = document.getElementById('merchBanner');
   let lastScroll = 0;
   window.addEventListener('scroll', () => {
@@ -789,7 +1176,7 @@
     lastScroll = cur;
   });
 
-  // CRT Toggle — restore preference
+  // ============ CRT TOGGLE ============
   const crtLabel = document.getElementById('crt-label');
   let crtOn = true;
 
@@ -808,7 +1195,6 @@
       document.body.classList.remove('crt-off');
       document.body.classList.add('crt-on');
       crtLabel.textContent = 'CRT: ON';
-      // TV turn-on flash
       document.body.classList.add('tv-on-anim');
       setTimeout(() => document.body.classList.remove('tv-on-anim'), 500);
     } else {
@@ -819,20 +1205,197 @@
     try { localStorage.setItem('crt', crtOn ? 'on' : 'off'); } catch(e) {}
   }
 
-  // Staggered card pop-in on scroll
+  // ============ CARD POP-IN ON SCROLL ============
   const cards = document.querySelectorAll('.card-pop');
-  const observer = new IntersectionObserver((entries) => {
+  const cardObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.style.animationPlayState = 'running';
-        observer.unobserve(entry.target);
+        cardObserver.unobserve(entry.target);
       }
     });
   }, { threshold: 0.08 });
 
   cards.forEach(card => {
     card.style.animationPlayState = 'paused';
-    observer.observe(card);
+    cardObserver.observe(card);
+  });
+
+  // ============ CHANNEL CHANGE ON ALBUM CLICK ============
+  const channelEl = document.getElementById('channel-change');
+
+  document.querySelectorAll('.album-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      channelEl.classList.remove('active');
+      // Force reflow so animation restarts
+      void channelEl.offsetWidth;
+      channelEl.classList.add('active');
+      setTimeout(() => {
+        window.open(href, '_blank');
+        channelEl.classList.remove('active');
+      }, 380);
+    });
+  });
+
+  // ============ RANDOM GLITCH BURSTS ============
+  const glitchBurst = document.getElementById('glitch-burst');
+
+  function triggerGlitchBurst() {
+    glitchBurst.classList.remove('active');
+    void glitchBurst.offsetWidth;
+    glitchBurst.classList.add('active');
+    setTimeout(() => glitchBurst.classList.remove('active'), 650);
+    // Schedule next burst randomly between 20s and 55s
+    setTimeout(triggerGlitchBurst, 20000 + Math.random() * 35000);
+  }
+  // First burst after 15-30s
+  setTimeout(triggerGlitchBurst, 15000 + Math.random() * 15000);
+
+  // ============ SPOTIFY PREVIEW ON HOVER ============
+  // Only on non-touch devices
+  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+
+  document.querySelectorAll('.album-card-wrap').forEach(wrap => {
+    const preview = wrap.querySelector('.spotify-preview');
+    if (!preview) return;
+
+    let showTimer, hideTimer;
+
+    wrap.addEventListener('mouseenter', () => {
+      if (isTouchDevice()) return;
+      clearTimeout(hideTimer);
+      showTimer = setTimeout(() => preview.classList.add('visible'), 350);
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      if (isTouchDevice()) return;
+      clearTimeout(showTimer);
+      hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
+    });
+
+    // Keep visible if hovering the preview itself
+    preview.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    preview.addEventListener('mouseleave', () => {
+      hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
+    });
+  });
+
+  // ============ ANIMATED FAVICON ============
+  (function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32; canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    const link = document.querySelector("link[rel='icon']") || (() => {
+      const l = document.createElement('link');
+      l.rel = 'icon'; document.head.appendChild(l); return l;
+    })();
+
+    const frames = [
+      { bg: '#000', skull: '#fffb00', fire: '#ff00cc' },
+      { bg: '#110000', skull: '#ff6600', fire: '#fffb00' },
+      { bg: '#000011', skull: '#00ffff', fire: '#ff00ff' },
+      { bg: '#001100', skull: '#fffb00', fire: '#00ff88' },
+    ];
+    let fi = 0;
+
+    function drawFavicon(f) {
+      ctx.fillStyle = f.bg;
+      ctx.fillRect(0, 0, 32, 32);
+      // Skull body
+      ctx.fillStyle = f.skull;
+      ctx.beginPath();
+      ctx.arc(16, 13, 9, 0, Math.PI * 2);
+      ctx.fill();
+      // Jaw
+      ctx.fillRect(10, 18, 12, 7);
+      // Eyes
+      ctx.fillStyle = f.bg;
+      ctx.beginPath(); ctx.arc(12, 12, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(20, 12, 2.5, 0, Math.PI * 2); ctx.fill();
+      // Teeth gaps
+      ctx.fillRect(13, 22, 2, 4);
+      ctx.fillRect(17, 22, 2, 4);
+      // Fire dots
+      ctx.fillStyle = f.fire;
+      ctx.fillRect(14, 2, 2, 3);
+      ctx.fillRect(11, 3, 2, 2);
+      ctx.fillRect(17, 3, 2, 2);
+    }
+
+    function animateFavicon() {
+      drawFavicon(frames[fi % frames.length]);
+      link.href = canvas.toDataURL('image/png');
+      fi++;
+      setTimeout(animateFavicon, 400);
+    }
+    animateFavicon();
+  })();
+
+  // ============ KONAMI CODE EASTER EGG ============
+  const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let konamiIdx = 0;
+  const secretMsg = document.getElementById('secret-msg');
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === KONAMI[konamiIdx]) {
+      konamiIdx++;
+      if (konamiIdx === KONAMI.length) {
+        konamiIdx = 0;
+        // Glitch burst then show message
+        glitchBurst.classList.remove('active');
+        void glitchBurst.offsetWidth;
+        glitchBurst.classList.add('active');
+        setTimeout(() => {
+          glitchBurst.classList.remove('active');
+          secretMsg.classList.add('visible');
+        }, 600);
+      }
+    } else {
+      konamiIdx = e.key === KONAMI[0] ? 1 : 0;
+    }
+  });
+
+  function closeSecret() {
+    secretMsg.classList.remove('visible');
+  }
+
+  secretMsg.addEventListener('click', (e) => {
+    if (e.target === secretMsg) closeSecret();
+  });
+
+  // ============ EMAIL SIGNUP ============
+  function handleSignup() {
+    const input = document.getElementById('email-input');
+    const confirm = document.getElementById('signup-confirm');
+    const val = input.value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(val)) {
+      input.style.borderBottom = '2px solid #ff0000';
+      input.style.color = '#ff4444';
+      input.placeholder = 'INVALID FREQUENCY. TRY AGAIN.';
+      input.value = '';
+      setTimeout(() => {
+        input.style.borderBottom = '';
+        input.style.color = '#fffb00';
+        input.placeholder = 'your@email.com';
+      }, 2000);
+      return;
+    }
+    confirm.style.display = 'block';
+    input.style.display = 'none';
+    input.closest('.tuner-wrap').style.display = 'none';
+    // Glitch burst celebration
+    glitchBurst.classList.remove('active');
+    void glitchBurst.offsetWidth;
+    glitchBurst.classList.add('active');
+    setTimeout(() => glitchBurst.classList.remove('active'), 650);
+  }
+
+  // Allow Enter key in email input
+  document.getElementById('email-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSignup();
   });
 </script>
 
