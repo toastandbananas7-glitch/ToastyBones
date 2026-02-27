@@ -137,8 +137,9 @@
     body.crt-on #crt-overlay { animation: crtFlicker 5s infinite; }
     body.crt-off #crt-overlay { opacity: 0; }
 
-    /* Phosphor color cast when on */
-    body.crt-on { filter: contrast(1.07) brightness(0.97) saturate(1.12); }
+    /* Phosphor color cast — applied to page wrapper, NOT body,
+       so the fixed #crt-overlay stays unaffected and covers the full viewport */
+    body.crt-on #page-wrapper { filter: contrast(1.07) brightness(0.97) saturate(1.12); }
 
     /* RGB shift on album hover when CRT active */
     body.crt-on .group:hover img {
@@ -229,11 +230,12 @@
     /* ============ GLITCH HOVER ============ */
     .glitch-hover {
       position: relative;
-      color: inherit;
+      color: #fffb00;
       font-weight: bold;
       white-space: normal;
       word-break: break-word;
       text-align: center;
+      text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff, 0 0 2px #000;
     }
 
     .glitch-hover::before,
@@ -336,8 +338,8 @@
     @media (max-width: 640px) {
       .glitch-hover, .glitch-text, .glitch {
         font-size: 0.875rem;
-        color: yellow;
-        text-shadow: none;
+        color: #fffb00;
+        text-shadow: 0 0 4px #ff00ff, 0 0 8px #00ffff;
         position: relative;
         z-index: 10;
         display: block;
@@ -376,6 +378,10 @@
   <span class="crt-icon">📺</span>
   <span id="crt-label">CRT: ON</span>
 </button>
+
+<!-- Page wrapper — CRT phosphor filter applies here, NOT on body,
+     so the fixed #crt-overlay remains unclipped and covers the full viewport -->
+<div id="page-wrapper">
 
 <!-- Desktop Floating Merch Banner -->
 <div class="hidden sm:block">
@@ -754,6 +760,8 @@
   <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
   <p class="drop-shadow-md font-tech">© <span id="year"></span> ToastyBones. All rights reserved.</p>
 </footer>
+
+</div><!-- end #page-wrapper -->
 
 <script>
   // Footer year
