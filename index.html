@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToastyBones</title>
 
-<meta name="description" content="ToastyBones - AI-powered pop punk chaos. Listen now.">
+<meta name="description" content="ToastyBones - AI-powered pop punk chaos.">
 <meta property="og:title" content="ToastyBones">
-<meta property="og:description" content="🔥 NEW RELEASES + I'm Just Stupid 🔥">
+<meta property="og:description" content="Glitchy Pop Punk Mayhem">
 <meta property="og:image" content="HilariouslyUnfortunate.png">
 <meta property="og:type" content="website">
 
@@ -18,274 +18,192 @@
 
 <style>
 html, body {
-  margin: 0;
-  padding: 0;
-  background-image: url('tvbg.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-color: #000;
-  font-family: 'Share Tech Mono', monospace;
-  color: #ffffff;
-  scroll-behavior: smooth;
+  margin:0;
+  padding:0;
+  background:url('tvbg.png') center/cover fixed no-repeat #000;
+  font-family:'Share Tech Mono', monospace;
+  color:#fff;
+  scroll-behavior:smooth;
 }
 
-/* CRT DEFAULT ON */
-body.crt::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
+/* CRT */
+body.crt::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
     to bottom,
     rgba(0,0,0,0.25),
     rgba(0,0,0,0.25) 2px,
     transparent 2px,
     transparent 4px
   );
-  pointer-events: none;
-  z-index: 9999;
+  pointer-events:none;
+  z-index:9999;
 }
 
-/* Titles */
-.section-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2.2rem;
-  text-align: center;
-  color: #fffb00;
-  margin-bottom: 2rem;
-  text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff;
+/* CRT Toggle Button */
+#crtToggle{
+  position:fixed;
+  top:15px;
+  right:20px;
+  z-index:10000;
+  background:#ff00ff;
+  color:#fff;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  box-shadow:0 0 10px #ff00ff;
 }
 
-/* Buttons */
-.main-button {
-  background: #fffb00;
-  color: #000;
-  padding: 1rem 2rem;
-  font-family: 'Orbitron', sans-serif;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-}
-.main-button:hover {
-  background: #ff00ff;
-  color: #fff;
-}
-
-/* Album Cards (ANIMATED AGAIN) */
-.album-card {
-  background: rgba(0,0,0,0.6);
-  border-radius: 1rem;
-  overflow: hidden;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-.album-card:hover {
-  transform: scale(1.05) rotate(2deg);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+/* Floating Merch Button */
+#floatingMerch{
+  position:fixed;
+  left:0;
+  top:40%;
+  background:#ff0080;
+  padding:14px 18px;
+  border-radius:0 12px 12px 0;
+  font-weight:bold;
+  box-shadow:0 0 15px #ff0080;
+  z-index:1000;
 }
 
-.album-title {
-  padding: 1rem 0.5rem;
-  text-align: center;
+/* Merch Scrolling Banner */
+#merchBanner{
+  white-space:nowrap;
+  overflow:hidden;
+  background:#000;
+  border-top:3px solid #ff00ff;
+  border-bottom:3px solid #00ffff;
+}
+#merchBanner img{
+  height:140px;
+  animation:scrollMerch 25s linear infinite;
+}
+@keyframes scrollMerch{
+  from{transform:translateX(100%);}
+  to{transform:translateX(-100%);}
 }
 
-/* Scroll Reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
+/* Section Titles */
+.section-title{
+  font-family:'Orbitron', sans-serif;
+  font-size:2.2rem;
+  text-align:center;
+  margin:2rem 0;
+  color:#fffb00;
+  text-shadow:0 0 8px #ff00ff, 0 0 15px #00ffff;
 }
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
+
+/* Album Cards */
+.album-card{
+  background:rgba(0,0,0,0.65);
+  border-radius:14px;
+  overflow:hidden;
+  border:2px solid #00ffff;
+  transition:transform .3s ease, box-shadow .3s ease;
+  position:relative;
 }
+.album-card:hover{
+  transform:scale(1.05) rotate(1.5deg);
+  box-shadow:0 0 25px #ff00ff, 0 0 40px #00ffff;
+}
+
+/* Glitch Overlay */
+.album-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(45deg, transparent 40%, rgba(255,0,255,0.2) 50%, transparent 60%);
+  opacity:0;
+  transition:opacity .2s;
+}
+.album-card:hover::before{
+  opacity:1;
+  animation:glitch .3s infinite;
+}
+@keyframes glitch{
+  0%{transform:translate(0);}
+  25%{transform:translate(-2px,2px);}
+  50%{transform:translate(2px,-2px);}
+  75%{transform:translate(-1px,-1px);}
+  100%{transform:translate(0);}
+}
+
+.album-title{
+  text-align:center;
+  padding:10px;
+}
+
+/* Streaming Links */
+.stream-link{
+  font-weight:bold;
+  text-shadow:0 0 8px currentColor;
+}
+.spotify{color:#1DB954;}
+.deezer{color:#FF0000;}
+.youtube{color:#FF0000;}
+.suno{color:#00ffff;}
 </style>
 </head>
 
 <body class="crt">
 
-<!-- NAV -->
-<nav class="fixed top-0 w-full bg-black/80 backdrop-blur z-50 text-center py-3">
-  <a href="#albums" class="mx-4 hover:text-yellow-300">Albums</a>
-  <a href="#playlist" class="mx-4 hover:text-yellow-300">Playlist</a>
-  <a href="#listen" class="mx-4 hover:text-yellow-300">Listen</a>
-  <a href="#merch" class="mx-4 hover:text-pink-400">Merch</a>
-</nav>
+<div id="crtToggle">Toggle CRT</div>
+<a id="floatingMerch" href="https://toastybonesmerch.printful.me/" target="_blank">🛒 Merch</a>
 
-<div class="h-16"></div>
+<div id="merchBanner">
+<img src="merchbanner.png" alt="Merch Banner">
+</div>
 
-<!-- HERO -->
-<section class="py-24 px-6 text-center">
-  <h1 class="section-title">I'm Just Stupid</h1>
-  <p class="text-lg mb-6">The song that started everything.</p>
-  <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" class="main-button">
-    Listen on Spotify
-  </a>
+<section class="py-20 text-center">
+<h1 class="section-title">ToastyBones</h1>
+<p>AI-powered pop punk chaos.</p>
+<p style="margin-top:10px;font-size:18px;color:#ff00ff;">I'm Just Stupid</p>
 </section>
 
-<!-- MERCH (IMPORTANT) -->
-<section id="merch" class="py-20 px-6 text-center">
-<h2 class="section-title reveal">Official Merch</h2>
-<a href="https://toastybonesmerch.printful.me/" target="_blank" class="main-button reveal">
-  🛒 Shop the Merch
-</a>
-</section>
-
-<!-- ALBUMS -->
 <section id="albums" class="py-20 px-6 text-center">
-<h2 class="section-title reveal">Albums</h2>
+<h2 class="section-title">Albums</h2>
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
 
-<a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank" class="album-card reveal">
+<a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank" class="album-card">
 <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate">
 <div class="album-title">Hilariously Unfortunate</div>
 </a>
 
-<a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank" class="album-card reveal">
+<a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank" class="album-card">
 <img src="bd2rotd.png" alt="Big Dump 2: Return of the Dump">
 <div class="album-title">Big Dump 2: Return of the Dump</div>
 </a>
 
-<a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank" class="album-card reveal">
+<a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank" class="album-card">
 <img src="spobbly not.png" alt="Spobbly Not">
 <div class="album-title">Spobbly Not</div>
 </a>
 
-<a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank" class="album-card reveal">
-<img src="TGInew.png" alt="The Great Indoors">
-<div class="album-title">The Great Indoors</div>
-</a>
-
-<a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank" class="album-card reveal">
-<img src="ffalbum.png" alt="Festive Flush">
-<div class="album-title">Festive Flush</div>
-</a>
-
-<a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank" class="album-card reveal">
-<img src="ms.png" alt="Midnight Suppository">
-<div class="album-title">Midnight Suppository</div>
-</a>
-
-<a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank" class="album-card reveal">
-<img src="babapao.png" alt="Black and Blue and Punk All Over">
-<div class="album-title">Black and Blue and Punk All Over</div>
-</a>
-
-<a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank" class="album-card reveal">
-<img src="bh.png" alt="Boney Hollow">
-<div class="album-title">Boney Hollow</div>
-</a>
-
-<a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank" class="album-card reveal">
-<img src="ssws.png" alt="Sharing Socks with Strangers">
-<div class="album-title">Sharing Socks with Strangers</div>
-</a>
-
-<a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank" class="album-card reveal">
-<img src="MANSBREATH.png" alt="Man's Breath">
-<div class="album-title">Man's Breath</div>
-</a>
-
-<a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank" class="album-card reveal">
-<img src="LOD.png" alt="The Legend of Duke">
-<div class="album-title">The Legend of Duke</div>
-</a>
-
-<a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank" class="album-card reveal">
-<img src="mysteryclown.png" alt="Mystery Clown">
-<div class="album-title">Mystery Clown</div>
-</a>
-
-<a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank" class="album-card reveal">
-<img src="BIGDUMP.png" alt="Big Dump">
-<div class="album-title">Big Dump</div>
-</a>
-
-<a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank" class="album-card reveal">
-<img src="pant.png" alt="Fully Panted">
-<div class="album-title">Fully Panted</div>
-</a>
-
-<a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank" class="album-card reveal">
-<img src="ear-aid.png" alt="Ear-aid">
-<div class="album-title">Ear-aid</div>
-</a>
-
-<a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog" target="_blank" class="album-card reveal">
-<img src="loveydovey.png" alt="Lovey Dovey">
-<div class="album-title">Lovey Dovey</div>
-</a>
-
-<a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank" class="album-card reveal">
-<img src="IsleBeans.png" alt="Isle of Beans">
-<div class="album-title">Isle of Beans</div>
-</a>
-
-<a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank" class="album-card reveal">
-<img src="prog.png" alt="Unscheduled Programming">
-<div class="album-title">Unscheduled Programming</div>
-</a>
-
 </div>
 </section>
 
-<!-- PLAYLIST -->
-<section id="playlist" class="py-20 px-6 text-center">
-<h2 class="section-title reveal">Full Playlist</h2>
-<div class="max-w-4xl mx-auto">
-<iframe class="w-full aspect-video rounded-xl shadow-xl"
-src="https://www.youtube.com/embed/videoseries?list=PLd8X6j7xmS7XzGVhvOkULomTfNVh9fQST"
-allowfullscreen></iframe>
+<section class="py-20 text-center">
+<h2 class="section-title">Listen Everywhere</h2>
+<div class="space-y-4">
+<a class="stream-link spotify" href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank">Spotify</a><br>
+<a class="stream-link deezer" href="https://www.deezer.com/us/artist/341627971#" target="_blank">Deezer</a><br>
+<a class="stream-link youtube" href="https://www.youtube.com/@ToastyBonesMusic" target="_blank">YouTube Music</a><br>
+<a class="stream-link suno" href="https://suno.com/@toastybones" target="_blank">Suno</a>
 </div>
 </section>
-
-<!-- STREAMING ICONS RESTORED -->
-<section id="listen" class="py-20 px-6 text-center">
-<h2 class="section-title reveal">Listen Everywhere</h2>
-<div class="flex flex-wrap justify-center gap-10">
-<a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank">
-<img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" class="w-16 mx-auto">
-</a>
-<a href="https://www.deezer.com/us/artist/341627971#" target="_blank">
-<img src="deezer.png" class="w-16 mx-auto">
-</a>
-<a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank">
-<img src="Youtube_Music_icon.svg" class="w-16 mx-auto">
-</a>
-<a href="https://suno.com/@toastybones" target="_blank">
-<img src="https://suno.com/favicon.ico" class="w-16 mx-auto">
-</a>
-</div>
-</section>
-
-<!-- DISCLAIMER RESTORED -->
-<div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10 text-center">
-⚠️ ToastyBones commissions blend human creativity with AI-generated production.
-All lyrics are written by hand. Some riffs and beats are crafted manually,
-while others are summoned through AI tools.
-Every track is a hybrid spell: part bone, part machine. ⚠️
-</div>
 
 <footer class="py-10 text-center text-gray-400">
 © <span id="year"></span> ToastyBones
 </footer>
 
 <script>
-document.getElementById("year").textContent = new Date().getFullYear();
-
-const reveals = document.querySelectorAll('.reveal');
-function revealOnScroll() {
-  const windowHeight = window.innerHeight;
-  reveals.forEach(el => {
-    const elementTop = el.getBoundingClientRect().top;
-    if (elementTop < windowHeight - 100) {
-      el.classList.add('active');
-    }
-  });
-}
-window.addEventListener('scroll', revealOnScroll);
-revealOnScroll();
-
-document.getElementById("crtToggle")?.addEventListener("click", function() {
-  document.body.classList.toggle("crt");
+document.getElementById("year").textContent=new Date().getFullYear();
+document.getElementById("crtToggle").addEventListener("click",()=>{
+document.body.classList.toggle("crt");
 });
 </script>
 
