@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,12 +14,12 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://toastybones.com">
   <meta property="og:title" content="ToastyBones">
-  <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
-  <meta property="og:image" content="mysteryclown.png">
+  <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Hilariously Unfortunate and more.">
+  <meta property="og:image" content="HilariouslyUnfortunate.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="ToastyBones">
-  <meta name="twitter:description" content="🔥 NEW RELEASE 🔥 Listen to Mystery Clown and more.">
-  <meta name="twitter:image" content="mysteryclown.png">
+  <meta name="twitter:description" content="🔥 NEW RELEASE 🔥 Listen to Hilariously Unfortunate and more.">
+  <meta name="twitter:image" content="HilariouslyUnfortunate.png">
   <link rel="preload" href="tvbg.png" as="image" type="image/png">
 
   <!-- Google Fonts -->
@@ -48,287 +49,335 @@
     }
   </script>
 
-  <!-- Custom Styles -->
   <style>
- html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background-image: url('tvbg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: black;
-}
+    /* ============ SCROLL ANIMATION (merch banner) ============ */
+    @keyframes scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-33.333%); }
+    }
+    .animate-scroll { animation: scroll 30s linear infinite; }
 
-.section-title {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: bold;
-  font-size: 2.25rem;
-  margin-bottom: 2.5rem;
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-}
+    /* ============ BASE ============ */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-image: url('tvbg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-color: black;
+    }
 
-.glitch-hover {
-  position: relative;
-  color: #fffb00;
-text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff;
-  font-weight: bold;
-}
+    body { padding-top: 12vh; }
 
-.glitch-hover::before,
-.glitch-hover::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  color: inherit;
-  background: transparent;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
+    @media (min-width: 640px) {
+      body { padding-top: 18vh; }
+    }
 
-.glitch-hover:hover::before {
-  animation: glitchTop 1.5s infinite linear alternate-reverse;
-  top: -2px;
-  clip-path: inset(0 0 50% 0);
-  opacity: 1;
-}
+    /* ============ CRT OVERLAY ============ */
+    #crt-overlay {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      transition: opacity 0.4s ease;
+    }
 
-.glitch-hover:hover::after {
-  animation: glitchBottom 1.5s infinite linear alternate-reverse;
-  top: 2px;
-  clip-path: inset(50% 0 0 0);
-  opacity: 1;
-}
+    /* Scanlines */
+    #crt-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.16) 2px,
+        rgba(0,0,0,0.16) 4px
+      );
+    }
 
-.glitch-hover {
-  position: relative;
-  color: inherit;
-  font-weight: bold;
-  white-space: normal;
-  word-break: break-word;
-  text-align: center;
-}
-.glitch-hover::before,
-.glitch-hover::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  color: inherit;
-  background: transparent;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.glitch-hover:hover::before {
-  animation: glitchTop 1.5s infinite linear alternate-reverse;
-  top: -2px;
-  clip-path: inset(0 0 50% 0);
-  opacity: 1;
-}
-.glitch-hover:hover::after {
-  animation: glitchBottom 1.5s infinite linear alternate-reverse;
-  top: 2px;
-  clip-path: inset(50% 0 0 0);
-  opacity: 1;
-}
-.section-title {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: bold;
-  font-size: 2.25rem;
-  margin-bottom: 2.5rem;
-  text-align: center;
-  position: relative;
-  color: #fffb00;
-  text-shadow:
-    0 0 5px #fff,
-    0 0 10px #f0f,
-    0 0 20px #0ff,
-    -2px -2px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000;
-  animation: glitchHeader 1.2s infinite;
-}
+    /* Vignette */
+    #crt-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.7) 100%);
+    }
 
-.section-title::before,
-.section-title::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  width: 100%;
-  color: #ff00ff;
-  background: transparent;
-  overflow: hidden;
-  clip-path: inset(0 0 50% 0);
-  opacity: 0.8;
-  pointer-events: none;
-}
+    /* Noise layer */
+    .noise-layer {
+      position: absolute;
+      inset: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
 
-.section-title::before {
-  top: -2px;
-  animation: glitchHeaderBefore 1.2s infinite linear alternate-reverse;
-}
+    @keyframes noiseAnim {
+      0%   { background-position: 0 0; }
+      25%  { background-position: -5% -10%; }
+      50%  { background-position: 10% 5%; }
+      75%  { background-position: -8% 15%; }
+      100% { background-position: 0 0; }
+    }
 
-.section-title::after {
-  top: 2px;
-  animation: glitchHeaderAfter 1.2s infinite linear alternate-reverse;
-}
+    body.crt-on .noise-layer { animation: noiseAnim 0.25s steps(1) infinite; }
 
-@keyframes glitchHeader {
-  0% { transform: translate(0); }
-  20% { transform: translate(-1px, 1px); }
-  40% { transform: translate(1px, -1px); }
-  60% { transform: translate(-2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
-}
+    /* CRT flicker on whole overlay */
+    @keyframes crtFlicker {
+      0%, 91%, 95%, 100% { opacity: 1; }
+      92%  { opacity: 0.92; }
+      93%  { opacity: 1; }
+      94%  { opacity: 0.96; }
+    }
 
-@keyframes glitchHeaderBefore {
-  0% { transform: translate(-2px, -2px); }
-  50% { transform: translate(2px, 2px); }
-  100% { transform: translate(-1px, 1px); }
-}
+    body.crt-on #crt-overlay { animation: crtFlicker 5s infinite; }
+    body.crt-off #crt-overlay { opacity: 0; }
 
-@keyframes glitchHeaderAfter {
-  0% { transform: translate(2px, 2px); }
-  50% { transform: translate(-2px, -2px); }
-  100% { transform: translate(1px, -1px); }
-}
+    /* Phosphor color cast when on */
+    body.crt-on { filter: contrast(1.07) brightness(0.97) saturate(1.12); }
 
+    /* RGB shift on album hover when CRT active */
+    body.crt-on .group:hover img {
+      filter: drop-shadow(2px 0 0 rgba(255,0,0,0.35)) drop-shadow(-2px 0 0 rgba(0,255,255,0.35));
+    }
 
-@keyframes headerPulse {
-  0%   { transform: scale(1); color: #fffb00; text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #0ff; }
-  50%  { transform: scale(1.05); color: #ff00ff; text-shadow: 0 0 10px #ff00ff, 0 0 20px #0ff, 0 0 30px #fff; }
-  100% { transform: scale(1); color: #fffb00; text-shadow: 0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #0ff; }
-}
+    /* TV turn-on flash */
+    @keyframes tvOn {
+      0%   { clip-path: inset(49% 0); opacity: 0.3; filter: brightness(5); }
+      40%  { clip-path: inset(15% 0); opacity: 0.85; filter: brightness(2); }
+      70%  { clip-path: inset(3% 0);  opacity: 0.97; filter: brightness(1.2); }
+      100% { clip-path: inset(0%);    opacity: 1;    filter: none; }
+    }
 
-    
+    body.tv-on-anim { animation: tvOn 0.45s ease-out forwards; }
+
+    /* ============ CRT TOGGLE BUTTON ============ */
+    #crt-toggle {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 10000;
+      background: #111;
+      border: 2px solid #fffb00;
+      color: #fffb00;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.45rem 0.7rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,251,0,0.35), inset 0 0 6px rgba(255,251,0,0.08);
+      transition: all 0.2s ease;
+      letter-spacing: 0.05em;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    #crt-toggle:hover {
+      background: #fffb00;
+      color: #000;
+      box-shadow: 0 0 22px rgba(255,251,0,0.85);
+    }
+
+    #crt-toggle .crt-icon { display: block; font-size: 1.15rem; margin-bottom: 2px; }
+
+    @media (max-width: 640px) {
+      #crt-toggle {
+        bottom: 4.5rem;
+        right: 0.6rem;
+        font-size: 0.62rem;
+        padding: 0.35rem 0.55rem;
+      }
+    }
+
+    /* ============ SECTION TITLES ============ */
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      font-size: 2.25rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      position: relative;
+      color: #fffb00;
+      text-shadow:
+        0 0 5px #fff, 0 0 10px #f0f, 0 0 20px #0ff,
+        -2px -2px 0 #000, 2px -2px 0 #000,
+        -2px  2px 0 #000, 2px  2px 0 #000;
+      animation: glitchHeader 1.2s infinite;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      color: #ff00ff;
+      background: transparent;
+      overflow: hidden;
+      clip-path: inset(0 0 50% 0);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .section-title::before { top: -2px; animation: glitchHeaderBefore 1.2s infinite linear alternate-reverse; }
+    .section-title::after  { top: 2px;  animation: glitchHeaderAfter  1.2s infinite linear alternate-reverse; }
+
+    /* ============ GLITCH HOVER ============ */
+    .glitch-hover {
+      position: relative;
+      color: inherit;
+      font-weight: bold;
+      white-space: normal;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .glitch-hover::before,
+    .glitch-hover::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      color: inherit;
+      background: transparent;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .glitch-hover:hover::before {
+      animation: glitchTop 1.5s infinite linear alternate-reverse;
+      top: -2px;
+      clip-path: inset(0 0 50% 0);
+      opacity: 1;
+    }
+
+    .glitch-hover:hover::after {
+      animation: glitchBottom 1.5s infinite linear alternate-reverse;
+      top: 2px;
+      clip-path: inset(50% 0 0 0);
+      opacity: 1;
+    }
+
+    /* ============ CARD POP-IN ============ */
+    @keyframes cardPop {
+      0%   { opacity: 0; transform: scale(0.82) translateY(22px); }
+      65%  { transform: scale(1.05) translateY(-4px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .card-pop {
+      animation: cardPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      opacity: 0;
+    }
+
+    /* Neon pulse on hover */
+    @keyframes neonPulse {
+      0%, 100% { box-shadow: 0 0 6px currentColor, 0 0 12px currentColor; }
+      50%       { box-shadow: 0 0 18px currentColor, 0 0 36px currentColor; }
+    }
+
+    .group:hover > div { animation: neonPulse 0.7s ease infinite; }
+
+    /* ============ KEYFRAMES ============ */
+    @keyframes glitchHeader {
+      0%   { transform: translate(0); }
+      20%  { transform: translate(-1px, 1px); }
+      40%  { transform: translate(1px, -1px); }
+      60%  { transform: translate(-2px, 2px); }
+      80%  { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitchHeaderBefore {
+      0%   { transform: translate(-2px,-2px); }
+      50%  { transform: translate(2px, 2px); }
+      100% { transform: translate(-1px, 1px); }
+    }
+
+    @keyframes glitchHeaderAfter {
+      0%   { transform: translate(2px, 2px); }
+      50%  { transform: translate(-2px,-2px); }
+      100% { transform: translate(1px, -1px); }
+    }
 
     @keyframes glitchTop {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, -2px); }
-      40% { transform: translate(2px, 2px); }
-      60% { transform: translate(-1px, 1px); }
-      80% { transform: translate(1px, -1px); }
+      0%   { transform: translate(0); }
+      20%  { transform: translate(-2px,-2px); }
+      40%  { transform: translate(2px, 2px); }
+      60%  { transform: translate(-1px, 1px); }
+      80%  { transform: translate(1px, -1px); }
       100% { transform: translate(0); }
     }
 
     @keyframes glitchBottom {
-      0% { transform: translate(0); }
-      20% { transform: translate(2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(1px, -1px); }
-      80% { transform: translate(-1px, 1px); }
+      0%   { transform: translate(0); }
+      20%  { transform: translate(2px, 2px); }
+      40%  { transform: translate(-2px,-2px); }
+      60%  { transform: translate(1px, -1px); }
+      80%  { transform: translate(-1px, 1px); }
       100% { transform: translate(0); }
     }
 
     @keyframes scrollBanner {
-      0% { transform: translateX(100%); }
+      0%   { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
     }
 
-    .marquee-wrapper {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      height: 2.5rem;
+    /* ============ MARQUEE ============ */
+    .marquee-wrapper { position: relative; width: 100%; overflow: hidden; height: 2.5rem; }
+    .marquee-content { display: inline-block; white-space: nowrap; padding-left: 100%; animation: scrollBanner 20s linear infinite; }
+
+    /* ============ MOBILE ============ */
+    @media (max-width: 640px) {
+      .glitch-hover, .glitch-text, .glitch {
+        font-size: 0.875rem;
+        color: yellow;
+        text-shadow: none;
+        position: relative;
+        z-index: 10;
+        display: block;
+        padding: 0.25rem 0.5rem;
+        background-color: rgba(0,0,0,0.6);
+        border-radius: 0.25rem;
+        white-space: normal;
+        word-break: break-word;
+        text-align: center;
+      }
+
+      .glitch-hover::before, .glitch-hover::after,
+      .glitch-text::before,  .glitch-text::after,
+      .glitch::before,       .glitch::after { display: none !important; }
+
+      .bg-black\/70 { display: flex; justify-content: center; align-items: center; }
     }
 
-    .marquee-content {
-      display: inline-block;
-      white-space: nowrap;
-      padding-left: 100%;
-      animation: scrollBanner 20s linear infinite;
-    }
-
-@media (max-width: 640px) {
-  .glitch-hover,
-  .glitch-text,
-  .glitch {
-    font-size: 0.875rem;
-    color: yellow;
-    text-shadow: none;
-    position: relative;
-    z-index: 10;
-    display: block;
-    padding: 0.25rem 0.5rem;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 0.25rem;
-    white-space: normal;
-    word-break: break-word;
-    text-align: center;
-  }
-
-  .glitch-hover::before,
-  .glitch-hover::after,
-  .glitch-text::before,
-  .glitch-text::after,
-  .glitch::before,
-  .glitch::after {
-    display: none !important;
-  }
-
-  .bg-black\/70 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
+    /* ============ CUSTOM CURSOR ============ */
     body {
-  padding-top: 12vh;
-}
-
-@media (min-width: 640px) {
-  body {
-    padding-top: 18vh;
-  }
-}
-
-/* CRT */
-body.crt::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.25),
-    rgba(0,0,0,0.25) 2px,
-    transparent 2px,
-    transparent 4px
-  );
-  pointer-events:none;
-  z-index:9999;
-}
-
-/* CRT Toggle Button */
-#crtToggle{
-  position:fixed;
-  top:15px;
-  right:20px;
-  z-index:10000;
-  background:#ff00ff;
-  color:#fff;
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:14px;
-  box-shadow:0 0 10px #ff00ff;
-}
-
-
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='4' fill='%23fffb00'/%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%23ff00ff' stroke-width='1.5' opacity='0.8'/%3E%3C/svg%3E") 12 12, crosshair;
+    }
+    a, button { cursor: pointer; }
   </style>
 </head>
 
+<body class="font-tech crt-on">
 
-<body class="font-tech">
+<!-- CRT Overlay -->
+<div id="crt-overlay" aria-hidden="true">
+  <div class="noise-layer"></div>
+</div>
 
-<!-- Desktop Floating Banner (Larger) -->
+<!-- CRT Toggle Button -->
+<button id="crt-toggle" onclick="toggleCRT()" title="Toggle CRT filter">
+  <span class="crt-icon">📺</span>
+  <span id="crt-label">CRT: ON</span>
+</button>
+
+<!-- Desktop Floating Merch Banner -->
 <div class="hidden sm:block">
   <a href="https://toastybonesmerch.printful.me/" target="_blank"
      class="fixed top-1/2 left-4 transform -translate-y-1/2 z-50 w-[24rem] px-8 py-5 text-2xl font-orbitron text-yellow-300 bg-pink-600 rounded-xl shadow-2xl hover:bg-yellow-400 hover:text-black transition duration-300 text-center">
@@ -336,7 +385,7 @@ body.crt::after{
   </a>
 </div>
 
-<!-- Mobile Bottom Banner (Slightly Bigger) -->
+<!-- Mobile Bottom Merch Banner -->
 <div class="fixed bottom-0 left-0 w-full sm:hidden z-50">
   <a href="https://toastybonesmerch.printful.me/" target="_blank"
      class="block w-full px-6 py-4 text-center text-base font-orbitron text-yellow-300 bg-pink-600 shadow-inner">
@@ -344,14 +393,7 @@ body.crt::after{
   </a>
 </div>
 
-
-<!-- Hero Banner -->
-<div class="w-full bg-black text-yellow-300 text-center py-4 border-b-4 border-yellow-400 shadow-md animate-flicker">
-  <h1 class="text-2xl font-orbitron drop-shadow-md"> 🍌 🤡 Hilariously Unfortunate ⚰️ 🪦 — OUT NOW ON SPOTIFY</h1>
-</div>
-
-
-<!-- Shrinked Merch Banner -->
+<!-- Scrolling Merch Banner (top) -->
 <a href="https://toastybonesmerch.printful.me/" target="_blank" id="merchBanner"
    class="fixed top-0 left-0 w-full h-[12vh] sm:h-[18vh] z-50 overflow-hidden bg-black transition-opacity duration-500">
   <div class="w-max animate-scroll flex items-center h-full">
@@ -361,33 +403,11 @@ body.crt::after{
   </div>
 </a>
 
-<!-- Scroll Animation -->
-<style>
-  @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-33.333%); }
-  }
-  .animate-scroll {
-    animation: scroll 30s linear infinite;
-  }
-</style>
+<!-- Hero Alert Banner -->
+<div class="w-full bg-black text-yellow-300 text-center py-4 border-b-4 border-yellow-400 shadow-md animate-flicker">
+  <h1 class="text-2xl font-orbitron drop-shadow-md">🍌 🤡 Hilariously Unfortunate ⚰️ 🪦 — OUT NOW ON SPOTIFY</h1>
+</div>
 
-<!-- Scroll Hide Script -->
-<script>
-  let banner = document.getElementById('merchBanner');
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    if (currentScroll > lastScroll) {
-      banner.style.opacity = '0'; // Hide on scroll down
-    } else {
-      banner.style.opacity = '1'; // Show on scroll up
-    }
-    lastScroll = currentScroll;
-  });
-</script>
-
-  
 <!-- Hero Section -->
 <div class="mt-10 text-center bg-black/60 py-10 rounded-xl mx-4">
   <h2 class="section-title" data-text="🍌 🤡 Hilariously Unfortunate ⚰️ 🪦">🍌 🤡 Hilariously Unfortunate ⚰️ 🪦</h2>
@@ -396,12 +416,12 @@ body.crt::after{
     Listen Now on Spotify
   </a>
   <div class="mt-6">
-    <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate" class="mx-auto max-w-xs rounded-lg border-4 border-yellow-400 shadow-lg">
+    <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate"
+         class="mx-auto max-w-xs rounded-lg border-4 border-yellow-400 shadow-lg">
   </div>
 </div>
 
-
-  <!-- About Section -->
+<!-- About Section -->
 <section class="py-16 px-6 text-center">
   <h2 class="section-title" data-text="About">About</h2>
   <p class="max-w-2xl mx-auto text-lg leading-relaxed text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md">
@@ -412,296 +432,268 @@ body.crt::after{
   </blockquote>
 </section>
 
-
-  <!-- Albums Section -->
+<!-- Albums Section -->
 <section class="py-20 px-6 text-center">
-<h2 class="section-title" data-text="Albums">Albums</h2>
+  <h2 class="section-title" data-text="Albums">Albums</h2>
   <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 max-w-6xl mx-auto">
 
+    <!-- Hilariously Unfortunate -->
+    <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.05s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Hilariously Unfortunate">Hilariously Unfortunate</p>
+        </div>
+      </div>
+    </a>
 
-       <!-- Hilariously Unfortunate -->
-<a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Hilariously Unfortunate">Hilariously Unfortunate</p>
-    </div>
-  </div>
-</a>
-    
+    <!-- Big Dump 2: Return of the Dump -->
+    <a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.10s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="bd2rotd.png" alt="Big Dump 2"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Big Dump 2: Return of the Dump">Big Dump 2: Return of the Dump</p>
+        </div>
+      </div>
+    </a>
 
+    <!-- Spobbly Not -->
+    <a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.15s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="spobbly not.png" alt="Spobbly Not"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Spobbly Not">Spobbly Not</p>
+        </div>
+      </div>
+    </a>
 
-         <!-- Big Dump 2: Return of the Dump -->
-<a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="bd2rotd.png" alt="Big Dump 2"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Big Dump 2: Return of the Dump">Big Dump 2: Return of the Dump</p>
-    </div>
-  </div>
-</a>
-
-
-        <!-- Spobbly Not -->
-<a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="spobbly not.png" alt="Spobbly Not"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Spobbly Not">Spobbly Not</p>
-    </div>
-  </div>
-</a>
-
-
-    <!-- The Great Indoors-->
-<a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="TGInew.png" alt="The Great Indoors"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="The Great Indoors">The Great Indoors</p>
-    </div>
-  </div>
-</a>
-    
+    <!-- The Great Indoors -->
+    <a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.20s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="TGInew.png" alt="The Great Indoors"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="The Great Indoors">The Great Indoors</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Festive Flush -->
-<a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="ffalbum.png" alt="Festive Flush"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Festive Flush">Festive Flush</p>
-    </div>
-  </div>
-</a>
+    <a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.25s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="ffalbum.png" alt="Festive Flush"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Festive Flush">Festive Flush</p>
+        </div>
+      </div>
+    </a>
 
-    
+    <!-- Midnight Suppository -->
+    <a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.30s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="ms.png" alt="Midnight Suppository"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Midnight Suppository">Midnight Suppository</p>
+        </div>
+      </div>
+    </a>
 
-<!-- Midnight Suppository -->
-<a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="ms.png" alt="Midnight Suppository"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Midnight Suppository">Midnight Suppository</p>
-    </div>
-  </div>
-</a>
+    <!-- Black and Blue and Punk All Over -->
+    <a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.35s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="babapao.png" alt="Black and Blue and Punk All Over"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Black and Blue and Punk All Over">Black and Blue and Punk All Over</p>
+        </div>
+      </div>
+    </a>
 
-    
-    
-<!-- Black and Blue and Punk All Over -->
-<a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="babapao.png" alt="Black and Blue and Punk All Over"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Black and Blue and Punk All Over">Black and Blue and Punk All Over</p>
-    </div>
-  </div>
-</a>
-
-    
     <!-- Boney Hollow -->
-<a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="bh.png" alt="Boney Hollow"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Boney Hollow">Boney Hollow</p>
-    </div>
-  </div>
-</a>
-
-
+    <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.40s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="bh.png" alt="Boney Hollow"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Boney Hollow">Boney Hollow</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Sharing Socks with Strangers -->
-<a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="ssws.png" alt="Sharing Socks with Strangers"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Sharing Socks with Strangers">Sharing Socks with Strangers</p>
-    </div>
-  </div>
-</a>
+    <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.45s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="ssws.png" alt="Sharing Socks with Strangers"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Sharing Socks with Strangers">Sharing Socks with Strangers</p>
+        </div>
+      </div>
+    </a>
 
-
-    <!-- Man's Breath -->
-<a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="MANSBREATH.png" alt="Man's Breath"
-           class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Man's Breath">Man's Breath</p>
-    </div>
-  </div>
-</a>
-
+    <!-- Man's Breath (FIXED Spotify link) -->
+    <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ?si=l-5ju3bIQwW4eAxgYCAqJg" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.50s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="MANSBREATH.png" alt="Man's Breath"
+               class="w-full h-full object-contain sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Man's Breath">Man's Breath</p>
+        </div>
+      </div>
+    </a>
 
     <!-- The Legend of Duke -->
-<a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-2">
-      <img src="LOD.png" alt="The Legend of Duke" class="h-full w-full object-cover" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-text font-tech drop-shadow-md" data-text="The Legend of Duke">The Legend of Duke</p>
-    </div>
-  </div>
-</a>
-
+    <a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.55s">
+      <div class="relative aspect-square bg-black rounded-xl border-4 border-pink-500 shadow-xl group-hover:border-yellow-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-2">
+          <img src="LOD.png" alt="The Legend of Duke" class="h-full w-full object-cover" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-text font-tech drop-shadow-md" data-text="The Legend of Duke">The Legend of Duke</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Mystery Clown -->
-<a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-    <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="mysteryclown.png" alt="Mystery Clown"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Mystery Clown">Mystery Clown</p>
-    </div>
-  </div>
-</a>
-
-
+    <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.60s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="mysteryclown.png" alt="Mystery Clown"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Mystery Clown">Mystery Clown</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Big Dump -->
-<a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
-   class="group transform transition hover:scale-105 hover:-rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="BIGDUMP.png" alt="Big Dump"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Big Dump">Big Dump</p>
-    </div>
-  </div>
-</a>
-
-
+    <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
+       class="group transform transition hover:scale-105 hover:-rotate-1 card-pop" style="animation-delay:0.65s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="BIGDUMP.png" alt="Big Dump"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Big Dump">Big Dump</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Fully Panted -->
-<a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="pant.png" alt="Fully Panted"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Fully Panted">Fully Panted</p>
-    </div>
-  </div>
-</a>
-
-
+    <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-2 card-pop" style="animation-delay:0.70s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="pant.png" alt="Fully Panted"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Fully Panted">Fully Panted</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Ear-aid -->
-<a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
-   class="group transform transition hover:scale-105 hover:-rotate-2">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="ear-aid.png" alt="Ear-aid"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Ear-aid">Ear-aid</p>
-    </div>
-  </div>
-</a>
-
+    <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
+       class="group transform transition hover:scale-105 hover:-rotate-2 card-pop" style="animation-delay:0.75s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-red-400 shadow-xl group-hover:border-green-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="ear-aid.png" alt="Ear-aid"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Ear-aid">Ear-aid</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Lovey Dovey -->
-<a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-1">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="loveydovey.png" alt="Lovey Dovey"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Lovey Dovey">Lovey Dovey</p>
-    </div>
-  </div>
-</a>
-
-
+    <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-1 card-pop" style="animation-delay:0.80s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="loveydovey.png" alt="Lovey Dovey"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Lovey Dovey">Lovey Dovey</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Isle of Beans -->
-<a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
-   class="group transform transition hover:scale-105 hover:rotate-3">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="IsleBeans.png" alt="Isle of Beans"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Isle of Beans">Isle of Beans</p>
-    </div>
-  </div>
-</a>
-
+    <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
+       class="group transform transition hover:scale-105 hover:rotate-3 card-pop" style="animation-delay:0.85s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-purple-400 shadow-xl group-hover:border-blue-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="IsleBeans.png" alt="Isle of Beans"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Isle of Beans">Isle of Beans</p>
+        </div>
+      </div>
+    </a>
 
     <!-- Unscheduled Programming -->
-<a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
-   class="group transform transition hover:scale-105 hover:-rotate-3">
-  <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
-    <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
-      <img src="prog.png" alt="Unscheduled Programming"
-           class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
-    </div>
-    <div class="bg-black/70 py-2">
-      <p class="glitch-hover font-tech drop-shadow-md" data-text="Unscheduled Programming">Unscheduled Programming</p>
-    </div>
-  </div>
-</a>
+    <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
+       class="group transform transition hover:scale-105 hover:-rotate-3 card-pop" style="animation-delay:0.90s">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-blue-400 shadow-xl group-hover:border-purple-400 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="prog.png" alt="Unscheduled Programming"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Unscheduled Programming">Unscheduled Programming</p>
+        </div>
+      </div>
+    </a>
 
-      </div> <!-- end of grid -->
+  </div><!-- end grid -->
 </section>
 
-
-  <!-- Playlist Section -->
+<!-- Playlist Section -->
 <section class="py-20 px-6 text-center">
-<h2 class="section-title" data-text="🎥 Full ToastyBones Playlist">🎥 Full ToastyBones Playlist</h2>
+  <h2 class="section-title" data-text="🎥 Full ToastyBones Playlist">🎥 Full ToastyBones Playlist</h2>
   <p class="text-lg italic mb-6 text-white bg-black/40 px-4 py-3 rounded-md drop-shadow-md inline-block">
     Every track I've ever released AND MORE! New songs added weekly! 🎶
   </p>
@@ -715,107 +707,113 @@ body.crt::after{
   </div>
 </section>
 
-
-  <!-- Listen Now Section -->
+<!-- Listen Now Section -->
 <section id="listen" class="py-16 px-6 text-center">
- <h2 class="section-title" data-text="Listen Now">Listen Now</h2>
+  <h2 class="section-title" data-text="Listen Now">Listen Now</h2>
   <div class="flex flex-wrap justify-center gap-10">
-    <!-- Spotify -->
+
     <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" aria-label="ToastyBones on Spotify"
        class="transform transition hover:scale-110 hover:rotate-3 hover:text-yellow-300">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" 
+      <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
            alt="Spotify" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,255,128,0.7)]">
       <p class="mt-2 text-green-400 font-bold drop-shadow-md">Spotify</p>
     </a>
 
-    <!-- Deezer -->
     <a href="https://www.deezer.com/us/artist/341627971#" target="_blank" aria-label="ToastyBones on Deezer"
        class="transform transition hover:scale-110 hover:rotate-2 hover:text-purple-300">
       <img src="deezer.png" alt="Deezer" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(128,0,255,0.7)]">
       <p class="mt-2 text-purple-400 font-bold drop-shadow-md">Deezer</p>
     </a>
 
-    <!-- YouTube Music -->
     <a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank" aria-label="ToastyBones on YouTube Music"
        class="transform transition hover:scale-110 hover:-rotate-3 hover:text-pink-300">
       <img src="Youtube_Music_icon.svg" alt="YouTube Music" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(255,0,0,0.7)]">
       <p class="mt-2 text-red-400 font-bold drop-shadow-md">YT Music</p>
     </a>
 
-    <!-- Suno -->
     <a href="https://suno.com/@toastybones" target="_blank" aria-label="ToastyBones on Suno"
        class="transform transition hover:scale-110 hover:rotate-1 hover:text-blue-300">
       <img src="https://suno.com/favicon.ico" alt="Suno" class="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,128,255,0.7)]">
       <p class="mt-2 text-blue-400 font-bold drop-shadow-md">Suno</p>
     </a>
+
   </div>
 </section>
 
-
+<!-- Disclaimer -->
 <div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10">
-  ⚠️ ToastyBones commissions blend human creativity with AI-generated production. 
-  All lyrics are written by hand — mythic, absurd, and emotionally exacting. 
-  Some riffs and beats are crafted manually, while others are summoned through AI tools. 
-  Visuals, mixing, and auxiliary elements may be generated entirely by artificial intelligence under creative direction. 
+  ⚠️ ToastyBones commissions blend human creativity with AI-generated production.
+  All lyrics are written by hand — mythic, absurd, and emotionally exacting.
+  Some riffs and beats are crafted manually, while others are summoned through AI tools.
+  Visuals, mixing, and auxiliary elements may be generated entirely by artificial intelligence under creative direction.
   Every track is a hybrid spell: part bone, part machine.⚠️
 </div>
 
-
-  <!-- Footer -->
+<!-- Footer -->
 <footer class="py-6 text-center text-gray-300 text-sm">
   <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
   <p class="drop-shadow-md font-tech">© <span id="year"></span> ToastyBones. All rights reserved.</p>
 </footer>
 
 <script>
+  // Footer year
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Scroll-hide merch banner
+  const banner = document.getElementById('merchBanner');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const cur = window.pageYOffset;
+    banner.style.opacity = cur > lastScroll ? '0' : '1';
+    lastScroll = cur;
+  });
+
+  // CRT Toggle — restore preference
+  const crtLabel = document.getElementById('crt-label');
+  let crtOn = true;
+
+  try {
+    if (localStorage.getItem('crt') === 'off') {
+      crtOn = false;
+      document.body.classList.remove('crt-on');
+      document.body.classList.add('crt-off');
+      crtLabel.textContent = 'CRT: OFF';
+    }
+  } catch(e) {}
+
+  function toggleCRT() {
+    crtOn = !crtOn;
+    if (crtOn) {
+      document.body.classList.remove('crt-off');
+      document.body.classList.add('crt-on');
+      crtLabel.textContent = 'CRT: ON';
+      // TV turn-on flash
+      document.body.classList.add('tv-on-anim');
+      setTimeout(() => document.body.classList.remove('tv-on-anim'), 500);
+    } else {
+      document.body.classList.remove('crt-on');
+      document.body.classList.add('crt-off');
+      crtLabel.textContent = 'CRT: OFF';
+    }
+    try { localStorage.setItem('crt', crtOn ? 'on' : 'off'); } catch(e) {}
+  }
+
+  // Staggered card pop-in on scroll
+  const cards = document.querySelectorAll('.card-pop');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  cards.forEach(card => {
+    card.style.animationPlayState = 'paused';
+    observer.observe(card);
+  });
 </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
