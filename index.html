@@ -6,10 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToastyBones</title>
 
-<!-- SEO -->
-<meta name="description" content="ToastyBones - Part bone. Part machine. All emotionally unstable.">
+<meta name="description" content="ToastyBones - AI-powered pop punk chaos. Listen now.">
 <meta property="og:title" content="ToastyBones">
-<meta property="og:description" content="AI-powered pop punk chaos. Listen now.">
+<meta property="og:description" content="🔥 NEW RELEASES + I'm Just Stupid 🔥">
 <meta property="og:image" content="HilariouslyUnfortunate.png">
 <meta property="og:type" content="website">
 
@@ -31,62 +30,8 @@ html, body {
   scroll-behavior: smooth;
 }
 
-.section-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2.2rem;
-  text-align: center;
-  color: #fffb00;
-  margin-bottom: 2rem;
-  text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff;
-}
-
-.hero-box {
-  background: rgba(0,0,0,0.65);
-  border-radius: 1rem;
-  padding: 3rem 1rem;
-}
-
-.main-button {
-  background: #fffb00;
-  color: #000;
-  padding: 1rem 2rem;
-  font-family: 'Orbitron', sans-serif;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-}
-.main-button:hover {
-  background: #ff00ff;
-  color: #fff;
-}
-
-.album-card {
-  background: rgba(0,0,0,0.6);
-  border-radius: 1rem;
-  overflow: hidden;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-.album-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-}
-
-.album-title {
-  padding: 1rem 0.5rem;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
-}
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.crt::after {
+/* CRT DEFAULT ON */
+body.crt::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -100,47 +45,94 @@ html, body {
   pointer-events: none;
   z-index: 9999;
 }
+
+/* Titles */
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.2rem;
+  text-align: center;
+  color: #fffb00;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 6px #ff00ff, 0 0 12px #00ffff;
+}
+
+/* Buttons */
+.main-button {
+  background: #fffb00;
+  color: #000;
+  padding: 1rem 2rem;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+.main-button:hover {
+  background: #ff00ff;
+  color: #fff;
+}
+
+/* Album Cards (ANIMATED AGAIN) */
+.album-card {
+  background: rgba(0,0,0,0.6);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.album-card:hover {
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+}
+
+.album-title {
+  padding: 1rem 0.5rem;
+  text-align: center;
+}
+
+/* Scroll Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 </head>
 
-<body>
+<body class="crt">
 
 <!-- NAV -->
 <nav class="fixed top-0 w-full bg-black/80 backdrop-blur z-50 text-center py-3">
   <a href="#albums" class="mx-4 hover:text-yellow-300">Albums</a>
   <a href="#playlist" class="mx-4 hover:text-yellow-300">Playlist</a>
   <a href="#listen" class="mx-4 hover:text-yellow-300">Listen</a>
-  <a href="https://toastybonesmerch.printful.me/" target="_blank" class="mx-4 hover:text-pink-400">Merch</a>
+  <a href="#merch" class="mx-4 hover:text-pink-400">Merch</a>
 </nav>
 
 <div class="h-16"></div>
 
-<!-- CRT TOGGLE -->
-<div class="fixed top-20 right-4 z-50">
-  <button id="crtToggle" class="bg-black text-yellow-300 px-4 py-2 rounded-lg border border-yellow-400 text-sm">
-    CRT MODE
-  </button>
-</div>
-
 <!-- HERO -->
 <section class="py-24 px-6 text-center">
-  <div class="hero-box max-w-4xl mx-auto reveal">
-    <h1 class="section-title">🍌 🤡 Hilariously Unfortunate ⚰️ 🪦</h1>
-    <p class="mt-4 text-lg">Part bone. Part machine. All emotionally unstable.</p>
-    <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank" class="main-button inline-block mt-6">
-      Listen on Spotify
-    </a>
-    <div class="mt-8">
-      <img src="HilariouslyUnfortunate.png" class="mx-auto max-w-sm rounded-xl shadow-2xl">
-    </div>
-  </div>
+  <h1 class="section-title">I'm Just Stupid</h1>
+  <p class="text-lg mb-6">The song that started everything.</p>
+  <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank" class="main-button">
+    Listen on Spotify
+  </a>
+</section>
+
+<!-- MERCH (IMPORTANT) -->
+<section id="merch" class="py-20 px-6 text-center">
+<h2 class="section-title reveal">Official Merch</h2>
+<a href="https://toastybonesmerch.printful.me/" target="_blank" class="main-button reveal">
+  🛒 Shop the Merch
+</a>
 </section>
 
 <!-- ALBUMS -->
 <section id="albums" class="py-20 px-6 text-center">
 <h2 class="section-title reveal">Albums</h2>
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-
 
 <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank" class="album-card reveal">
 <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate">
@@ -245,16 +237,32 @@ allowfullscreen></iframe>
 </div>
 </section>
 
-<!-- LISTEN -->
+<!-- STREAMING ICONS RESTORED -->
 <section id="listen" class="py-20 px-6 text-center">
 <h2 class="section-title reveal">Listen Everywhere</h2>
 <div class="flex flex-wrap justify-center gap-10">
-<a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank">Spotify</a>
-<a href="https://www.deezer.com/us/artist/341627971#" target="_blank">Deezer</a>
-<a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank">YouTube</a>
-<a href="https://suno.com/@toastybones" target="_blank">Suno</a>
+<a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank">
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" class="w-16 mx-auto">
+</a>
+<a href="https://www.deezer.com/us/artist/341627971#" target="_blank">
+<img src="deezer.png" class="w-16 mx-auto">
+</a>
+<a href="https://www.youtube.com/@ToastyBonesMusic" target="_blank">
+<img src="Youtube_Music_icon.svg" class="w-16 mx-auto">
+</a>
+<a href="https://suno.com/@toastybones" target="_blank">
+<img src="https://suno.com/favicon.ico" class="w-16 mx-auto">
+</a>
 </div>
 </section>
+
+<!-- DISCLAIMER RESTORED -->
+<div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10 text-center">
+⚠️ ToastyBones commissions blend human creativity with AI-generated production.
+All lyrics are written by hand. Some riffs and beats are crafted manually,
+while others are summoned through AI tools.
+Every track is a hybrid spell: part bone, part machine. ⚠️
+</div>
 
 <footer class="py-10 text-center text-gray-400">
 © <span id="year"></span> ToastyBones
@@ -276,7 +284,7 @@ function revealOnScroll() {
 window.addEventListener('scroll', revealOnScroll);
 revealOnScroll();
 
-document.getElementById("crtToggle").addEventListener("click", function() {
+document.getElementById("crtToggle")?.addEventListener("click", function() {
   document.body.classList.toggle("crt");
 });
 </script>
