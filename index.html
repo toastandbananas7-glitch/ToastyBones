@@ -137,9 +137,15 @@
     body.crt-on #crt-overlay { animation: crtFlicker 5s infinite; }
     body.crt-off #crt-overlay { opacity: 0; }
 
-    /* Phosphor color cast — applied to page wrapper, NOT body,
-       so the fixed #crt-overlay stays unaffected and covers the full viewport */
-    body.crt-on #page-wrapper { filter: contrast(1.07) brightness(0.97) saturate(1.12); }
+    /* Phosphor color tint — baked into the overlay itself as a subtle layer,
+       no filter: on any element so fixed children are never affected */
+    .phosphor-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 20, 0, 0.06);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
 
     /* RGB shift on album hover when CRT active */
     body.crt-on .group:hover img {
@@ -148,10 +154,10 @@
 
     /* TV turn-on flash */
     @keyframes tvOn {
-      0%   { clip-path: inset(49% 0); opacity: 0.3; filter: brightness(5); }
-      40%  { clip-path: inset(15% 0); opacity: 0.85; filter: brightness(2); }
-      70%  { clip-path: inset(3% 0);  opacity: 0.97; filter: brightness(1.2); }
-      100% { clip-path: inset(0%);    opacity: 1;    filter: none; }
+      0%   { clip-path: inset(49% 0); opacity: 0.3; }
+      40%  { clip-path: inset(15% 0); opacity: 0.85; }
+      70%  { clip-path: inset(3% 0);  opacity: 0.97; }
+      100% { clip-path: inset(0%);    opacity: 1; }
     }
 
     body.tv-on-anim { animation: tvOn 0.45s ease-out forwards; }
@@ -371,6 +377,7 @@
 <!-- CRT Overlay -->
 <div id="crt-overlay" aria-hidden="true">
   <div class="noise-layer"></div>
+  <div class="phosphor-tint"></div>
 </div>
 
 <!-- CRT Toggle Button -->
@@ -378,10 +385,6 @@
   <span class="crt-icon">📺</span>
   <span id="crt-label">CRT: ON</span>
 </button>
-
-<!-- Page wrapper — CRT phosphor filter applies here, NOT on body,
-     so the fixed #crt-overlay remains unclipped and covers the full viewport -->
-<div id="page-wrapper">
 
 <!-- Desktop Floating Merch Banner -->
 <div class="hidden sm:block">
@@ -762,8 +765,6 @@
   <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
   <p class="drop-shadow-md font-tech">© <span id="year"></span> ToastyBones. All rights reserved.</p>
 </footer>
-
-</div><!-- end #page-wrapper -->
 
 <script>
   // Footer year
