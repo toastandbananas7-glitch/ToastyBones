@@ -135,7 +135,7 @@
     }
 
     body.crt-on #crt-overlay { animation: crtFlicker 5s infinite; }
-    body.crt-off #crt-overlay { opacity: 0; }
+    body.crt-off #crt-overlay { opacity: 0 !important; animation: none !important; }
 
     /* Phosphor color tint — baked into the overlay itself as a subtle layer,
        no filter: on any element so fixed children are never affected */
@@ -161,6 +161,17 @@
     }
 
     body.tv-on-anim { animation: tvOn 0.45s ease-out forwards; }
+
+    /* TV shut-off collapse */
+    @keyframes tvOff {
+      0%   { clip-path: inset(0%);      opacity: 1; }
+      35%  { clip-path: inset(45% 0);   opacity: 0.9; brightness: 2; }
+      60%  { clip-path: inset(49.5% 0); opacity: 1; filter: brightness(3); }
+      75%  { clip-path: inset(49.9% 0); opacity: 0.6; }
+      100% { clip-path: inset(50% 0);   opacity: 0; }
+    }
+
+    body.tv-off-anim { animation: tvOff 0.4s ease-in forwards; }
 
     /* ============ CRT TOGGLE BUTTON ============ */
     #crt-toggle {
@@ -685,16 +696,16 @@
 <!-- Konami Secret Message -->
 <div id="secret-msg" role="dialog" aria-modal="true" aria-label="Secret message">
   <div class="secret-text">☠️ YOU FOUND THE SECRET ☠️</div>
-  <div class="secret-text" style="font-size:clamp(0.8rem,3vw,1.4rem); margin-top:-0.5rem;">WARNING</div>
-  <div class="secret-sub">Do Not Read This!</div>
-  <div class="secret-sub" style="font-size:0.7rem; opacity:0.5;">Failure to comply will result in compliance failure</div>
+  <div class="secret-text" style="font-size:clamp(0.8rem,3vw,1.4rem); margin-top:-0.5rem;">TOASTYBONES SEES YOU</div>
+  <div class="secret-sub">The bones are always toasty. Always.</div>
+  <div class="secret-sub" style="font-size:0.7rem; opacity:0.5;">↑↑↓↓←→←→BA — you know what you did</div>
   <button class="close-secret" onclick="closeSecret()">[ DISMISS ]</button>
 </div>
 
 <!-- CRT Toggle Button -->
 <button id="crt-toggle" onclick="toggleCRT()" title="Toggle CRT filter">
   <span class="crt-icon">📺</span>
-  <span id="crt-label">CRT: ON</span>
+  <span id="crt-label">CRT: OFF</span>
 </button>
 
 <!-- Desktop Floating Merch Banner -->
@@ -1137,6 +1148,16 @@
   </div>
 </section>
 
+<!-- Email Signup -->
+<div id="email-signup">
+  <h3>📡 TUNE IN TO NEW RELEASES</h3>
+  <p>Drop your frequency. Get notified when new bones drop.</p>
+  <div class="tuner-wrap">
+    <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email">
+    <button onclick="handleSignup()">TUNE IN</button>
+  </div>
+  <p id="signup-confirm">✅ SIGNAL RECEIVED. SEE YOU ON THE OTHER SIDE.</p>
+</div>
 
 <!-- Disclaimer -->
 <div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10">
@@ -1175,22 +1196,31 @@
       crtOn = false;
       document.body.classList.remove('crt-on');
       document.body.classList.add('crt-off');
-      crtLabel.textContent = 'CRT: OFF';
+      crtLabel.textContent = 'CRT: ON';
     }
   } catch(e) {}
 
   function toggleCRT() {
     crtOn = !crtOn;
     if (crtOn) {
+      // Remove off state, play turn-on flash
       document.body.classList.remove('crt-off');
       document.body.classList.add('crt-on');
-      crtLabel.textContent = 'CRT: ON';
+      crtLabel.textContent = 'CRT: OFF';
       document.body.classList.add('tv-on-anim');
       setTimeout(() => document.body.classList.remove('tv-on-anim'), 500);
     } else {
-      document.body.classList.remove('crt-on');
-      document.body.classList.add('crt-off');
-      crtLabel.textContent = 'CRT: OFF';
+      // Play shut-off collapse on the overlay first, then hide
+      crtLabel.textContent = 'CRT: ON';
+      const overlay = document.getElementById('crt-overlay');
+      overlay.style.animation = 'none';
+      void overlay.offsetWidth; // force reflow
+      overlay.style.animation = 'tvOff 0.4s ease-in forwards';
+      setTimeout(() => {
+        overlay.style.animation = '';
+        document.body.classList.remove('crt-on');
+        document.body.classList.add('crt-off');
+      }, 400);
     }
     try { localStorage.setItem('crt', crtOn ? 'on' : 'off'); } catch(e) {}
   }
@@ -1355,8 +1385,39 @@
     if (e.target === secretMsg) closeSecret();
   });
 
+  // ============ EMAIL SIGNUP ============
+  function handleSignup() {
+    const input = document.getElementById('email-input');
+    const confirm = document.getElementById('signup-confirm');
+    const val = input.value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(val)) {
+      input.style.borderBottom = '2px solid #ff0000';
+      input.style.color = '#ff4444';
+      input.placeholder = 'INVALID FREQUENCY. TRY AGAIN.';
+      input.value = '';
+      setTimeout(() => {
+        input.style.borderBottom = '';
+        input.style.color = '#fffb00';
+        input.placeholder = 'your@email.com';
+      }, 2000);
+      return;
+    }
+    confirm.style.display = 'block';
+    input.style.display = 'none';
+    input.closest('.tuner-wrap').style.display = 'none';
+    // Glitch burst celebration
+    glitchBurst.classList.remove('active');
+    void glitchBurst.offsetWidth;
+    glitchBurst.classList.add('active');
+    setTimeout(() => glitchBurst.classList.remove('active'), 650);
+  }
+
+  // Allow Enter key in email input
+  document.getElementById('email-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSignup();
+  });
+</script>
 
 </body>
 </html>
-
-
