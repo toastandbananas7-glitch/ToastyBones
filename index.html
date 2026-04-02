@@ -1441,39 +1441,5 @@
     if (e.target === secretMsg) closeSecret();
   });
 
-  // ============ EMAIL SIGNUP ============
-  function handleSignup() {
-    const input = document.getElementById('email-input');
-    const confirm = document.getElementById('signup-confirm');
-    const val = input.value.trim();
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRe.test(val)) {
-      input.style.borderBottom = '2px solid #ff0000';
-      input.style.color = '#ff4444';
-      input.placeholder = 'INVALID FREQUENCY. TRY AGAIN.';
-      input.value = '';
-      setTimeout(() => {
-        input.style.borderBottom = '';
-        input.style.color = '#fffb00';
-        input.placeholder = 'your@email.com';
-      }, 2000);
-      return;
-    }
-    confirm.style.display = 'block';
-    input.style.display = 'none';
-    input.closest('.tuner-wrap').style.display = 'none';
-    // Glitch burst celebration
-    glitchBurst.classList.remove('active');
-    void glitchBurst.offsetWidth;
-    glitchBurst.classList.add('active');
-    setTimeout(() => glitchBurst.classList.remove('active'), 650);
-  }
-
-  // Allow Enter key in email input
-  document.getElementById('email-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleSignup();
-  });
-</script>
-
 </body>
 </html>
