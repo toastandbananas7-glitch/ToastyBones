@@ -14,12 +14,12 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://toastybones.com">
   <meta property="og:title" content="ToastyBones">
-  <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Hilariously Unfortunate and more.">
-  <meta property="og:image" content="HilariouslyUnfortunate.png">
+  <meta property="og:description" content="🔥 NEW RELEASE 🔥 Listen to Efforts and Errors and more.">
+  <meta property="og:image" content="EE.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="ToastyBones">
-  <meta name="twitter:description" content="🔥 NEW RELEASE 🔥 Listen to Hilariously Unfortunate and more.">
-  <meta name="twitter:image" content="HilariouslyUnfortunate.png">
+  <meta name="twitter:description" content="🔥 NEW RELEASE 🔥 Listen to Efforts and Errors and more.">
+  <meta name="twitter:image" content="EE.png">
   <link rel="preload" href="tvbg.png" as="image" type="image/png">
 
   <!-- Google Fonts -->
@@ -111,7 +111,7 @@
     .noise-layer {
       position: absolute;
       inset: 0;
-      opacity: 0.035
+      opacity: 0.035;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       pointer-events: none;
     }
@@ -137,8 +137,7 @@
     body.crt-on #crt-overlay { animation: crtFlicker 5s infinite; }
     body.crt-off #crt-overlay { opacity: 0 !important; animation: none !important; }
 
-    /* Phosphor color tint — baked into the overlay itself as a subtle layer,
-       no filter: on any element so fixed children are never affected */
+    /* Phosphor color tint */
     .phosphor-tint {
       position: absolute;
       inset: 0;
@@ -165,8 +164,8 @@
     /* TV shut-off collapse */
     @keyframes tvOff {
       0%   { clip-path: inset(0%);      opacity: 1; }
-      35%  { clip-path: inset(45% 0);   opacity: 0.9; brightness: 2; }
-      60%  { clip-path: inset(49.5% 0); opacity: 1; filter: brightness(3); }
+      35%  { clip-path: inset(45% 0);   opacity: 0.9; }
+      60%  { clip-path: inset(49.5% 0); opacity: 1; }
       75%  { clip-path: inset(49.9% 0); opacity: 0.6; }
       100% { clip-path: inset(50% 0);   opacity: 0; }
     }
@@ -481,7 +480,7 @@
       96%  { box-shadow: 0 0 30px 8px rgba(255,0,200,0.5); }
     }
 
-    .hidden.sm\\:block a {
+    .hidden.sm\:block a {
       animation: merchPulse 6s ease-in-out infinite;
     }
 
@@ -533,10 +532,7 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Make album card wrappers relative for preview positioning */
-    .album-card-wrap {
-      position: relative;
-    }
+    .album-card-wrap { position: relative; }
 
     /* ============ EMAIL SIGNUP ============ */
     #email-signup {
@@ -631,10 +627,7 @@
       padding: 2rem;
     }
 
-    #secret-msg.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    #secret-msg.visible { opacity: 1; pointer-events: auto; }
 
     #secret-msg .secret-text {
       font-family: 'Orbitron', sans-serif;
@@ -737,18 +730,18 @@
 
 <!-- Hero Alert Banner -->
 <div class="w-full bg-black text-yellow-300 text-center py-4 border-b-4 border-yellow-400 shadow-md animate-flicker">
-  <h1 class="text-2xl font-orbitron drop-shadow-md">🍌 🤡 Hilariously Unfortunate ⚰️ 🪦 — OUT NOW ON SPOTIFY</h1>
+  <h1 class="text-2xl font-orbitron drop-shadow-md">🔥 Efforts and Errors 🔥 — OUT NOW ON SPOTIFY</h1>
 </div>
 
 <!-- Hero Section -->
 <div class="mt-10 text-center bg-black/60 py-10 rounded-xl mx-4">
-  <h2 class="section-title" data-text="🍌 🤡 Hilariously Unfortunate ⚰️ 🪦">🍌 🤡 Hilariously Unfortunate ⚰️ 🪦</h2>
-  <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
+  <h2 class="section-title" data-text="📝 🌹 Efforts and Errors ❌ 🥀 ">📝 🌹 Efforts and Errors ❌ 🥀 </h2>
+  <a href="https://open.spotify.com/album/4dPHaGGa4FBzgzqlmbueNE" target="_blank"
      class="inline-block px-8 py-4 bg-yellow-400 text-black font-orbitron text-xl rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
     Listen Now on Spotify
   </a>
   <div class="mt-6">
-    <img src="HilariouslyUnfortunate.png" alt="Hilariously Unfortunate"
+    <img src="EE.png" alt="Efforts and Errors"
          class="mx-auto max-w-xs rounded-lg border-4 border-yellow-400 shadow-lg">
   </div>
 </div>
@@ -759,47 +752,19 @@
     <h2 class="section-title" data-text="What is ToastyBones?">What is ToastyBones?</h2>
 
     <div class="relative bg-black/70 border-2 border-yellow-400 rounded-xl p-6 sm:p-10 shadow-2xl" style="box-shadow: 0 0 30px rgba(255,251,0,0.1), inset 0 0 40px rgba(0,0,0,0.6);">
-
-      <!-- Decorative corner brackets -->
       <span class="absolute top-3 left-3 text-yellow-400/40 font-orbitron text-xs tracking-widest">[ REC ]</span>
       <span class="absolute top-3 right-3 text-yellow-400/40 font-orbitron text-xs tracking-widest" id="bio-timer">00:00</span>
 
       <div id="bio-content" class="space-y-5 text-white/90 font-tech text-sm sm:text-base leading-relaxed">
-        <p>
-          ToastyBones is the solo music project of a self-described overthinker who never thought he could write —
-          until the words started coming and wouldn't stop.
-        </p>
-        <p>
-          Built from a combination of AI-assisted production, original riffs, and entirely self-written lyrics,
-          ToastyBones has quietly grown into something more than just a novelty act. With over 20 albums spanning
-          pop punk, glam rock, Halloween orchestral chaos, and everything in between, the project is equal parts
-          absurd and deeply personal — sometimes within the same song.
-        </p>
-        <p>
-          The music draws from real life. Everyday frustrations, scattered thoughts, fading friendships, the passage
-          of time, and the particular experience of a brain that generates a hundred ideas and loses half of them
-          before noon. Mixed in between are songs about family, love, inside jokes, and at least one wizard made
-          entirely of beans.
-        </p>
-        <p class="text-yellow-300/90" style="text-shadow: 0 0 8px rgba(255,251,0,0.4);">
-          What makes ToastyBones work is the honesty underneath the humor. The catchiest songs tend to carry the
-          heaviest admissions — wrapped in singalong choruses and energetic guitar so they go down easy. Listeners
-          often describe feeling unexpectedly seen by songs that, on the surface, appear to be about zombies or soup.
-        </p>
-        <p>
-          ToastyBones doesn't make music for money, for clout, or for anyone in particular. It exists because the
-          songs needed to exist — as a record of what it actually feels like to be a person navigating a full,
-          complicated, funny, and occasionally overwhelming life.
-        </p>
-        <p class="text-pink-300/90 italic" style="text-shadow: 0 0 8px rgba(255,100,200,0.3);">
-          The whole family sings along. Even the ones who are too young to understand the words yet.
-        </p>
-        <p class="text-white/50 text-xs sm:text-sm pt-2 border-t border-white/10">
-          New music comes when it comes. There's always more to say.
-        </p>
+        <p>ToastyBones is the solo music project of a self-described overthinker who never thought he could write — until the words started coming and wouldn't stop.</p>
+        <p>Built from a combination of AI-assisted production, original riffs, and entirely self-written lyrics, ToastyBones has quietly grown into something more than just a novelty act. With over 20 albums spanning pop punk, glam rock, Halloween orchestral chaos, and everything in between, the project is equal parts absurd and deeply personal — sometimes within the same song.</p>
+        <p>The music draws from real life. Everyday frustrations, scattered thoughts, fading friendships, the passage of time, and the particular experience of a brain that generates a hundred ideas and loses half of them before noon. Mixed in between are songs about family, love, inside jokes, and at least one wizard made entirely of beans.</p>
+        <p class="text-yellow-300/90" style="text-shadow: 0 0 8px rgba(255,251,0,0.4);">What makes ToastyBones work is the honesty underneath the humor. The catchiest songs tend to carry the heaviest admissions — wrapped in singalong choruses and energetic guitar so they go down easy. Listeners often describe feeling unexpectedly seen by songs that, on the surface, appear to be about zombies or soup.</p>
+        <p>ToastyBones doesn't make music for money, for clout, or for anyone in particular. It exists because the songs needed to exist — as a record of what it actually feels like to be a person navigating a full, complicated, funny, and occasionally overwhelming life.</p>
+        <p class="text-pink-300/90 italic" style="text-shadow: 0 0 8px rgba(255,100,200,0.3);">The whole family sings along. Even the ones who are too young to understand the words yet.</p>
+        <p class="text-white/50 text-xs sm:text-sm pt-2 border-t border-white/10">New music comes when it comes. There's always more to say.</p>
       </div>
 
-      <!-- Decorative bottom bar -->
       <div class="mt-8 flex items-center gap-3">
         <div class="h-px flex-1 bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent"></div>
         <span class="text-yellow-400/60 font-orbitron text-xs tracking-widest">🍞☠️ I'M JUST STUPID!</span>
@@ -814,9 +779,29 @@
   <h2 class="section-title" data-text="Albums">Albums</h2>
   <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 max-w-6xl mx-auto">
 
-    <!-- Hilariously Unfortunate -->
+    <!-- Efforts and Errors (NEW) -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.05s">
     <span class="new-badge">🔥 NEW</span>
+    <a href="https://open.spotify.com/album/4dPHaGGa4FBzgzqlmbueNE" target="_blank"
+       data-spotify="4dPHaGGa4FBzgzqlmbueNE"
+       class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
+      <div class="relative aspect-square bg-black rounded-xl border-2 border-yellow-400 shadow-xl group-hover:border-pink-500 flex flex-col justify-between">
+        <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
+          <img src="EE.png" alt="Efforts and Errors"
+               class="w-full h-full object-cover sm:w-auto sm:h-auto sm:max-h-full sm:max-w-full" onerror="this.style.display='none'">
+        </div>
+        <div class="bg-black/70 py-2">
+          <p class="glitch-hover font-tech drop-shadow-md" data-text="Efforts and Errors">Efforts and Errors</p>
+        </div>
+      </div>
+    </a>
+    <div class="spotify-preview">
+      <iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/4dPHaGGa4FBzgzqlmbueNE?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    </div>
+
+    <!-- Hilariously Unfortunate -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.10s">
     <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
        data-spotify="5QsBEo2w5hLwTcXbEVtVzI"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -830,13 +815,11 @@
         </div>
       </div>
     </a>
-    <div class="spotify-preview" data-album="5QsBEo2w5hLwTcXbEVtVzI">
-      <iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5QsBEo2w5hLwTcXbEVtVzI?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5QsBEo2w5hLwTcXbEVtVzI?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Big Dump 2: Return of the Dump -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.10s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.15s">
     <a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank"
        data-spotify="7A2epK5YtI0AwzekuFQa2J"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -854,7 +837,7 @@
     </div>
 
     <!-- Spobbly Not -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.15s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.20s">
     <a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank"
        data-spotify="4Se3IXXD8jRjuleluQTjf3"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -872,7 +855,7 @@
     </div>
 
     <!-- The Great Indoors -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.20s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
     <a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank"
        data-spotify="5WK8CM8TwDUx45Rg7c2fpJ"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -890,7 +873,7 @@
     </div>
 
     <!-- Festive Flush -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.30s">
     <a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank"
        data-spotify="7HeRXhxoE7icXWhmiP5E7D"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -908,7 +891,7 @@
     </div>
 
     <!-- Midnight Suppository -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.30s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.35s">
     <a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank"
        data-spotify="3JeNJkrFjTzBE8jGq1yreC"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -926,7 +909,7 @@
     </div>
 
     <!-- Black and Blue and Punk All Over -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.35s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.40s">
     <a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank"
        data-spotify="0K25mUKLkCKuRhuHJpM8t6"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -944,7 +927,7 @@
     </div>
 
     <!-- Boney Hollow -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.40s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.45s">
     <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
        data-spotify="6QM22TUsasDgIHFZn9Niba"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -962,7 +945,7 @@
     </div>
 
     <!-- Sharing Socks with Strangers -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.45s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.50s">
     <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
        data-spotify="0Hln1Bc6ametJ7lZumtjxZ"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -979,8 +962,8 @@
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0Hln1Bc6ametJ7lZumtjxZ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
-    <!-- Man's Breath (FIXED Spotify link) -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.50s">
+    <!-- Man's Breath -->
+    <div class="album-card-wrap card-pop" style="animation-delay:0.55s">
     <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ?si=l-5ju3bIQwW4eAxgYCAqJg" target="_blank"
        data-spotify="0Hln1Bc6ametJ7lZumtjxZ"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -998,7 +981,7 @@
     </div>
 
     <!-- The Legend of Duke -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.55s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.60s">
     <a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
        data-spotify="2r1UbSHTPFJrIH6KVF4Jb4"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1015,7 +998,7 @@
     </div>
 
     <!-- Mystery Clown -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.60s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
        data-spotify="5vGODrEiQ8cCVhT9mX8Ky4"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1033,7 +1016,7 @@
     </div>
 
     <!-- Big Dump -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.70s">
     <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
        data-spotify="4yBkE9cfP1uA04eIVViCnn"
        class="album-link group transform transition hover:scale-105 hover:-rotate-1 block">
@@ -1051,7 +1034,7 @@
     </div>
 
     <!-- Fully Panted -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.70s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.75s">
     <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
        data-spotify="3pibb5ZqPdmBje3Q50cgrC"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -1069,7 +1052,7 @@
     </div>
 
     <!-- Ear-aid -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.75s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.80s">
     <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
        data-spotify="0tzXB3flhk3Z8nKl4EoqaV"
        class="album-link group transform transition hover:scale-105 hover:-rotate-2 block">
@@ -1087,7 +1070,7 @@
     </div>
 
     <!-- Lovey Dovey -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.80s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.85s">
     <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
        data-spotify="7KtMV76L80Pz6JMR1dErog"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1105,7 +1088,7 @@
     </div>
 
     <!-- Isle of Beans -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.85s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.90s">
     <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
        data-spotify="68OQ78AmvTIEAolpFfPr2e"
        class="album-link group transform transition hover:scale-105 hover:rotate-3 block">
@@ -1123,7 +1106,7 @@
     </div>
 
     <!-- Unscheduled Programming -->
-    <div class="album-card-wrap card-pop" style="animation-delay:0.90s">
+    <div class="album-card-wrap card-pop" style="animation-delay:0.95s">
     <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
        data-spotify="7oOB89lOQ15eaTMWuGXd2j"
        class="album-link group transform transition hover:scale-105 hover:-rotate-3 block">
@@ -1219,7 +1202,7 @@
 </footer>
 
 <script>
-  // ============ BIO TIMER (fake REC counter) ============
+  // ============ BIO TIMER ============
   const bioTimer = document.getElementById('bio-timer');
   if (bioTimer) {
     let secs = 0;
@@ -1259,18 +1242,16 @@
   function toggleCRT() {
     crtOn = !crtOn;
     if (crtOn) {
-      // Remove off state, play turn-on flash
       document.body.classList.remove('crt-off');
       document.body.classList.add('crt-on');
       crtLabel.textContent = 'CRT: OFF';
       document.body.classList.add('tv-on-anim');
       setTimeout(() => document.body.classList.remove('tv-on-anim'), 500);
     } else {
-      // Play shut-off collapse on the overlay first, then hide
       crtLabel.textContent = 'CRT: ON';
       const overlay = document.getElementById('crt-overlay');
       overlay.style.animation = 'none';
-      void overlay.offsetWidth; // force reflow
+      void overlay.offsetWidth;
       overlay.style.animation = 'tvOff 0.4s ease-in forwards';
       setTimeout(() => {
         overlay.style.animation = '';
@@ -1281,7 +1262,7 @@
     try { localStorage.setItem('crt', crtOn ? 'on' : 'off'); } catch(e) {}
   }
 
-  // ============ CARD POP-IN ON SCROLL ============
+  // ============ CARD POP-IN ============
   const cards = document.querySelectorAll('.card-pop');
   const cardObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -1299,13 +1280,11 @@
 
   // ============ CHANNEL CHANGE ON ALBUM CLICK ============
   const channelEl = document.getElementById('channel-change');
-
   document.querySelectorAll('.album-link').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const href = link.getAttribute('href');
       channelEl.classList.remove('active');
-      // Force reflow so animation restarts
       void channelEl.offsetWidth;
       channelEl.classList.add('active');
       setTimeout(() => {
@@ -1323,35 +1302,27 @@
     void glitchBurst.offsetWidth;
     glitchBurst.classList.add('active');
     setTimeout(() => glitchBurst.classList.remove('active'), 650);
-    // Schedule next burst randomly between 20s and 55s
     setTimeout(triggerGlitchBurst, 20000 + Math.random() * 35000);
   }
-  // First burst after 15-30s
   setTimeout(triggerGlitchBurst, 15000 + Math.random() * 15000);
 
   // ============ SPOTIFY PREVIEW ON HOVER ============
-  // Only on non-touch devices
   const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
 
   document.querySelectorAll('.album-card-wrap').forEach(wrap => {
     const preview = wrap.querySelector('.spotify-preview');
     if (!preview) return;
-
     let showTimer, hideTimer;
-
     wrap.addEventListener('mouseenter', () => {
       if (isTouchDevice()) return;
       clearTimeout(hideTimer);
       showTimer = setTimeout(() => preview.classList.add('visible'), 350);
     });
-
     wrap.addEventListener('mouseleave', () => {
       if (isTouchDevice()) return;
       clearTimeout(showTimer);
       hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
     });
-
-    // Keep visible if hovering the preview itself
     preview.addEventListener('mouseenter', () => clearTimeout(hideTimer));
     preview.addEventListener('mouseleave', () => {
       hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
@@ -1367,7 +1338,6 @@
       const l = document.createElement('link');
       l.rel = 'icon'; document.head.appendChild(l); return l;
     })();
-
     const frames = [
       { bg: '#000', skull: '#fffb00', fire: '#ff00cc' },
       { bg: '#110000', skull: '#ff6600', fire: '#fffb00' },
@@ -1375,31 +1345,22 @@
       { bg: '#001100', skull: '#fffb00', fire: '#00ff88' },
     ];
     let fi = 0;
-
     function drawFavicon(f) {
       ctx.fillStyle = f.bg;
       ctx.fillRect(0, 0, 32, 32);
-      // Skull body
       ctx.fillStyle = f.skull;
-      ctx.beginPath();
-      ctx.arc(16, 13, 9, 0, Math.PI * 2);
-      ctx.fill();
-      // Jaw
+      ctx.beginPath(); ctx.arc(16, 13, 9, 0, Math.PI * 2); ctx.fill();
       ctx.fillRect(10, 18, 12, 7);
-      // Eyes
       ctx.fillStyle = f.bg;
       ctx.beginPath(); ctx.arc(12, 12, 2.5, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(20, 12, 2.5, 0, Math.PI * 2); ctx.fill();
-      // Teeth gaps
       ctx.fillRect(13, 22, 2, 4);
       ctx.fillRect(17, 22, 2, 4);
-      // Fire dots
       ctx.fillStyle = f.fire;
       ctx.fillRect(14, 2, 2, 3);
       ctx.fillRect(11, 3, 2, 2);
       ctx.fillRect(17, 3, 2, 2);
     }
-
     function animateFavicon() {
       drawFavicon(frames[fi % frames.length]);
       link.href = canvas.toDataURL('image/png');
@@ -1409,17 +1370,15 @@
     animateFavicon();
   })();
 
-  // ============ KONAMI CODE EASTER EGG ============
+  // ============ KONAMI CODE ============
   const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
   let konamiIdx = 0;
   const secretMsg = document.getElementById('secret-msg');
-
   document.addEventListener('keydown', (e) => {
     if (e.key === KONAMI[konamiIdx]) {
       konamiIdx++;
       if (konamiIdx === KONAMI.length) {
         konamiIdx = 0;
-        // Glitch burst then show message
         glitchBurst.classList.remove('active');
         void glitchBurst.offsetWidth;
         glitchBurst.classList.add('active');
@@ -1433,13 +1392,35 @@
     }
   });
 
-  function closeSecret() {
-    secretMsg.classList.remove('visible');
+  function closeSecret() { secretMsg.classList.remove('visible'); }
+  secretMsg.addEventListener('click', (e) => { if (e.target === secretMsg) closeSecret(); });
+
+  // ============ EMAIL SIGNUP ============
+  function handleSignup() {
+    const input = document.getElementById('email-input');
+    const confirm = document.getElementById('signup-confirm');
+    const val = input.value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(val)) {
+      input.style.color = '#ff4444';
+      input.placeholder = 'INVALID FREQUENCY. TRY AGAIN.';
+      input.value = '';
+      setTimeout(() => { input.style.color = '#fffb00'; input.placeholder = 'your@email.com'; }, 2000);
+      return;
+    }
+    confirm.style.display = 'block';
+    input.style.display = 'none';
+    input.closest('.tuner-wrap').style.display = 'none';
+    glitchBurst.classList.remove('active');
+    void glitchBurst.offsetWidth;
+    glitchBurst.classList.add('active');
+    setTimeout(() => glitchBurst.classList.remove('active'), 650);
   }
 
-  secretMsg.addEventListener('click', (e) => {
-    if (e.target === secretMsg) closeSecret();
+  document.getElementById('email-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSignup();
   });
+</script>
 
 </body>
 </html>
