@@ -1395,27 +1395,319 @@
   function closeSecret() { secretMsg.classList.remove('visible'); }
   secretMsg.addEventListener('click', (e) => { if (e.target === secretMsg) closeSecret(); });
 
-  // ============ EMAIL SIGNUP ============
-  function handleSignup() {
-    const input = document.getElementById('email-input');
-    const confirm = document.getElementById('signup-confirm');
-    const val = input.value.trim();
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRe.test(val)) {
-      input.style.color = '#ff4444';
-      input.placeholder = 'INVALID FREQUENCY. TRY AGAIN.';
-      input.value = '';
-      setTimeout(() => { input.style.color = '#fffb00'; input.placeholder = 'your@email.com'; }, 2000);
-      return;
-    }
-    confirm.style.display = 'block';
-    input.style.display = 'none';
-    input.closest('.tuner-wrap').style.display = 'none';
-    glitchBurst.classList.remove('active');
-    void glitchBurst.offsetWidth;
-    glitchBurst.classList.add('active');
-    setTimeout(() => glitchBurst.classList.remove('active'), 650);
+<!-- TOASTYBONES UPWORK WIDGET — drop this block anywhere in index.html -->
+<section id="hire-me" style="font-family: 'VT323', 'Courier New', monospace;">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+  #hire-me {
+    position: relative;
+    margin: 3rem auto;
+    max-width: 640px;
+    padding: 0 1rem;
   }
+
+  .upwork-tv {
+    position: relative;
+    background: #0a0a0a;
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 30px rgba(0,200,100,0.08),
+      inset 0 0 60px rgba(0,0,0,0.8);
+  }
+
+  /* scanlines */
+  .upwork-tv::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* vignette */
+  .upwork-tv::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.75) 100%);
+    pointer-events: none;
+    z-index: 9;
+  }
+
+  .tv-header {
+    background: #0d1a0f;
+    border-bottom: 1px solid #1c3320;
+    padding: 10px 16px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tv-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #00c864;
+    box-shadow: 0 0 6px #00c864;
+    animation: blink 2.8s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 90%, 100% { opacity: 1; }
+    95% { opacity: 0; }
+  }
+
+  .tv-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #00c864;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(0,200,100,0.6);
+  }
+
+  .tv-label span {
+    color: #3a5a3e;
+  }
+
+  .tv-body {
+    padding: 24px 28px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .upwork-screen-title {
+    font-family: 'VT323', monospace;
+    font-size: 13px;
+    color: #3a5a3e;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+  }
+
+  .upwork-name {
+    font-family: 'VT323', monospace;
+    font-size: 46px;
+    color: #e8ffe0;
+    line-height: 1;
+    margin: 0 0 4px;
+    text-shadow: 0 0 20px rgba(0,200,100,0.3), 2px 2px 0 #001a06;
+    animation: textflicker 8s infinite;
+  }
+
+  @keyframes textflicker {
+    0%, 98%, 100% { opacity: 1; }
+    99% { opacity: 0.85; }
+  }
+
+  .upwork-tagline {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #4a7a50;
+    letter-spacing: 1px;
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+
+  .upwork-tagline em {
+    color: #00c864;
+    font-style: normal;
+  }
+
+  .upwork-stats {
+    display: flex;
+    gap: 0;
+    margin: 0 0 22px;
+    border: 1px solid #1c3320;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 10px 12px;
+    border-right: 1px solid #1c3320;
+    text-align: center;
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    color: #00c864;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(0,200,100,0.4);
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: #3a5a3e;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .upwork-services {
+    margin: 0 0 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .service-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #4a7a50;
+    letter-spacing: 1px;
+    padding: 5px 8px;
+    border: 1px solid #1c3320;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .service-tag::before {
+    content: '▶';
+    color: #00c864;
+    font-size: 8px;
+    flex-shrink: 0;
+  }
+
+  .upwork-cta {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: 1px solid #00c864;
+    color: #00c864;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px 16px 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.15s, background 0.15s;
+    text-shadow: 0 0 10px rgba(0,200,100,0.5);
+    box-shadow: 0 0 12px rgba(0,200,100,0.1), inset 0 0 12px rgba(0,200,100,0.03);
+  }
+
+  .upwork-cta:hover {
+    background: #00c864;
+    color: #000;
+    text-shadow: none;
+    box-shadow: 0 0 24px rgba(0,200,100,0.4);
+  }
+
+  .upwork-cta:hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 2px,
+      rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px
+    );
+  }
+
+  .tv-footer {
+    padding: 6px 16px;
+    background: #060f07;
+    border-top: 1px solid #111;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tv-footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: #1c3320;
+    letter-spacing: 2px;
+  }
+
+  .upwork-logo-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #2a4a2e;
+    letter-spacing: 1px;
+  }
+
+  /* glitch on hover */
+  .upwork-tv:hover .upwork-name {
+    animation: glitch 0.3s steps(2) forwards, textflicker 8s infinite;
+  }
+
+  @keyframes glitch {
+    0%   { text-shadow: 2px 0 #00ff88, -2px 0 #ff0088; clip-path: inset(10% 0 80% 0); }
+    25%  { text-shadow: -2px 0 #00ff88, 2px 0 #ff0088; clip-path: inset(60% 0 20% 0); }
+    50%  { text-shadow: 2px 2px #00c864; clip-path: inset(0); }
+    100% { text-shadow: 0 0 20px rgba(0,200,100,0.3), 2px 2px 0 #001a06; }
+  }
+</style>
+
+  <div class="upwork-tv">
+    <div class="tv-header">
+      <div class="tv-dot"></div>
+      <div class="tv-label">UPWORK<span>::</span>AVAILABLE FOR HIRE</div>
+    </div>
+
+    <div class="tv-body">
+      <div class="upwork-screen-title">// freelance services //</div>
+      <div class="upwork-name">ToastyBones</div>
+      <div class="upwork-tagline">
+        AI-assisted music production &amp; workflow consulting<br>
+        <em>Suno · live guitar · sync licensing · full release pipeline</em>
+      </div>
+
+      <div class="upwork-stats">
+        <div class="stat">
+          <span class="stat-val">20+</span>
+          <span class="stat-label">Albums out</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val">$30</span>
+          <span class="stat-label">Starting/hr</span>
+        </div>
+      </div>
+
+      <div class="upwork-services">
+        <div class="service-tag">AI song production</div>
+        <div class="service-tag">Lyric writing</div>
+        <div class="service-tag">Release strategy</div>
+        <div class="service-tag">Sync licensing</div>
+        <div class="service-tag">Live guitar layers</div>
+        <div class="service-tag">Artist branding</div>
+      </div>
+
+      <a class="upwork-cta" href="https://www.upwork.com/freelancers/~01560a01fa7ab258d9" target="_blank" rel="noopener">
+        ► Hire Me on Upwork
+      </a>
+    </div>
+
+    <div class="tv-footer">
+      <span class="tv-footer-text">SIGNAL OK · APERTURE MUSIC LABS</span>
+      <span class="upwork-logo-text">upwork.com</span>
+    </div>
+  </div>
+
+</section>
+<!-- END TOASTYBONES UPWORK WIDGET -->
+
+  
 
   document.getElementById('email-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSignup();
