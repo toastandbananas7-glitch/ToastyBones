@@ -1175,226 +1175,6 @@
   </div>
 </section>
 
-<!-- Email Signup -->
-<div id="email-signup">
-  <h3>📡 TUNE IN TO NEW RELEASES</h3>
-  <p>Drop your frequency. Get notified when new bones drop.</p>
-  <div class="tuner-wrap">
-    <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email">
-    <button onclick="handleSignup()">TUNE IN</button>
-  </div>
-  <p id="signup-confirm">✅ SIGNAL RECEIVED. SEE YOU ON THE OTHER SIDE.</p>
-</div>
-
-<!-- Disclaimer -->
-<div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10">
-  ⚠️ ToastyBones commissions blend human creativity with AI-generated production.
-  All lyrics are written by hand — mythic, absurd, and emotionally exacting.
-  Some riffs and beats are crafted manually, while others are summoned through AI tools.
-  Visuals, mixing, and auxiliary elements may be generated entirely by artificial intelligence under creative direction.
-  Every track is a hybrid spell: part bone, part machine.⚠️
-</div>
-
-<!-- Footer -->
-<footer class="py-6 text-center text-gray-300 text-sm">
-  <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
-  <p class="drop-shadow-md font-tech">© <span id="year"></span> ToastyBones. All rights reserved.</p>
-</footer>
-
-<script>
-  // ============ BIO TIMER ============
-  const bioTimer = document.getElementById('bio-timer');
-  if (bioTimer) {
-    let secs = 0;
-    setInterval(() => {
-      secs++;
-      const m = String(Math.floor(secs / 60)).padStart(2, '0');
-      const s = String(secs % 60).padStart(2, '0');
-      bioTimer.textContent = `${m}:${s}`;
-    }, 1000);
-  }
-
-  // ============ FOOTER YEAR ============
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  // ============ SCROLL-HIDE MERCH BANNER ============
-  const banner = document.getElementById('merchBanner');
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const cur = window.pageYOffset;
-    banner.style.opacity = cur > lastScroll ? '0' : '1';
-    lastScroll = cur;
-  });
-
-  // ============ CRT TOGGLE ============
-  const crtLabel = document.getElementById('crt-label');
-  let crtOn = true;
-
-  try {
-    if (localStorage.getItem('crt') === 'off') {
-      crtOn = false;
-      document.body.classList.remove('crt-on');
-      document.body.classList.add('crt-off');
-      crtLabel.textContent = 'CRT: ON';
-    }
-  } catch(e) {}
-
-  function toggleCRT() {
-    crtOn = !crtOn;
-    if (crtOn) {
-      document.body.classList.remove('crt-off');
-      document.body.classList.add('crt-on');
-      crtLabel.textContent = 'CRT: OFF';
-      document.body.classList.add('tv-on-anim');
-      setTimeout(() => document.body.classList.remove('tv-on-anim'), 500);
-    } else {
-      crtLabel.textContent = 'CRT: ON';
-      const overlay = document.getElementById('crt-overlay');
-      overlay.style.animation = 'none';
-      void overlay.offsetWidth;
-      overlay.style.animation = 'tvOff 0.4s ease-in forwards';
-      setTimeout(() => {
-        overlay.style.animation = '';
-        document.body.classList.remove('crt-on');
-        document.body.classList.add('crt-off');
-      }, 400);
-    }
-    try { localStorage.setItem('crt', crtOn ? 'on' : 'off'); } catch(e) {}
-  }
-
-  // ============ CARD POP-IN ============
-  const cards = document.querySelectorAll('.card-pop');
-  const cardObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
-        cardObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.08 });
-
-  cards.forEach(card => {
-    card.style.animationPlayState = 'paused';
-    cardObserver.observe(card);
-  });
-
-  // ============ CHANNEL CHANGE ON ALBUM CLICK ============
-  const channelEl = document.getElementById('channel-change');
-  document.querySelectorAll('.album-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const href = link.getAttribute('href');
-      channelEl.classList.remove('active');
-      void channelEl.offsetWidth;
-      channelEl.classList.add('active');
-      setTimeout(() => {
-        window.open(href, '_blank');
-        channelEl.classList.remove('active');
-      }, 380);
-    });
-  });
-
-  // ============ RANDOM GLITCH BURSTS ============
-  const glitchBurst = document.getElementById('glitch-burst');
-
-  function triggerGlitchBurst() {
-    glitchBurst.classList.remove('active');
-    void glitchBurst.offsetWidth;
-    glitchBurst.classList.add('active');
-    setTimeout(() => glitchBurst.classList.remove('active'), 650);
-    setTimeout(triggerGlitchBurst, 20000 + Math.random() * 35000);
-  }
-  setTimeout(triggerGlitchBurst, 15000 + Math.random() * 15000);
-
-  // ============ SPOTIFY PREVIEW ON HOVER ============
-  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
-
-  document.querySelectorAll('.album-card-wrap').forEach(wrap => {
-    const preview = wrap.querySelector('.spotify-preview');
-    if (!preview) return;
-    let showTimer, hideTimer;
-    wrap.addEventListener('mouseenter', () => {
-      if (isTouchDevice()) return;
-      clearTimeout(hideTimer);
-      showTimer = setTimeout(() => preview.classList.add('visible'), 350);
-    });
-    wrap.addEventListener('mouseleave', () => {
-      if (isTouchDevice()) return;
-      clearTimeout(showTimer);
-      hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
-    });
-    preview.addEventListener('mouseenter', () => clearTimeout(hideTimer));
-    preview.addEventListener('mouseleave', () => {
-      hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
-    });
-  });
-
-  // ============ ANIMATED FAVICON ============
-  (function() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 32; canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    const link = document.querySelector("link[rel='icon']") || (() => {
-      const l = document.createElement('link');
-      l.rel = 'icon'; document.head.appendChild(l); return l;
-    })();
-    const frames = [
-      { bg: '#000', skull: '#fffb00', fire: '#ff00cc' },
-      { bg: '#110000', skull: '#ff6600', fire: '#fffb00' },
-      { bg: '#000011', skull: '#00ffff', fire: '#ff00ff' },
-      { bg: '#001100', skull: '#fffb00', fire: '#00ff88' },
-    ];
-    let fi = 0;
-    function drawFavicon(f) {
-      ctx.fillStyle = f.bg;
-      ctx.fillRect(0, 0, 32, 32);
-      ctx.fillStyle = f.skull;
-      ctx.beginPath(); ctx.arc(16, 13, 9, 0, Math.PI * 2); ctx.fill();
-      ctx.fillRect(10, 18, 12, 7);
-      ctx.fillStyle = f.bg;
-      ctx.beginPath(); ctx.arc(12, 12, 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(20, 12, 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.fillRect(13, 22, 2, 4);
-      ctx.fillRect(17, 22, 2, 4);
-      ctx.fillStyle = f.fire;
-      ctx.fillRect(14, 2, 2, 3);
-      ctx.fillRect(11, 3, 2, 2);
-      ctx.fillRect(17, 3, 2, 2);
-    }
-    function animateFavicon() {
-      drawFavicon(frames[fi % frames.length]);
-      link.href = canvas.toDataURL('image/png');
-      fi++;
-      setTimeout(animateFavicon, 400);
-    }
-    animateFavicon();
-  })();
-
-  // ============ KONAMI CODE ============
-  const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-  let konamiIdx = 0;
-  const secretMsg = document.getElementById('secret-msg');
-  document.addEventListener('keydown', (e) => {
-    if (e.key === KONAMI[konamiIdx]) {
-      konamiIdx++;
-      if (konamiIdx === KONAMI.length) {
-        konamiIdx = 0;
-        glitchBurst.classList.remove('active');
-        void glitchBurst.offsetWidth;
-        glitchBurst.classList.add('active');
-        setTimeout(() => {
-          glitchBurst.classList.remove('active');
-          secretMsg.classList.add('visible');
-        }, 600);
-      }
-    } else {
-      konamiIdx = e.key === KONAMI[0] ? 1 : 0;
-    }
-  });
-
-  function closeSecret() { secretMsg.classList.remove('visible'); }
-  secretMsg.addEventListener('click', (e) => { if (e.target === secretMsg) closeSecret(); });
-
 <!-- TOASTYBONES UPWORK WIDGET — drop this block anywhere in index.html -->
 <section id="hire-me" style="font-family: 'VT323', 'Courier New', monospace;">
 <style>
@@ -1707,7 +1487,216 @@
 </section>
 <!-- END TOASTYBONES UPWORK WIDGET -->
 
-  
+
+<!-- Disclaimer -->
+<div class="bg-black/40 text-white/70 text-xs p-4 rounded-lg max-w-xl mx-auto mt-10">
+  ⚠️ ToastyBones commissions blend human creativity with AI-generated production.
+  All lyrics are written by hand — mythic, absurd, and emotionally exacting.
+  Some riffs and beats are crafted manually, while others are summoned through AI tools.
+  Visuals, mixing, and auxiliary elements may be generated entirely by artificial intelligence under creative direction.
+  Every track is a hybrid spell: part bone, part machine.⚠️
+</div>
+
+<!-- Footer -->
+<footer class="py-6 text-center text-gray-300 text-sm">
+  <p class="uppercase tracking-widest font-orbitron drop-shadow-md">🍞☠️</p>
+  <p class="drop-shadow-md font-tech">© <span id="year"></span> ToastyBones. All rights reserved.</p>
+</footer>
+
+<script>
+  // ============ BIO TIMER ============
+  const bioTimer = document.getElementById('bio-timer');
+  if (bioTimer) {
+    let secs = 0;
+    setInterval(() => {
+      secs++;
+      const m = String(Math.floor(secs / 60)).padStart(2, '0');
+      const s = String(secs % 60).padStart(2, '0');
+      bioTimer.textContent = `${m}:${s}`;
+    }, 1000);
+  }
+
+  // ============ FOOTER YEAR ============
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // ============ SCROLL-HIDE MERCH BANNER ============
+  const banner = document.getElementById('merchBanner');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const cur = window.pageYOffset;
+    banner.style.opacity = cur > lastScroll ? '0' : '1';
+    lastScroll = cur;
+  });
+
+  // ============ CRT TOGGLE ============
+  const crtLabel = document.getElementById('crt-label');
+  let crtOn = true;
+
+  try {
+    if (localStorage.getItem('crt') === 'off') {
+      crtOn = false;
+      document.body.classList.remove('crt-on');
+      document.body.classList.add('crt-off');
+      crtLabel.textContent = 'CRT: ON';
+    }
+  } catch(e) {}
+
+  function toggleCRT() {
+    crtOn = !crtOn;
+    if (crtOn) {
+      document.body.classList.remove('crt-off');
+      document.body.classList.add('crt-on');
+      crtLabel.textContent = 'CRT: OFF';
+      document.body.classList.add('tv-on-anim');
+      setTimeout(() => document.body.classList.remove('tv-on-anim'), 500);
+    } else {
+      crtLabel.textContent = 'CRT: ON';
+      const overlay = document.getElementById('crt-overlay');
+      overlay.style.animation = 'none';
+      void overlay.offsetWidth;
+      overlay.style.animation = 'tvOff 0.4s ease-in forwards';
+      setTimeout(() => {
+        overlay.style.animation = '';
+        document.body.classList.remove('crt-on');
+        document.body.classList.add('crt-off');
+      }, 400);
+    }
+    try { localStorage.setItem('crt', crtOn ? 'on' : 'off'); } catch(e) {}
+  }
+
+  // ============ CARD POP-IN ============
+  const cards = document.querySelectorAll('.card-pop');
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        cardObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  cards.forEach(card => {
+    card.style.animationPlayState = 'paused';
+    cardObserver.observe(card);
+  });
+
+  // ============ CHANNEL CHANGE ON ALBUM CLICK ============
+  const channelEl = document.getElementById('channel-change');
+  document.querySelectorAll('.album-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      channelEl.classList.remove('active');
+      void channelEl.offsetWidth;
+      channelEl.classList.add('active');
+      setTimeout(() => {
+        window.open(href, '_blank');
+        channelEl.classList.remove('active');
+      }, 380);
+    });
+  });
+
+  // ============ RANDOM GLITCH BURSTS ============
+  const glitchBurst = document.getElementById('glitch-burst');
+
+  function triggerGlitchBurst() {
+    glitchBurst.classList.remove('active');
+    void glitchBurst.offsetWidth;
+    glitchBurst.classList.add('active');
+    setTimeout(() => glitchBurst.classList.remove('active'), 650);
+    setTimeout(triggerGlitchBurst, 20000 + Math.random() * 35000);
+  }
+  setTimeout(triggerGlitchBurst, 15000 + Math.random() * 15000);
+
+  // ============ SPOTIFY PREVIEW ON HOVER ============
+  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+
+  document.querySelectorAll('.album-card-wrap').forEach(wrap => {
+    const preview = wrap.querySelector('.spotify-preview');
+    if (!preview) return;
+    let showTimer, hideTimer;
+    wrap.addEventListener('mouseenter', () => {
+      if (isTouchDevice()) return;
+      clearTimeout(hideTimer);
+      showTimer = setTimeout(() => preview.classList.add('visible'), 350);
+    });
+    wrap.addEventListener('mouseleave', () => {
+      if (isTouchDevice()) return;
+      clearTimeout(showTimer);
+      hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
+    });
+    preview.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    preview.addEventListener('mouseleave', () => {
+      hideTimer = setTimeout(() => preview.classList.remove('visible'), 200);
+    });
+  });
+
+  // ============ ANIMATED FAVICON ============
+  (function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32; canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    const link = document.querySelector("link[rel='icon']") || (() => {
+      const l = document.createElement('link');
+      l.rel = 'icon'; document.head.appendChild(l); return l;
+    })();
+    const frames = [
+      { bg: '#000', skull: '#fffb00', fire: '#ff00cc' },
+      { bg: '#110000', skull: '#ff6600', fire: '#fffb00' },
+      { bg: '#000011', skull: '#00ffff', fire: '#ff00ff' },
+      { bg: '#001100', skull: '#fffb00', fire: '#00ff88' },
+    ];
+    let fi = 0;
+    function drawFavicon(f) {
+      ctx.fillStyle = f.bg;
+      ctx.fillRect(0, 0, 32, 32);
+      ctx.fillStyle = f.skull;
+      ctx.beginPath(); ctx.arc(16, 13, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(10, 18, 12, 7);
+      ctx.fillStyle = f.bg;
+      ctx.beginPath(); ctx.arc(12, 12, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(20, 12, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(13, 22, 2, 4);
+      ctx.fillRect(17, 22, 2, 4);
+      ctx.fillStyle = f.fire;
+      ctx.fillRect(14, 2, 2, 3);
+      ctx.fillRect(11, 3, 2, 2);
+      ctx.fillRect(17, 3, 2, 2);
+    }
+    function animateFavicon() {
+      drawFavicon(frames[fi % frames.length]);
+      link.href = canvas.toDataURL('image/png');
+      fi++;
+      setTimeout(animateFavicon, 400);
+    }
+    animateFavicon();
+  })();
+
+  // ============ KONAMI CODE ============
+  const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let konamiIdx = 0;
+  const secretMsg = document.getElementById('secret-msg');
+  document.addEventListener('keydown', (e) => {
+    if (e.key === KONAMI[konamiIdx]) {
+      konamiIdx++;
+      if (konamiIdx === KONAMI.length) {
+        konamiIdx = 0;
+        glitchBurst.classList.remove('active');
+        void glitchBurst.offsetWidth;
+        glitchBurst.classList.add('active');
+        setTimeout(() => {
+          glitchBurst.classList.remove('active');
+          secretMsg.classList.add('visible');
+        }, 600);
+      }
+    } else {
+      konamiIdx = e.key === KONAMI[0] ? 1 : 0;
+    }
+  });
+
+  function closeSecret() { secretMsg.classList.remove('visible'); }
+  secretMsg.addEventListener('click', (e) => { if (e.target === secretMsg) closeSecret(); });
+
 
   document.getElementById('email-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSignup();
