@@ -515,7 +515,7 @@
   <a href="index.html" class="back-link">← Back to ToastyBones</a>
 
   <div class="header">
-    <h1>☠️ Slot of Fate ☠️</h1>
+    <h1>☠️ Toasty Gamble ☠️</h1>
     <p>Which ToastyBones song are you?</p>
   </div>
 
@@ -751,8 +751,6 @@ const ALBUMS = [
 //  STATE
 // ══════════════════════════════════════════════
 const ITEM_H = 80;         // px per reel item
-const VISIBLE = 3;         // items visible (center + 1 above + 1 below)
-const WIN_H = ITEM_H * VISIBLE; // = 240... but we set window to 260 for padding
 
 let phase = 1;
 let spinning = false;
@@ -767,48 +765,51 @@ const spinBtn = document.getElementById('spin-btn');
 const lever = document.getElementById('lever');
 
 // ── Build reel DOM ──
-function buildReel(items, startIndex) {
-  // We triple the items so infinite scroll looks seamless during spin
-  const full = [...items, ...items, ...items];
-  strip.innerHTML = '';
-  full.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'reel-item';
-    div.style.background = `linear-gradient(135deg, ${item.color}18 0%, transparent 100%)`;
-    div.style.borderBottom = `1px solid rgba(255,255,255,0.06)`;
-    const p = document.createElement('p');
-    p.className = 'item-text';
-    p.style.color = item.color || '#fffb00';
-    p.textContent = item.name;
-    div.appendChild(p);
-    strip.appendChild(div);
-  });
+// COPIES: enough that even a fast long spin never runs off the end.
+// With 20 copies of even 6 items = 9600px, more than enough for any spin.
+const COPIES = 20;
 
-  // Position so middle copy starts at center
-  const midStart = items.length * ITEM_H;
-  // Center the startIndex item in the window: window center = 130px = ITEM_H*1.5
-  reelY = -(midStart + startIndex * ITEM_H) + ITEM_H; // +ITEM_H = center offset
+function buildReel(items, startIndex) {
+  strip.innerHTML = '';
+  for (let c = 0; c < COPIES; c++) {
+    items.forEach((item) => {
+      const div = document.createElement('div');
+      div.className = 'reel-item';
+      div.style.background = `linear-gradient(135deg, ${item.color}18 0%, transparent 100%)`;
+      div.style.borderBottom = `1px solid rgba(255,255,255,0.06)`;
+      const p = document.createElement('p');
+      p.className = 'item-text';
+      p.style.color = item.color || '#fffb00';
+      p.textContent = item.name;
+      div.appendChild(p);
+      strip.appendChild(div);
+    });
+  }
+
+  // Start positioned at copy #2 (index COPIES/2) so we have room to scroll down
+  // without normalization ever being needed during the spin.
+  // Center offset: window center is at ITEM_H (one item height from top of visible area)
+  const startCopy = Math.floor(COPIES / 2);
+  reelY = -(startCopy * items.length * ITEM_H + startIndex * ITEM_H) + ITEM_H;
   strip.style.transform = `translateY(${reelY}px)`;
   highlightCenter(items);
 }
 
 function highlightCenter(items) {
-  const totalItems = items.length;
+  const n = items.length;
   const allItems = strip.querySelectorAll('.reel-item');
-  allItems.forEach((el, i) => el.classList.remove('center-item'));
-  // Center slot: which item index is centered?
+  allItems.forEach(el => el.classList.remove('center-item'));
   const centered = getCenteredIndex(items);
-  // Highlight all copies of that index
   allItems.forEach((el, i) => {
-    if (i % totalItems === centered) el.classList.add('center-item');
+    if (i % n === centered) el.classList.add('center-item');
   });
 }
 
 function getCenteredIndex(items) {
   const n = items.length;
-  const tripleLen = n * 3;
-  // reelY offset → which item is at center (130px from top of window)
-  const centerPx = -reelY + ITEM_H; // px from top of strip to center
+  // Which item index sits at the center of the window?
+  // Center px from top of strip = -reelY + ITEM_H
+  const centerPx = -reelY + ITEM_H;
   let idx = Math.round(centerPx / ITEM_H) % n;
   if (idx < 0) idx += n;
   return idx;
@@ -830,43 +831,38 @@ function startSpin() {
   const items = currentItems;
   const n = items.length;
 
-  // Pick random target
+  // Pick a random target index
   const targetIdx = Math.floor(Math.random() * n);
 
-  // Total distance: 4–7 full loops + land on target
-  const loops = 4 + Math.floor(Math.random() * 4);
-  const loopDist = loops * n * ITEM_H;
+  // Spin distance: 6–10 full loops then land exactly on target.
+  // All calculated from current reelY — no normalization needed since
+  // we have COPIES copies and always scroll forward (negative direction).
+  const loops = 6 + Math.floor(Math.random() * 5);
   const currentCenter = getCenteredIndex(items);
   let extraSteps = targetIdx - currentCenter;
-  if (extraSteps < 0) extraSteps += n;
-  const totalDist = loopDist + extraSteps * ITEM_H;
+  if (extraSteps <= 0) extraSteps += n; // always go at least one full item forward
+  const totalDist = (loops * n + extraSteps) * ITEM_H;
 
   const startY = reelY;
   const endY = startY - totalDist;
-  const duration = 2200 + Math.random() * 600; // ms
+  const duration = 2400 + Math.random() * 500;
   const startTime = performance.now();
 
+  // Ease: fast start, dramatic slow-down at end (quintic)
   function easeOut(t) {
-    // Cubic ease out with a slight bounce near end
-    return 1 - Math.pow(1 - t, 3);
+    return 1 - Math.pow(1 - t, 4);
   }
 
   function animate(now) {
     const elapsed = now - startTime;
     const t = Math.min(elapsed / duration, 1);
-    const eased = easeOut(t);
-    reelY = startY + (endY - startY) * eased;
+    reelY = startY + (endY - startY) * easeOut(t);
     strip.style.transform = `translateY(${reelY}px)`;
 
     if (t < 1) {
       raf = requestAnimationFrame(animate);
     } else {
-      // Snap to exact position
       reelY = endY;
-      // Normalize back into middle copy range
-      const oneLen = n * ITEM_H;
-      while (reelY < -(oneLen * 2 + ITEM_H * 2)) reelY += oneLen;
-      while (reelY > -(oneLen + ITEM_H)) reelY -= oneLen;
       strip.style.transform = `translateY(${reelY}px)`;
       highlightCenter(items);
       onLanded(targetIdx);
@@ -935,7 +931,7 @@ function showFinalResult(album, song) {
   card.classList.add('visible');
 
   document.getElementById('pip2').className = 'pip done';
-  document.getElementById('phase-label').textContent = 'DESTINY REVEALED ☠️';
+  document.getElementById('phase-label').textContent = 'Spin! (if you dare) ☠️';
   spinBtn.disabled = true;
   lever.classList.add('disabled');
 }
@@ -954,7 +950,7 @@ function getVerdict() {
     "You may update your bio accordingly.",
     "The universe had to think about this one.",
     "Completely accurate. No notes.",
-    "The machine is never wrong. The machine is never wrong.",
+    "The machine is never wrong. The machine is never wrong. The Machine is",
     "Certified. Notarized. Toasty.",
   ];
   return v[Math.floor(Math.random() * v.length)];
