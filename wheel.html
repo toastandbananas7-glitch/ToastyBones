@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Which ToastyBones Song Are You? | Wheel of Random</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: #000;
+      background-image: url('tvbg.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: 'Share Tech Mono', monospace;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ── CRT overlay ── */
+    #crt {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+    }
+    #crt::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgba(0,0,0,0.14) 2px, rgba(0,0,0,0.14) 4px);
+    }
+    #crt::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
+    }
+
+    /* ── Layout ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+      gap: 1.5rem;
+    }
+
+    /* ── Back link ── */
+    .back-link {
+      align-self: flex-start;
+      color: #fffb00;
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 1; }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+    }
+    .header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 5vw, 2.8rem);
+      color: #fffb00;
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, -2px -2px 0 #000, 2px 2px 0 #000;
+      animation: glitch 1.5s infinite;
+      line-height: 1.2;
+    }
+    .header p {
+      margin-top: 0.5rem;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+    }
+
+    @keyframes glitch {
+      0%, 90%, 100% { transform: translate(0); }
+      92% { transform: translate(-2px, 1px); }
+      94% { transform: translate(2px, -1px); }
+      96% { transform: translate(-1px, 2px); }
+    }
+
+    /* ── Phase label ── */
+    .phase-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: #ff00cc;
+      text-shadow: 0 0 8px #ff00cc;
+      text-transform: uppercase;
+      transition: opacity 0.4s;
+    }
+
+    /* ── Wheel container ── */
+    .wheel-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+    }
+
+    .wheel-wrap {
+      position: relative;
+      width: min(380px, 90vw);
+      height: min(380px, 90vw);
+      flex-shrink: 0;
+    }
+
+    /* Pointer triangle at top */
+    .pointer {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 28px solid #fffb00;
+      filter: drop-shadow(0 0 8px #fffb00);
+      z-index: 10;
+    }
+
+    canvas#wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(255,0,255,0.4), 0 0 60px rgba(0,255,255,0.2);
+    }
+
+    /* Center hub */
+    .hub {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      background: #000;
+      border: 3px solid #fffb00;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #fffb00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* ── Spin button ── */
+    .spin-btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      background: #fffb00;
+      color: #000;
+      border: none;
+      padding: 0.9rem 2.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255,251,0,0.5);
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+    .spin-btn:hover:not(:disabled) {
+      background: #ff00cc;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(255,0,204,0.7);
+      transform: scale(1.04);
+    }
+    .spin-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Result card ── */
+    #result-card {
+      width: min(480px, 94vw);
+      background: rgba(0,0,0,0.8);
+      border: 2px solid #fffb00;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255,251,0,0.15);
+      display: none;
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+
+    #result-card.visible { display: block; }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.85) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .result-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .result-album {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1rem, 3.5vw, 1.5rem);
+      color: #fffb00;
+      text-shadow: 0 0 10px #ff00ff;
+      margin-bottom: 0.3rem;
+    }
+
+    .result-song {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      color: #fff;
+      text-shadow: 0 0 15px #00ffff;
+      margin: 0.5rem 0 1rem;
+      line-height: 1.3;
+    }
+
+    .result-verdict {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 1.2rem;
+      font-style: italic;
+    }
+
+    /* Spotify embed */
+    #spotify-wrap {
+      border-radius: 0.75rem;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-spotify {
+      background: #1db954;
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.4rem;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-spotify:hover { background: #17a349; transform: scale(1.04); }
+
+    .btn-again {
+      background: transparent;
+      color: #fffb00;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.4rem;
+      border: 2px solid #fffb00;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-again:hover { background: #fffb00; color: #000; }
+
+    /* ── Progress pips ── */
+    .pips {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+    }
+    .pip {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.3s;
+    }
+    .pip.done { background: #fffb00; box-shadow: 0 0 6px #fffb00; border-color: #fffb00; }
+    .pip.active { background: #ff00cc; box-shadow: 0 0 8px #ff00cc; border-color: #ff00cc; animation: pipPulse 0.8s ease infinite; }
+
+    @keyframes pipPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    /* ── Thunk effect ── */
+    @keyframes thunk {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.06); }
+      60% { transform: scale(0.97); }
+      100% { transform: scale(1); }
+    }
+    .thunk { animation: thunk 0.35s ease forwards; }
+
+    /* ── Channel change flash ── */
+    #flash {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0;
+    }
+    #flash.active {
+      animation: flashAnim 0.4s ease-out forwards;
+    }
+    @keyframes flashAnim {
+      0% { opacity: 1; background: white; clip-path: inset(45% 0); }
+      25% { clip-path: inset(0%); background: white; opacity: 0.8; }
+      50% { background: repeating-linear-gradient(0deg, #000 0px, #000 2px, #fff 2px, #fff 4px); opacity: 0.5; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="crt" aria-hidden="true"></div>
+<div id="flash" aria-hidden="true"></div>
+
+<div class="page">
+
+  <a href="index.html" class="back-link">← Back to ToastyBones</a>
+
+  <div class="header">
+    <h1>☠️ Wheel of Random ☠️</h1>
+    <p>Which ToastyBones song are you?</p>
+  </div>
+
+  <div class="pips">
+    <span class="pip active" id="pip1"></span>
+    <span style="font-size:0.6rem; color:rgba(255,255,255,0.3); letter-spacing:0.1em;">SPIN 1: ALBUM</span>
+    <span class="pip" id="pip2"></span>
+    <span style="font-size:0.6rem; color:rgba(255,255,255,0.3); letter-spacing:0.1em;">SPIN 2: SONG</span>
+  </div>
+
+  <p class="phase-label" id="phase-label">SPIN TO CHOOSE YOUR ALBUM</p>
+
+  <div class="wheel-area">
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <canvas id="wheel" width="600" height="600"></canvas>
+      <div class="hub">🍞</div>
+    </div>
+    <button class="spin-btn" id="spin-btn" onclick="spin()">SPIN THE WHEEL</button>
+  </div>
+
+  <div id="result-card">
+    <div class="result-label" id="res-label">YOUR ALBUM</div>
+    <div class="result-album" id="res-album"></div>
+    <div class="result-label" style="margin-top:0.75rem;" id="res-song-label" style="display:none;">YOU ARE</div>
+    <div class="result-song" id="res-song"></div>
+    <div class="result-verdict" id="res-verdict"></div>
+    <div id="spotify-wrap"></div>
+    <div class="result-actions">
+      <a class="btn-spotify" id="btn-spotify" href="#" target="_blank">▶ OPEN IN SPOTIFY</a>
+      <button class="btn-again" onclick="resetWheel()">SPIN AGAIN</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  ALBUM + TRACK DATA (fetched from Spotify)
+// ══════════════════════════════════════════════
+const ALBUMS = [
+  {
+    id: '4dPHaGGa4FBzgzqlmbueNE',
+    name: 'Efforts and Errors',
+    color: '#fffb00',
+    songs: [
+      {name:'Dopamine Rush', id:'5scfUAc2IaFN78cQBBsHVQ'},
+      {name:'Momentum', id:'4AQ4FP3f3vJQyOBdvTh12s'},
+      {name:'Bored Games', id:'6zpfoaWvj6n9ySij7DAkVy'},
+      {name:'I Know Who I Am', id:'6ur5JbO7c5gF6V9dITmdm0'},
+      {name:'No Taste', id:'4BdwB0FeoKh9LJh3Or1HGE'},
+      {name:"I'm Not Surprised", id:'11PsJWduldlpyUhr72iD9Y'},
+      {name:'Waiting Now', id:'1bm7Xl6tCkq6thEELHtDKY'},
+      {name:'Instagram Kinda Sucks', id:'2DaIUdlLwudd38DE8LFwpP'},
+      {name:'Drowning', id:'5AKo0pG6KGiawiIRreyzMt'},
+      {name:'Lost a Friend to AI', id:'4FTPdCUfhrDjAfOuiuQBWt'},
+      {name:'What a Shame', id:'2mOoDDJFKZN3VQokzOMXdt'},
+      {name:'Under The Bus', id:'3KfcNO2IvFhsDFjHBL8cl8'},
+      {name:"I Can't Help You", id:'5bOxOXCDkHTwtYl6x5ZDac'},
+      {name:'The Truth', id:'0jFhZ3UKUOHjRrPYd3DYXI'},
+      {name:'Secret Ingredient', id:'5i2dFUNvLM2iPUQaEINrro'},
+      {name:'Overstimulated!', id:'5fwyfMQ7eq3sOZDOZ9cSPc'},
+      {name:"I'm Not Listening", id:'1SozcTRjtLKHvh1EB6lgTk'},
+    ]
+  },
+  {
+    id: '5QsBEo2w5hLwTcXbEVtVzI',
+    name: 'Hilariously Unfortunate',
+    color: '#ff00cc',
+    songs: [
+      {name:'Born to be Reckless', id:'0YF2yid8C79Ksbiz2vGALP'},
+      {name:'Content Today', id:'0GB5ImFYQd3zAgsY6sduWZ'},
+      {name:'Sign Me Up!', id:'30d92taMhVby8paQ4WiuXN'},
+      {name:'Same As Before', id:'5d847qG4XNN0WDqnI6VDmf'},
+      {name:'Into The Void', id:'0UJMb735V2awKC3bm1mNOh'},
+      {name:"Katie's Got Rabies!", id:'7KP0o0vkd16SNXomoKbrh8'},
+      {name:'Headache Again', id:'5w21CZzqFxoh54Cx1QcJ43'},
+      {name:'Grew Apart', id:'4PwGV7e7aZzlfmhmcpv2ED'},
+      {name:'Not My Style', id:'3q4wMpuNnAVvOJSXtqFhAW'},
+      {name:"We Don't Care", id:'1wBnQEOnXxdtVKoxQWNFSK'},
+      {name:"The Weekend's Here", id:'0VdftsLteP5TfQ3sTgILzR'},
+      {name:'Candy Rose', id:'2ZhEX8GlaiEeMLPHUqOSxw'},
+      {name:'Two Red Ants!', id:'1PGdGuU2Ek3X9S0KL1JMiE'},
+      {name:'They Sold My Data Again', id:'7KeeYmjHUlucu0iQrVQNEK'},
+      {name:'I Do It To Myself', id:'3gQWvC15Xz7jqzArgadbQx'},
+      {name:'Wipe Your Tears Away', id:'1ynBowEBbhomloq7iBqQlp'},
+    ]
+  },
+  {
+    id: '7A2epK5YtI0AwzekuFQa2J',
+    name: 'Big Dump 2: Return of the Dump',
+    color: '#00ff88',
+    songs: [
+      {name:'I Caught A Pokemon!', id:'4yZz9GccsVk0aBHiSBlddc'},
+      {name:'Michael of War', id:'3BXqEh3dmNLAdzPZqGe0yK'},
+      {name:'Except The Easy Way', id:'0N1FWLS6687fs55xb0kGU7'},
+      {name:'Beach Trip In Our 30s', id:'4cO5SzcIItmUJpSTzOt0yo'},
+      {name:'Secret Pocket', id:'0MLAyNHwtFjQbPQghNsdTC'},
+      {name:'Pop Punk Bands', id:'1tX23JC7yI4fqvUq3oUPIE'},
+      {name:'Kick It!', id:'5i38YgP5gambUtPdlauem4'},
+      {name:'BFMK', id:'74WukoRBeODJ5az4ZKgQF9'},
+      {name:'I Should Never', id:'4StQ2nI1SLFsr3NFezzGLv'},
+    ]
+  },
+  {
+    id: '4Se3IXXD8jRjuleluQTjf3',
+    name: 'Spobbly Not',
+    color: '#ff6600',
+    songs: [
+      {name:'Makes Me Glitch', id:'1oRNJcTcT8OCHwg2pkZKX2'},
+      {name:'Beat Around The Bush', id:'65Wqld6nFrcUWdfF4DvJDC'},
+      {name:'She Settled For Me', id:'1oqI2QXpH94Ay4yGwArSaN'},
+      {name:'The Government Wants Us Dead', id:'56Q0Ou8DoiUbhGZCJIERSR'},
+      {name:'Ended Up On Another Planet', id:'1ErnDw6YdFXWOPwIQmkpNh'},
+      {name:'Bound For Better Days', id:'55Aa45jrjqMNEkoYZLv1Wv'},
+      {name:'Only In It For Me', id:'0OwkcX4oaWFTZCcYuSnPuy'},
+      {name:'I Get The Gist', id:'1VJJnfDrJSC5ACqVnPuuNk'},
+      {name:'My Old Friend, Time', id:'1uvpUIcn1mPskuSeRGQWkj'},
+      {name:"When I'm Down", id:'6JdZlYFeVfi4bmdlbgS6gd'},
+    ]
+  },
+  {
+    id: '5WK8CM8TwDUx45Rg7c2fpJ',
+    name: 'The Great Indoors',
+    color: '#00ccff',
+    songs: [
+      {name:'Super Duper', id:'2osHJaUOe063mj82uHY4Mn'},
+      {name:'Anime Tears', id:'37VydzA9xG8E8ZxwHypSHn'},
+      {name:"Don't Let It Get To You", id:'4FrCL20Gnl2TmknQhnsr8L'},
+      {name:'Junk Mail', id:'1UNUXWco2BM2l9DoGnRhVr'},
+      {name:'Crazy Bazer', id:'3eAJj78kYmXoSI1YJsJAUd'},
+      {name:'Leap', id:'2Kj9HCwRNPan7VBlWkEB24'},
+      {name:'Question Everything', id:'5kLgCFbIJrbrZztYzWxBBU'},
+      {name:'Just My Luck', id:'6ydl31C4MdV9CPLZJfVUNZ'},
+      {name:'Life is Like Journey To The Center of The Earth (The Movie)', id:'2ZIFl8FJgp55wrtYTDFJnD'},
+      {name:'Just Breathe', id:'0E7PWtfN5ySgEYwLCSJtRx'},
+    ]
+  },
+  {
+    id: '7HeRXhxoE7icXWhmiP5E7D',
+    name: 'Festive Flush',
+    color: '#ff2222',
+    songs: [
+      {name:'In The Christmas Tree', id:'4VthZVblLsbedCLM9rgwJ6'},
+      {name:'The Book of Gus', id:'5zq8hMnczQcxFqoXuACckh'},
+      {name:"Five Dollars for You (No, Seriously!)", id:'54RDH8UtjC4329pinN6IgT'},
+      {name:"Santa's Got Beef", id:'1e2Fm31RwjtHi3vWbdMlyy'},
+      {name:'A Warm Christmas Sock', id:'7MwRLSU5yczjYkJOjdLP5c'},
+      {name:'Pirate Ship for Christmas', id:'5Dt6RE73GHyq375RlXunGC'},
+      {name:'Christmas Childhood', id:'2mQoiGUgp65WRSc61CllYS'},
+      {name:'Ice in the Machine', id:'2pfShEW6J5v0zUeimgYY4z'},
+      {name:'Holy Socks', id:'5SYdBPuRsfVrN9ezdgwwyx'},
+      {name:'Santa Demands a Sacrifice', id:'2uZuEB4tEc62sJT5rGxEJK'},
+    ]
+  },
+  {
+    id: '3JeNJkrFjTzBE8jGq1yreC',
+    name: 'Midnight Suppository',
+    color: '#aa44ff',
+    songs: [
+      {name:'After Halloween', id:'3jVSGo9zhJh61v94XrCyCK'},
+      {name:'Wishbone Tragedy', id:'7aqM9orq0UMIvSHazdbryN'},
+      {name:"I'm Thanksgiving Up!", id:'46PDEfHpSPFIrkrsb64Nhl'},
+      {name:'All I Want for Christmas is Suno', id:'1AbA5yi7gfKKSDGicYeqUZ'},
+      {name:'Candy Cane Catheter', id:'1plCBkbtx0tEoUadndEaK8'},
+      {name:'Quensiwal', id:'1whm7DCZ9XRk7f5q03wbQ5'},
+      {name:"Workin' On Christmas", id:'26V99ZxBk7o2bOLYQBnyr2'},
+      {name:'Chocolate Umbrellas', id:'0IklJXqlEunGFs37czwTXr'},
+      {name:'The Saint of Suno', id:'44xjhy1K6ZFvPtBZPJ5CgW'},
+      {name:"Don't Buy Me Gift Cards For Christmas", id:'7g5JKPBqnCUHiSVOVBYMmA'},
+    ]
+  },
+  {
+    id: '0K25mUKLkCKuRhuHJpM8t6',
+    name: 'Black and Blue and Punk All Over',
+    color: '#4488ff',
+    songs: [
+      {name:'MyNameIsToastyBones', id:'1ivx9dGO91aMX2kHi6bqcC'},
+      {name:'Attention Span', id:'5MBlNd3Lvp7Hyp8Ezf9Srp'},
+      {name:'The Way That I Do', id:'7KobPyb2lWfXwkU8A83EVG'},
+      {name:'In The Foot', id:'1ju0v3vhOOaL5rMgoDoCbJ'},
+      {name:'Changes', id:'34qpAtIrVObnnVocbZo1vJ'},
+      {name:'Hypocritical!', id:'6xvyr91YRTwZiLT2GzvSY3'},
+      {name:'Dear AI', id:'1yJZC6fS7ykENxQ46NBTaO'},
+      {name:'Here We Go Again', id:'0C78ZXJNHeRolFDmIOZGnU'},
+      {name:"Don't Forget!", id:'4kEac6TT1FoBzjpZWSXtzu'},
+      {name:'Music Sucks', id:'1XtneLuB6sRoNBKFxH5CiR'},
+    ]
+  },
+  {
+    id: '6QM22TUsasDgIHFZn9Niba',
+    name: 'Boney Hollow',
+    color: '#ff8800',
+    songs: [
+      {name:'Into The Dark', id:'2sVBI6vZARqxpes1I6cAvd'},
+      {name:'What The Hex?', id:'0yimaU0nubZoW8q1ujiks9'},
+      {name:'The Dragon Has Awoken', id:'4KiMJYBrgY8wtzX0sb6CXc'},
+      {name:'My Own Little Alien!', id:'4CS2B3F3CPOO5w92Go75fj'},
+      {name:'Icky Sticky!', id:'4tzslX6VI6kOC3zjA58Wwe'},
+      {name:'Trunk-or-Treat', id:'12yVWzK5sDJsXVMDeYFk5W'},
+      {name:'Guy with a Chainsaw', id:'3W614DfwDoP4AUycOaeent'},
+      {name:'Brew You!', id:'2AdkvG8me3DBZndDaZIA91'},
+      {name:"My Knife's Bigger Than Yours", id:'5KmUAuFMYsbEPbt2soWerf'},
+      {name:'The Gunslinger', id:'6AW9ioyoYSnxF7v1kJ1VI8'},
+    ]
+  },
+  {
+    id: '0Hln1Bc6ametJ7lZumtjxZ',
+    name: "Man's Breath",
+    color: '#44ff88',
+    songs: [
+      {name:'Quirks', id:'7AePvDYSKWlZ4fl3kNXFkS'},
+      {name:"I Can't Let Go", id:'7jkLhSKf2TCel0ljywzGu3'},
+      {name:'Just One Bad Day', id:'7j584vlF1F4YAcddwR76ZY'},
+      {name:'Perfect', id:'5kbp97jEiTUQ9eyUurOwu5'},
+      {name:"Don't Be So Hard On Yourself", id:'6x7SVhYvBCoh3rQyOaXx7G'},
+      {name:'Something About You', id:'3A3hjSuIJF6iyRX640SOXm'},
+      {name:'Take Me Back', id:'6Uplscstsw22BfnZG51QQe'},
+      {name:'Mirror Maze', id:'1qVIN5umnSxUfXDHworTr7'},
+      {name:"You Haven't Lived it Yet", id:'7Grm0SgcighPUZSZbjjP9b'},
+      {name:'LeBear and the Bear', id:'1xKXzFGmpyx3oBrNwep70C'},
+    ]
+  },
+  {
+    id: '2r1UbSHTPFJrIH6KVF4Jb4',
+    name: 'The Legend of Duke',
+    color: '#ff44aa',
+    songs: [
+      {name:'Duke', id:'7dyrCLECqJanxtjik0JCmF'},
+      {name:'You Might Be Right', id:'6ag1U3gLg9HHO8Anuqgf8g'},
+      {name:'Monster', id:'1hdajxOcsC3Q3QkFPnyDzx'},
+      {name:'Have You Met Isaac?', id:'1uL92rmkiaEHwFf1rXs09W'},
+      {name:'Lie On Your Resume', id:'64VezOrtyIuFNIbseMWpqu'},
+      {name:'The Jester of Beers', id:'38ny60Jrc36AK4GNR9IAW7'},
+      {name:'We All Fall Down', id:'3nuwaoxPSXQL4O1p8rr2np'},
+      {name:'Sleep America', id:'0M9RvbN68hJLEvaVPvAkdR'},
+      {name:'The Forty Beer Man', id:'3vpioDoZvJFJ9NvQ9TQJ2i'},
+      {name:'The Ultimate Anime Showdown', id:'2Kq96H6HoYY1OE2jDHhxPq'},
+    ]
+  },
+  {
+    id: '5vGODrEiQ8cCVhT9mX8Ky4',
+    name: 'Mystery Clown',
+    color: '#ff3300',
+    songs: [
+      {name:'The Jack Of All Hats', id:'21vTOdfcsf643eAuwtgfLl'},
+      {name:'Wasting All My Time', id:'5J71PsFeCjWt3yCKjP4n38'},
+      {name:"My Pillow's Trying To Kill Me", id:'2w2OWWkGMPztZCtKsEiaKj'},
+      {name:'Let Go', id:'5nofF2qoxdODBQ44yiHagp'},
+      {name:"I Guess I'm Stuck", id:'2fG35IRdy2igvKn4EAjNKc'},
+      {name:'Solidarity For My Sanity', id:'2Wx0epIiiwc9OJd4lYInvK'},
+      {name:"I'm Not Okay", id:'0qKuXLX0Tzzi8XjrcfbymE'},
+      {name:'Paper and Copper', id:'7Cy7JTMsPXuRrpkMx6OGUv'},
+      {name:'Destined For Better Things', id:'4XV39qnPtQMLHCwWeX5Ovm'},
+      {name:'Fart in the Wind', id:'3xBOPN5b1fFAOZpu6bNtRl'},
+    ]
+  },
+  {
+    id: '4yBkE9cfP1uA04eIVViCnn',
+    name: 'Big Dump',
+    color: '#ffcc00',
+    songs: [
+      {name:'Losing You', id:'2Gbkf7jaxFPb1081jXt85x'},
+      {name:'I Know You Know (That I Know)', id:'3L7Pt3YfWcWy5MPiDJnBMs'},
+      {name:"It's Me", id:'4GYF3m5lr1E3W76VABpJzv'},
+      {name:"It's Time To Suffer Bro!", id:'2euhPG8NbjOmFuAgi2cRcz'},
+      {name:'Songs Like This', id:'5b8t627OtIqyBbaMgNJ3y3'},
+      {name:'Stuck', id:'0iFgB39O8T432ExryXgpv3'},
+      {name:'My Sunglasses', id:'6zaKfgGTpC6KYiSkxMsr1u'},
+      {name:"I Wonder What's Under Diglett?", id:'3QMPxkXD3fqb8a5Sj0g0qW'},
+      {name:'Misty, Oh Misty!', id:'4K2f4hwa3Avl2sbazeDrU2'},
+      {name:'Spring Nights', id:'3M0eIIscVCuqEbievjwuL1'},
+    ]
+  },
+  {
+    id: '3pibb5ZqPdmBje3Q50cgrC',
+    name: 'Fully Panted',
+    color: '#00ffcc',
+    songs: [
+      {name:'Soda Pop', id:'6LzhN9tnbTTNr7P5W74Xdf'},
+      {name:'Boomerang', id:'1elB0KAiJsjybccy9JrPAi'},
+      {name:"Pretty Sure I'm a Zombie", id:'3bCWbyFHVxJPqP4SlDozSF'},
+      {name:'Ablaze', id:'6d9e9igYhHlF5d4GPVxiKO'},
+      {name:'Less and Less', id:'7Br85OTpQgy5p4XS0TSkRY'},
+      {name:'Glass Balloon', id:'1SESLubJnqhhH3CHQuvG9R'},
+      {name:'A Day in the Life of Me', id:'2znuc0D99ClcFUGvAyUg6h'},
+      {name:'No More', id:'2g37TjdAyqpPFJIkLEFXC5'},
+      {name:"The Cat's in the Cabinet", id:'0P73WLfGfa7rZj5sZMSZIT'},
+      {name:'Knot Gnomes', id:'2KsX7qGZvTmyEbIchR48tH'},
+    ]
+  },
+  {
+    id: '0tzXB3flhk3Z8nKl4EoqaV',
+    name: 'Ear-aid',
+    color: '#ff0055',
+    songs: [
+      {name:'My Own Downfall', id:'6p9wUcrYzclHt8lCQ9Ndbk'},
+      {name:'Tooginunk!', id:'2OgQVhv3ng3kMdKApzbdYB'},
+      {name:'Give Me A Minute', id:'4Pdkk6gXJvQ243wY3N2Ioc'},
+      {name:"Can't Relate", id:'7Axg32KBVxffBC1YLRQw9T'},
+      {name:'Sleep Is Overrated', id:'5mwIBLSmj4H0ccwBLf90G9'},
+      {name:"Nothing's Going My Way", id:'3dHSDDIMwjVPgRSCVEnDpx'},
+      {name:'Off-Centered', id:'4PoFmhQgyKoVlrhqYRLhxC'},
+      {name:'I Wanna Go Home', id:'1GksGOEn4pcptCCueUQmHC'},
+      {name:'Going Crazy', id:'5XXotIkDowzFXMITwbFogg'},
+      {name:'Play-Doh', id:'0DFRstkRaozm0Twx9mvICH'},
+    ]
+  },
+  {
+    id: '7KtMV76L80Pz6JMR1dErog',
+    name: 'Lovey Dovey',
+    color: '#ff99cc',
+    songs: [
+      {name:'C!', id:'19zz6QaHmyBKf2sRj9KxxL'},
+      {name:'My Number One', id:'2qdWUImwNuxxVthrVfn5jZ'},
+      {name:'Fairytales', id:'1yo15HJ9bLrcovPXgIjKtH'},
+      {name:'Tie-Dye Heart', id:'3hePkuaEwP9TPL8zIG6w55'},
+      {name:'Sweet Chelsey', id:'5wjbpoSfXQf54rrYydrMhc'},
+      {name:'All This Time', id:'4dvKvOc2iuKyK0LgIHxe9W'},
+      {name:'For A Little Bit', id:'5Xt0ERUyzJJObF5NSKYwTy'},
+      {name:'A Hug and a Kiss', id:'3TidFBrteG0fMXq7ZRH9Wf'},
+      {name:'Always You and Me', id:'3WmngotKYf7qNVWodvV8gT'},
+      {name:'It Works for Me', id:'7C75rDWQYgYaJbS10Wwq7I'},
+    ]
+  },
+  {
+    id: '68OQ78AmvTIEAolpFfPr2e',
+    name: 'Isle of Beans',
+    color: '#9966ff',
+    songs: [
+      {name:'Mistakes', id:'7e1lxpJa4kZpgh9NHWWlAX'},
+      {name:'No Escape', id:'2o5lM7RUo99V5lg2qVs1d5'},
+      {name:'The Wizard of Beans', id:'1p9WP0dXV7a57W5UsFA4pC'},
+      {name:'My Destination is You', id:'15SwlGtmef4o8xpuZw8btG'},
+      {name:'Give Me A Minute', id:'6dOToruNxaJWAL1GsqY8HV'},
+      {name:'Push', id:'0Oyg14AlA5D2jAEV4en8TM'},
+      {name:'Story Topper', id:'53VXqhgxkFip0JyCDTLRC1'},
+      {name:"I'm Just Stupid", id:'6K1MCSrLd7sHCtjFzhzwb3'},
+      {name:'You Hate My Songs', id:'3y5D3hngFtfEsRpasLrge6'},
+      {name:'Wildcat', id:'2bpilj3GbyEXS3MWciKFJQ'},
+    ]
+  },
+  {
+    id: '7oOB89lOQ15eaTMWuGXd2j',
+    name: 'Unscheduled Programming',
+    color: '#3399ff',
+    songs: [
+      {name:'Back Up Your Data!', id:'5mxL0PKLPvMEsxc4Km5MoS'},
+      {name:'My Raspberry Pi', id:'1X6NH9kxxASgslefPkpmuj'},
+      {name:'Poppy is a Pokemon', id:'77hl5cld0v8mj7U6rxKf1y'},
+      {name:"I've Never Seen Star Wars", id:'6qM1Ktcc1W3zyYwNFGKBZc'},
+      {name:'Back to the Future Again!', id:'4zvlYgyOnxZuUMLnxxuVxt'},
+      {name:'Bubble', id:'6sXv23FYgyOJRZ7Dcg11Mx'},
+    ]
+  },
+  {
+    id: '5vC6ZoVyCyxjmmGFymbbcz',
+    name: 'Dewey Doofus and the Due Dues',
+    color: '#ff7700',
+    songs: [
+      {name:'Changes', id:'2izWw0EpHIVspZvHIQoM7R'},
+      {name:'Baby Bryan', id:'1wNKKiuZv2UwXv3TuXGObJ'},
+      {name:'Lie On Your Resume', id:'2HtJsTCxlf18YqaNpjeAZd'},
+      {name:'Duke', id:'1Oj5Q3HWBrV4XbIgdBBFSu'},
+      {name:'Wipe Your Tears Away', id:'07IaFCIiwomVA8o1AocRoz'},
+      {name:"I'm Just Stupid", id:'2Zf102ZDkliW4ZYxl4YARx'},
+    ]
+  },
+];
+
+// ══════════════════════════════════════════════
+//  WHEEL ENGINE
+// ══════════════════════════════════════════════
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height, R = W / 2 - 8;
+const CX = W / 2, CY = H / 2;
+
+let phase = 1; // 1 = album spin, 2 = song spin
+let spinning = false;
+let angle = 0;
+let velocity = 0;
+let items = []; // current wheel items
+let chosenAlbum = null;
+let chosenSong = null;
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return {r,g,b};
+}
+
+function darken(hex, factor=0.4) {
+  const {r,g,b} = hexToRgb(hex);
+  return `rgb(${Math.floor(r*factor)},${Math.floor(g*factor)},${Math.floor(b*factor)})`;
+}
+
+function drawWheel(items, currentAngle) {
+  const n = items.length;
+  const slice = (2 * Math.PI) / n;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Shadow ring
+  ctx.save();
+  ctx.shadowColor = 'rgba(255,0,255,0.4)';
+  ctx.shadowBlur = 30;
+  ctx.beginPath();
+  ctx.arc(CX, CY, R + 4, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(255,0,255,0.3)';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+  ctx.restore();
+
+  for (let i = 0; i < n; i++) {
+    const startAngle = currentAngle + i * slice;
+    const endAngle = startAngle + slice;
+    const color = items[i].color || '#fffb00';
+
+    // Wedge fill
+    ctx.beginPath();
+    ctx.moveTo(CX, CY);
+    ctx.arc(CX, CY, R, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = (i % 2 === 0) ? color : darken(color, 0.55);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Text
+    ctx.save();
+    ctx.translate(CX, CY);
+    ctx.rotate(startAngle + slice / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000';
+    ctx.shadowBlur = 4;
+
+    const label = items[i].name || items[i];
+    const fontSize = n <= 8 ? 14 : n <= 14 ? 11 : 9;
+    ctx.font = `bold ${fontSize}px "Share Tech Mono", monospace`;
+
+    // Truncate long names
+    const maxLen = n <= 8 ? 22 : n <= 14 ? 18 : 14;
+    const text = label.length > maxLen ? label.slice(0, maxLen - 1) + '…' : label;
+    ctx.fillText(text, R - 14, 4);
+    ctx.restore();
+  }
+
+  // Outer ring
+  ctx.beginPath();
+  ctx.arc(CX, CY, R, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(255,251,0,0.6)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function getLandedIndex(items, currentAngle) {
+  const n = items.length;
+  const slice = (2 * Math.PI) / n;
+  // Pointer is at top = -PI/2
+  const normalized = ((-currentAngle - Math.PI / 2) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+  return Math.floor(normalized / slice) % n;
+}
+
+function initAlbumWheel() {
+  items = ALBUMS.map(a => ({ name: a.name, color: a.color }));
+  angle = Math.random() * 2 * Math.PI;
+  drawWheel(items, angle);
+}
+
+function initSongWheel(album) {
+  items = album.songs.map(s => ({ name: s.name, color: album.color }));
+  // Alternate colors slightly
+  items = items.map((s, i) => ({
+    ...s,
+    color: i % 2 === 0 ? album.color : darken(album.color, 0.7)
+  }));
+  angle = Math.random() * 2 * Math.PI;
+  drawWheel(items, angle);
+}
+
+let raf;
+function spin() {
+  if (spinning) return;
+  spinning = true;
+  document.getElementById('spin-btn').disabled = true;
+  document.getElementById('result-card').classList.remove('visible');
+
+  // Random velocity: 25-40 full rotations worth
+  velocity = (25 + Math.random() * 15) * (2 * Math.PI / 60);
+
+  function animate() {
+    velocity *= 0.985; // friction
+    angle += velocity;
+    drawWheel(items, angle);
+
+    if (velocity > 0.003) {
+      raf = requestAnimationFrame(animate);
+    } else {
+      // Landed!
+      spinning = false;
+      onLanded();
+    }
+  }
+  raf = requestAnimationFrame(animate);
+}
+
+function onLanded() {
+  const idx = getLandedIndex(items, angle);
+  const flashEl = document.getElementById('flash');
+
+  // Thunk the hub
+  const hub = document.querySelector('.hub');
+  hub.classList.remove('thunk');
+  void hub.offsetWidth;
+  hub.classList.add('thunk');
+
+  flashEl.classList.remove('active');
+  void flashEl.offsetWidth;
+  flashEl.classList.add('active');
+  setTimeout(() => flashEl.classList.remove('active'), 450);
+
+  if (phase === 1) {
+    // Album chosen
+    chosenAlbum = ALBUMS[idx];
+    showAlbumResult(chosenAlbum);
+  } else {
+    // Song chosen
+    chosenSong = chosenAlbum.songs[idx];
+    showFinalResult(chosenAlbum, chosenSong);
+  }
+}
+
+function showAlbumResult(album) {
+  const card = document.getElementById('result-card');
+  document.getElementById('res-label').textContent = '🎵 YOUR ALBUM IS';
+  document.getElementById('res-album').textContent = album.name;
+  document.getElementById('res-song-label').style.display = 'none';
+  document.getElementById('res-song').textContent = '';
+  document.getElementById('res-verdict').textContent = 'Now spin again to find your song...';
+  document.getElementById('spotify-wrap').innerHTML = '';
+  document.getElementById('btn-spotify').href = `https://open.spotify.com/album/${album.id}`;
+  document.getElementById('btn-spotify').textContent = '▶ OPEN ALBUM';
+  card.classList.add('visible');
+
+  // Move to phase 2
+  phase = 2;
+  document.getElementById('pip1').className = 'pip done';
+  document.getElementById('pip2').className = 'pip active';
+  document.getElementById('phase-label').textContent = 'NOW SPIN FOR YOUR SONG';
+  document.getElementById('spin-btn').textContent = 'SPIN FOR YOUR SONG';
+  document.getElementById('spin-btn').disabled = false;
+
+  // Rebuild wheel with songs
+  setTimeout(() => initSongWheel(album), 300);
+}
+
+function showFinalResult(album, song) {
+  const card = document.getElementById('result-card');
+  document.getElementById('res-label').textContent = `FROM: ${album.name}`;
+  document.getElementById('res-album').textContent = '';
+  const songLabel = document.getElementById('res-song-label');
+  songLabel.style.display = 'block';
+  songLabel.textContent = '☠️ YOU ARE';
+  document.getElementById('res-song').textContent = `"${song.name}"`;
+  document.getElementById('res-verdict').textContent = getVerdict(song.name);
+
+  // Spotify track embed
+  document.getElementById('spotify-wrap').innerHTML = `
+    <iframe style="border-radius:8px" 
+      src="https://open.spotify.com/embed/track/${song.id}?utm_source=generator&theme=0" 
+      width="100%" height="152" frameBorder="0" 
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+      loading="lazy">
+    </iframe>`;
+
+  document.getElementById('btn-spotify').href = `https://open.spotify.com/track/${song.id}`;
+  document.getElementById('btn-spotify').textContent = '▶ OPEN IN SPOTIFY';
+  card.classList.add('visible');
+
+  document.getElementById('pip2').className = 'pip done';
+  document.getElementById('phase-label').textContent = 'DESTINY REVEALED';
+  document.getElementById('spin-btn').disabled = true;
+}
+
+function getVerdict(songName) {
+  const verdicts = [
+    "The bones have spoken.",
+    "This is simply who you are now.",
+    "You didn't choose the song. The song chose you.",
+    "Destiny smells faintly of toast.",
+    "Congratulations. This is your personality.",
+    "Science cannot explain this. But here we are.",
+    "Tell everyone. They need to know.",
+    "This is canon.",
+    "The wheel has never been wrong. The wheel is never wrong.",
+    "You may update your bio accordingly.",
+    "The universe had to think about this one.",
+    "Completely accurate. No notes.",
+  ];
+  return verdicts[Math.floor(Math.random() * verdicts.length)];
+}
+
+function resetWheel() {
+  phase = 1;
+  chosenAlbum = null;
+  chosenSong = null;
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('pip1').className = 'pip active';
+  document.getElementById('pip2').className = 'pip';
+  document.getElementById('phase-label').textContent = 'SPIN TO CHOOSE YOUR ALBUM';
+  document.getElementById('spin-btn').textContent = 'SPIN THE WHEEL';
+  document.getElementById('spin-btn').disabled = false;
+  initAlbumWheel();
+}
+
+// Init
+initAlbumWheel();
+</script>
+</body>
+</html>
