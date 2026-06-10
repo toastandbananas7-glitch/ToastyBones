@@ -1319,47 +1319,6 @@
     });
   });
 
-  // ============ ANIMATED FAVICON ============
-  (function() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 32; canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    const link = document.querySelector("link[rel='icon']") || (() => {
-      const l = document.createElement('link');
-      l.rel = 'icon'; document.head.appendChild(l); return l;
-    })();
-    const frames = [
-      { bg: '#000', skull: '#fffb00', fire: '#ff00cc' },
-      { bg: '#110000', skull: '#ff6600', fire: '#fffb00' },
-      { bg: '#000011', skull: '#00ffff', fire: '#ff00ff' },
-      { bg: '#001100', skull: '#fffb00', fire: '#00ff88' },
-    ];
-    let fi = 0;
-    function drawFavicon(f) {
-      ctx.fillStyle = f.bg;
-      ctx.fillRect(0, 0, 32, 32);
-      ctx.fillStyle = f.skull;
-      ctx.beginPath(); ctx.arc(16, 13, 9, 0, Math.PI * 2); ctx.fill();
-      ctx.fillRect(10, 18, 12, 7);
-      ctx.fillStyle = f.bg;
-      ctx.beginPath(); ctx.arc(12, 12, 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(20, 12, 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.fillRect(13, 22, 2, 4);
-      ctx.fillRect(17, 22, 2, 4);
-      ctx.fillStyle = f.fire;
-      ctx.fillRect(14, 2, 2, 3);
-      ctx.fillRect(11, 3, 2, 2);
-      ctx.fillRect(17, 3, 2, 2);
-    }
-    function animateFavicon() {
-      drawFavicon(frames[fi % frames.length]);
-      link.href = canvas.toDataURL('image/png');
-      fi++;
-      setTimeout(animateFavicon, 400);
-    }
-    animateFavicon();
-  })();
-
   // ============ KONAMI CODE ============
   const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
   let konamiIdx = 0;
