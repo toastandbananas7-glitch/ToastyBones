@@ -329,6 +329,17 @@
       box-shadow: 0 0 20px rgba(255,100,0,0.9);
     }
 
+    .lever.pulling .lever-ball {
+      transform: translateY(48px);
+      box-shadow: 0 0 24px rgba(255,100,0,1);
+      transition: transform 0.18s ease-in, box-shadow 0.18s ease-in;
+    }
+    .lever.springing .lever-ball {
+      transform: translateY(0px);
+      box-shadow: 0 0 10px rgba(255,100,0,0.5);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+    }
+
     .lever.disabled { cursor: not-allowed; opacity: 0.35; }
     .lever.disabled .lever-ball { transform: none !important; }
 
@@ -515,7 +526,7 @@
   <a href="index.html" class="back-link">← Back to ToastyBones</a>
 
   <div class="header">
-    <h1>☠️ Toasty Gamble ☠️</h1>
+    <h1>☠️ Slot of Fate ☠️</h1>
     <p>Which ToastyBones song are you?</p>
   </div>
 
@@ -818,8 +829,86 @@ function getCenteredIndex(items) {
 // ── Spin physics ──
 function pull() {
   if (spinning) return;
+  animateLever();
   startSpin();
 }
+
+// ── Lever animation ──
+function animateLever() {
+  lever.classList.remove('springing');
+  lever.classList.add('pulling');
+  setTimeout(() => {
+    lever.classList.remove('pulling');
+    lever.classList.add('springing');
+    setTimeout(() => lever.classList.remove('springing'), 400);
+  }, 200);
+}
+
+// ── Web Audio sound engine ──
+let audioCtx = null;
+
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTick(pitch = 220, duration = 0.04, volume = 0.15) {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(pitch, ctx.currentTime);
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
+function playThunk() {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(90, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(28, ctx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.7, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.25);
+    // click layer
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.connect(gain2); gain2.connect(ctx.destination);
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(900, ctx.currentTime);
+    gain2.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+    osc2.start(ctx.currentTime); osc2.stop(ctx.currentTime + 0.05);
+  } catch(e) {}
+}
+
+function playFanfare() {
+  try {
+    const ctx = getAudio();
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'square';
+      const t = ctx.currentTime + i * 0.11;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.16, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+      osc.start(t); osc.stop(t + 0.22);
+    });
+  } catch(e) {}
+}
+
+let lastTickY = 0;
 
 function startSpin() {
   spinning = true;
@@ -831,27 +920,26 @@ function startSpin() {
   const items = currentItems;
   const n = items.length;
 
-  // Pick a random target index
-  const targetIdx = Math.floor(Math.random() * n);
+  const realTargetIdx = Math.floor(Math.random() * n);
 
-  // Spin distance: 6–10 full loops then land exactly on target.
-  // All calculated from current reelY — no normalization needed since
-  // we have COPIES copies and always scroll forward (negative direction).
-  const loops = 6 + Math.floor(Math.random() * 5);
+  // Near-miss: 25% chance — land one item early, pause, lurch forward
+  const doNearMiss = Math.random() < 0.25;
+  const nearMissIdx = ((realTargetIdx - 1) + n) % n;
+  const firstTargetIdx = doNearMiss ? nearMissIdx : realTargetIdx;
+
+  const loops = 3 + Math.floor(Math.random() * 2);
   const currentCenter = getCenteredIndex(items);
-  let extraSteps = targetIdx - currentCenter;
-  if (extraSteps <= 0) extraSteps += n; // always go at least one full item forward
+  let extraSteps = firstTargetIdx - currentCenter;
+  if (extraSteps <= 0) extraSteps += n;
   const totalDist = (loops * n + extraSteps) * ITEM_H;
 
   const startY = reelY;
   const endY = startY - totalDist;
-  const duration = 2400 + Math.random() * 500;
+  const duration = doNearMiss ? 3200 : (3800 + Math.random() * 600);
   const startTime = performance.now();
+  lastTickY = reelY;
 
-  // Ease: fast start, dramatic slow-down at end (quintic)
-  function easeOut(t) {
-    return 1 - Math.pow(1 - t, 4);
-  }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
 
   function animate(now) {
     const elapsed = now - startTime;
@@ -859,22 +947,60 @@ function startSpin() {
     reelY = startY + (endY - startY) * easeOut(t);
     strip.style.transform = `translateY(${reelY}px)`;
 
+    // Tick sound on each item boundary crossed
+    if (Math.floor((lastTickY - reelY) / ITEM_H) > 0) {
+      const speed = Math.abs(reelY - lastTickY);
+      const pitch = Math.max(80, Math.min(380, 380 - speed * 0.7));
+      playTick(pitch, 0.035, 0.12);
+      lastTickY = reelY - ((lastTickY - reelY) % ITEM_H);
+    }
+
     if (t < 1) {
       raf = requestAnimationFrame(animate);
     } else {
       reelY = endY;
       strip.style.transform = `translateY(${reelY}px)`;
       highlightCenter(items);
+      if (doNearMiss) {
+        playThunk();
+        setTimeout(() => doLurch(items, realTargetIdx), 620);
+      } else {
+        playThunk();
+        onLanded(realTargetIdx);
+      }
+    }
+  }
+  lastTickY = reelY;
+  raf = requestAnimationFrame(animate);
+}
+
+// Near-miss lurch: snap exactly one item forward
+function doLurch(items, targetIdx) {
+  const startY = reelY;
+  const endY = startY - ITEM_H;
+  const duration = 270;
+  const startTime = performance.now();
+  function animate(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    reelY = startY + (endY - startY) * eased;
+    strip.style.transform = `translateY(${reelY}px)`;
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      reelY = endY;
+      strip.style.transform = `translateY(${reelY}px)`;
+      highlightCenter(items);
+      playThunk();
       onLanded(targetIdx);
     }
   }
-  raf = requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 function onLanded(idx) {
   spinning = false;
 
-  // Flash + thunk
   flashEl.classList.remove('active');
   void flashEl.offsetWidth;
   flashEl.classList.add('active');
@@ -890,16 +1016,15 @@ function onLanded(idx) {
     afterAlbumSpin(chosenAlbum);
   } else {
     const song = chosenAlbum.songs[idx];
+    playFanfare();
     showFinalResult(chosenAlbum, song);
   }
 }
 
 function afterAlbumSpin(album) {
-  // Show album reveal badge
   document.getElementById('album-reveal-name').textContent = album.name;
   document.getElementById('album-reveal').classList.add('visible');
 
-  // Move to phase 2
   phase = 2;
   document.getElementById('pip1').className = 'pip done';
   document.getElementById('pip2').className = 'pip active';
@@ -908,7 +1033,6 @@ function afterAlbumSpin(album) {
   spinBtn.disabled = false;
   lever.classList.remove('disabled');
 
-  // Load song reel
   setTimeout(() => {
     currentItems = album.songs.map(s => ({ name: s.name, color: album.color }));
     buildReel(currentItems, 0);
@@ -921,17 +1045,18 @@ function showFinalResult(album, song) {
   document.getElementById('res-album-name').textContent = '';
   document.getElementById('res-song-name').textContent = `"${song.name}"`;
   document.getElementById('res-verdict').textContent = getVerdict();
+  // autoplay=1 starts the track immediately
   document.getElementById('spotify-wrap').innerHTML = `
     <iframe style="border-radius:8px"
-      src="https://open.spotify.com/embed/track/${song.id}?utm_source=generator&theme=0"
+      src="https://open.spotify.com/embed/track/${song.id}?utm_source=generator&theme=0&autoplay=1"
       width="100%" height="152" frameBorder="0"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"></iframe>`;
+      loading="eager"></iframe>`;
   document.getElementById('btn-spotify').href = `https://open.spotify.com/track/${song.id}`;
   card.classList.add('visible');
 
   document.getElementById('pip2').className = 'pip done';
-  document.getElementById('phase-label').textContent = 'Spin! (if you dare) ☠️';
+  document.getElementById('phase-label').textContent = 'DESTINY REVEALED ☠️';
   spinBtn.disabled = true;
   lever.classList.add('disabled');
 }
@@ -950,7 +1075,7 @@ function getVerdict() {
     "You may update your bio accordingly.",
     "The universe had to think about this one.",
     "Completely accurate. No notes.",
-    "The machine is never wrong. The machine is never wrong. The Machine is",
+    "The machine is never wrong. The machine is never wrong.",
     "Certified. Notarized. Toasty.",
   ];
   return v[Math.floor(Math.random() * v.length)];
