@@ -40,6 +40,54 @@
     @keyframes blink { 50% { opacity: 0; } }
     .page { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; display: flex; flex-direction: column; align-items: center; gap: 0; }
 
+    /* SIDE ART LAYOUT */
+    .game-stage {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .side-art {
+      position: absolute;
+      top: 0;
+      width: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      pointer-events: none;
+      user-select: none;
+    }
+    .side-art.left  { left: -120px; }
+    .side-art.right { right: -120px; }
+    .side-art svg { opacity: 0.72; }
+
+    /* Float animations for side art pieces */
+    .float-a { animation: floatA 5s ease-in-out infinite; }
+    .float-b { animation: floatB 6.5s ease-in-out infinite; }
+    .float-c { animation: floatC 4.2s ease-in-out infinite; }
+    @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+    @keyframes floatC { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-6px) rotate(4deg)} }
+
+    /* Pulse on the speaker rings */
+    .ring-pulse { animation: ringPulse 2.4s ease-in-out infinite; transform-origin: center; }
+    .ring-pulse-2 { animation: ringPulse 2.4s ease-in-out infinite 0.4s; transform-origin: center; }
+    .ring-pulse-3 { animation: ringPulse 2.4s ease-in-out infinite 0.8s; transform-origin: center; }
+    @keyframes ringPulse { 0%,100%{opacity:0.2} 50%{opacity:0.7} }
+
+    /* Scanline flicker on the note */
+    .note-glow { animation: noteGlow 3s ease-in-out infinite; }
+    @keyframes noteGlow { 0%,100%{filter:drop-shadow(0 0 3px #00ff41)} 50%{filter:drop-shadow(0 0 10px #00ff41)} }
+
+    /* Skull eye blink */
+    .skull-eye { animation: eyeBlink 6s step-end infinite; }
+    @keyframes eyeBlink { 0%,90%,100%{opacity:1} 93%,97%{opacity:0} }
+
+    /* Hide side art on narrow screens */
+    @media (max-width: 920px) { .side-art { display: none; } }
+
     /* START SCREEN */
     .start-screen { text-align: center; padding: 20px 0 10px; width: 100%; max-width: 480px; }
     .start-title { font-family: 'VT323', monospace; font-size: clamp(2rem, 8vw, 3rem); color: var(--amber); text-shadow: 0 0 20px rgba(255,183,0,0.4); margin-bottom: 4px; letter-spacing: 2px; }
@@ -231,64 +279,193 @@
     <a class="go-home" href="https://toastybones.com">← RETURN TO BASE</a>
   </div>
 
-  <div class="tv-wrap" id="tv-wrap">
-    <div class="tv">
-      <div class="tv-brand">TOASTY · VISION · PRO</div>
-      <div class="screen-bezel">
-        <div class="screen" id="screen">
-          <canvas id="static-canvas"></canvas>
-          <div class="channel-display" id="channel-display">CH 01</div>
-          <div class="score-display" id="score-display">00/22</div>
-          <div class="screen-content">
-            <div class="waveform" id="waveform">
-              <div class="wave-bar" style="height:8px"></div>
-              <div class="wave-bar" style="height:14px"></div>
-              <div class="wave-bar" style="height:20px"></div>
-              <div class="wave-bar" style="height:30px"></div>
-              <div class="wave-bar" style="height:22px"></div>
-              <div class="wave-bar" style="height:36px"></div>
-              <div class="wave-bar" style="height:24px"></div>
-              <div class="wave-bar" style="height:18px"></div>
-              <div class="wave-bar" style="height:12px"></div>
-              <div class="wave-bar" style="height:6px"></div>
+  <!-- GAME STAGE: TV + cable + remote, with side art flanking -->
+  <div class="game-stage">
+
+    <!-- LEFT SIDE ART: Toaster skull + bones -->
+    <div class="side-art left">
+      <!-- Toaster skull -->
+      <svg class="float-a" width="90" height="100" viewBox="0 0 90 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Toast slices popping up -->
+        <rect x="28" y="4" width="14" height="22" rx="3" fill="#c87941" opacity="0.9"/>
+        <rect x="48" y="8" width="14" height="18" rx="3" fill="#d4874a" opacity="0.9"/>
+        <!-- Crust lines on toast -->
+        <line x1="31" y1="10" x2="39" y2="10" stroke="#a0602a" stroke-width="1.5"/>
+        <line x1="31" y1="14" x2="39" y2="14" stroke="#a0602a" stroke-width="1.5"/>
+        <line x1="51" y1="14" x2="59" y2="14" stroke="#a0602a" stroke-width="1.5"/>
+        <!-- Toaster body -->
+        <rect x="14" y="26" width="62" height="46" rx="8" fill="#2a2a2a" stroke="#444" stroke-width="1.5"/>
+        <!-- Toaster shine -->
+        <rect x="18" y="30" width="54" height="6" rx="3" fill="#3a3a3a"/>
+        <!-- Skull face on toaster -->
+        <ellipse cx="45" cy="52" rx="18" ry="16" fill="#1a1a1a" stroke="#555" stroke-width="1"/>
+        <!-- Skull eyes -->
+        <ellipse class="skull-eye" cx="38" cy="49" rx="4" ry="4.5" fill="#00ff41"/>
+        <ellipse class="skull-eye" cx="52" cy="49" rx="4" ry="4.5" fill="#00ff41"/>
+        <!-- Skull nose -->
+        <path d="M43 56 L45 53 L47 56 Z" fill="#333"/>
+        <!-- Skull teeth -->
+        <rect x="37" y="58" width="5" height="5" rx="1" fill="#444"/>
+        <rect x="43" y="58" width="5" height="5" rx="1" fill="#444"/>
+        <rect x="49" y="58" width="5" height="5" rx="1" fill="#444"/>
+        <!-- Toaster slot -->
+        <rect x="30" y="30" width="12" height="3" rx="1.5" fill="#111"/>
+        <rect x="48" y="30" width="12" height="3" rx="1.5" fill="#111"/>
+        <!-- Toaster lever -->
+        <rect x="70" y="44" width="6" height="18" rx="3" fill="#555"/>
+        <rect x="69" y="56" width="8" height="4" rx="2" fill="#ff3355"/>
+        <!-- Toaster feet -->
+        <rect x="18" y="70" width="10" height="6" rx="2" fill="#222" stroke="#444" stroke-width="1"/>
+        <rect x="62" y="70" width="10" height="6" rx="2" fill="#222" stroke="#444" stroke-width="1"/>
+        <!-- Flames from toast -->
+        <path d="M32 4 Q34 0 36 4 Q38 0 40 4" stroke="#ff3355" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <path d="M52 8 Q54 4 56 8 Q58 4 60 8" stroke="#ffb700" stroke-width="1.5" fill="none" opacity="0.7"/>
+      </svg>
+
+      <!-- Crossed bones -->
+      <svg class="float-c" width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bone 1: diagonal \ -->
+        <ellipse cx="15" cy="15" rx="8" ry="6" fill="#2a2a2a" stroke="#555" stroke-width="1.5"/>
+        <ellipse cx="12" cy="12" rx="5" ry="4" fill="#333" stroke="#555" stroke-width="1"/>
+        <rect x="18" y="16" width="32" height="7" rx="3.5" fill="#2a2a2a" stroke="#555" stroke-width="1.5" transform="rotate(42 18 16)"/>
+        <ellipse cx="65" cy="55" rx="8" ry="6" fill="#2a2a2a" stroke="#555" stroke-width="1.5"/>
+        <ellipse cx="68" cy="58" rx="5" ry="4" fill="#333" stroke="#555" stroke-width="1"/>
+        <!-- Bone 2: diagonal / -->
+        <ellipse cx="65" cy="15" rx="8" ry="6" fill="#2a2a2a" stroke="#00ff41" stroke-width="1.5"/>
+        <ellipse cx="68" cy="12" rx="5" ry="4" fill="#333" stroke="#00ff41" stroke-width="1"/>
+        <rect x="20" y="42" width="32" height="7" rx="3.5" fill="#2a2a2a" stroke="#00ff41" stroke-width="1.5" transform="rotate(-42 20 42)"/>
+        <ellipse cx="15" cy="55" rx="8" ry="6" fill="#2a2a2a" stroke="#00ff41" stroke-width="1.5"/>
+        <ellipse cx="12" cy="58" rx="5" ry="4" fill="#333" stroke="#00ff41" stroke-width="1"/>
+      </svg>
+
+      <!-- VHS tape -->
+      <svg class="float-b" width="80" height="52" viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="4" width="76" height="44" rx="5" fill="#1a1a1a" stroke="#444" stroke-width="1.5"/>
+        <rect x="8" y="10" width="64" height="24" rx="3" fill="#111" stroke="#333" stroke-width="1"/>
+        <!-- Tape reels -->
+        <circle cx="24" cy="22" r="8" fill="#222" stroke="#555" stroke-width="1.5"/>
+        <circle cx="56" cy="22" r="8" fill="#222" stroke="#555" stroke-width="1.5"/>
+        <circle cx="24" cy="22" r="3" fill="#333"/>
+        <circle cx="56" cy="22" r="3" fill="#333"/>
+        <!-- Tape window -->
+        <path d="M32 22 Q40 18 48 22" stroke="#00ff41" stroke-width="1" fill="none" opacity="0.6"/>
+        <!-- Label -->
+        <rect x="12" y="36" width="56" height="8" rx="2" fill="#c87941" opacity="0.7"/>
+        <text x="40" y="43" font-family="monospace" font-size="5" fill="#1a0a00" text-anchor="middle" font-weight="bold">TOASTYBONES</text>
+      </svg>
+    </div>
+
+    <!-- RIGHT SIDE ART: Speaker + music notes + signal bars -->
+    <div class="side-art right">
+      <!-- Retro speaker -->
+      <svg class="float-b" width="90" height="95" viewBox="0 0 90 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Speaker body -->
+        <rect x="8" y="8" width="74" height="78" rx="10" fill="#1a1a1a" stroke="#444" stroke-width="1.5"/>
+        <!-- Speaker grille dots -->
+        <circle cx="25" cy="25" r="2" fill="#2a2a2a"/><circle cx="33" cy="25" r="2" fill="#2a2a2a"/>
+        <circle cx="41" cy="25" r="2" fill="#2a2a2a"/><circle cx="49" cy="25" r="2" fill="#2a2a2a"/>
+        <circle cx="57" cy="25" r="2" fill="#2a2a2a"/><circle cx="65" cy="25" r="2" fill="#2a2a2a"/>
+        <circle cx="25" cy="33" r="2" fill="#2a2a2a"/><circle cx="33" cy="33" r="2" fill="#2a2a2a"/>
+        <circle cx="41" cy="33" r="2" fill="#2a2a2a"/><circle cx="49" cy="33" r="2" fill="#2a2a2a"/>
+        <circle cx="57" cy="33" r="2" fill="#2a2a2a"/><circle cx="65" cy="33" r="2" fill="#2a2a2a"/>
+        <!-- Speaker cone -->
+        <circle cx="45" cy="57" r="26" fill="#111" stroke="#333" stroke-width="1.5"/>
+        <circle class="ring-pulse"   cx="45" cy="57" r="20" fill="none" stroke="#00ff41" stroke-width="1.2"/>
+        <circle class="ring-pulse-2" cx="45" cy="57" r="14" fill="none" stroke="#00ff41" stroke-width="1.2"/>
+        <circle class="ring-pulse-3" cx="45" cy="57" r="8"  fill="none" stroke="#00ff41" stroke-width="1.2"/>
+        <circle cx="45" cy="57" r="4" fill="#00ff41" opacity="0.5"/>
+        <!-- Speaker brand dot row -->
+        <circle cx="30" cy="82" r="3" fill="#ff3355"/>
+        <circle cx="40" cy="82" r="3" fill="#ffb700"/>
+        <circle cx="50" cy="82" r="3" fill="#00ff41"/>
+        <circle cx="60" cy="82" r="3" fill="#00cfff"/>
+      </svg>
+
+      <!-- Floating music note -->
+      <svg class="note-glow float-a" width="50" height="60" viewBox="0 0 50 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Double eighth notes -->
+        <line x1="12" y1="44" x2="12" y2="14" stroke="#00ff41" stroke-width="3" stroke-linecap="round"/>
+        <line x1="36" y1="40" x2="36" y2="10" stroke="#00ff41" stroke-width="3" stroke-linecap="round"/>
+        <line x1="12" y1="14" x2="36" y2="10" stroke="#00ff41" stroke-width="3"/>
+        <line x1="12" y1="20" x2="36" y2="16" stroke="#00ff41" stroke-width="2.5"/>
+        <ellipse cx="10" cy="46" rx="7" ry="5" fill="#00ff41" transform="rotate(-15 10 46)"/>
+        <ellipse cx="34" cy="42" rx="7" ry="5" fill="#00ff41" transform="rotate(-15 34 42)"/>
+      </svg>
+
+      <!-- Signal / wifi bars -->
+      <svg class="float-c" width="70" height="55" viewBox="0 0 70 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Signal bars like old TV aerial -->
+        <rect x="8"  y="35" width="8" height="14" rx="2" fill="#ff3355" opacity="0.8"/>
+        <rect x="20" y="26" width="8" height="23" rx="2" fill="#ffb700" opacity="0.8"/>
+        <rect x="32" y="17" width="8" height="32" rx="2" fill="#00ff41" opacity="0.8"/>
+        <rect x="44" y="8"  width="8" height="41" rx="2" fill="#00cfff" opacity="0.8"/>
+        <rect x="56" y="2"  width="8" height="47" rx="2" fill="#cc44ff" opacity="0.8"/>
+        <!-- Label -->
+        <text x="35" y="54" font-family="monospace" font-size="7" fill="#444" text-anchor="middle" letter-spacing="2">SIGNAL</text>
+      </svg>
+    </div>
+
+    <!-- TV -->
+    <div class="tv-wrap" id="tv-wrap">
+      <div class="tv">
+        <div class="tv-brand">TOASTY · VISION · PRO</div>
+        <div class="screen-bezel">
+          <div class="screen" id="screen">
+            <canvas id="static-canvas"></canvas>
+            <div class="channel-display" id="channel-display">CH 01</div>
+            <div class="score-display" id="score-display">00/22</div>
+            <div class="screen-content">
+              <div class="waveform" id="waveform">
+                <div class="wave-bar" style="height:8px"></div>
+                <div class="wave-bar" style="height:14px"></div>
+                <div class="wave-bar" style="height:20px"></div>
+                <div class="wave-bar" style="height:30px"></div>
+                <div class="wave-bar" style="height:22px"></div>
+                <div class="wave-bar" style="height:36px"></div>
+                <div class="wave-bar" style="height:24px"></div>
+                <div class="wave-bar" style="height:18px"></div>
+                <div class="wave-bar" style="height:12px"></div>
+                <div class="wave-bar" style="height:6px"></div>
+              </div>
+              <button class="screen-play-btn" id="play-btn" onclick="handlePlay()">▶</button>
+              <div class="screen-hint" id="screen-hint">TAP TO PLAY CLIP</div>
+              <button class="replay-link" id="replay-btn" onclick="replaySound()">↺ replay</button>
+              <div class="screen-feedback" id="screen-feedback"></div>
+              <div class="round-dots" id="round-dots"></div>
             </div>
-            <button class="screen-play-btn" id="play-btn" onclick="handlePlay()">▶</button>
-            <div class="screen-hint" id="screen-hint">TAP TO PLAY CLIP</div>
-            <button class="replay-link" id="replay-btn" onclick="replaySound()">↺ replay</button>
-            <div class="screen-feedback" id="screen-feedback"></div>
-            <div class="round-dots" id="round-dots"></div>
           </div>
+          <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
         </div>
-        <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+        <div class="tv-side-controls">
+          <div class="tv-knob"></div><div class="tv-knob"></div><div class="tv-knob"></div>
+        </div>
       </div>
-      <div class="tv-side-controls">
-        <div class="tv-knob"></div><div class="tv-knob"></div><div class="tv-knob"></div>
-      </div>
+      <div class="tv-legs"><div class="tv-leg"></div><div class="tv-leg"></div></div>
     </div>
-    <div class="tv-legs"><div class="tv-leg"></div><div class="tv-leg"></div></div>
-  </div>
 
-  <div class="cable-wrap" id="cable-wrap"><div class="cable"></div></div>
+    <div class="cable-wrap" id="cable-wrap"><div class="cable"></div></div>
 
-  <div class="remote-wrap" id="remote-wrap">
-    <div class="remote">
-      <div class="remote-top">
-        <div class="remote-brand">TOASTY-MOTE 3000</div>
-        <div class="ir-emitter" id="ir-emitter"></div>
+    <div class="remote-wrap" id="remote-wrap">
+      <div class="remote">
+        <div class="remote-top">
+          <div class="remote-brand">TOASTY-MOTE 3000</div>
+          <div class="ir-emitter" id="ir-emitter"></div>
+        </div>
+        <div class="answer-grid" id="answer-grid"></div>
+        <div class="remote-bottom">
+          <button class="next-btn" id="next-btn" onclick="nextRound()">NEXT CLIP ▶</button>
+        </div>
+        <div class="remote-deco">
+          <div class="deco-btn"></div><div class="deco-btn"></div>
+          <div class="deco-btn"></div><div class="deco-btn"></div>
+        </div>
       </div>
-      <div class="answer-grid" id="answer-grid"></div>
-      <div class="remote-bottom">
-        <button class="next-btn" id="next-btn" onclick="nextRound()">NEXT CLIP ▶</button>
-      </div>
-      <div class="remote-deco">
-        <div class="deco-btn"></div><div class="deco-btn"></div>
-        <div class="deco-btn"></div><div class="deco-btn"></div>
+      <div class="key-hints">
+        <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> keyboard · <kbd>Space</kbd> play · <kbd>Enter</kbd> next
       </div>
     </div>
-    <div class="key-hints">
-      <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> keyboard · <kbd>Space</kbd> play · <kbd>Enter</kbd> next
-    </div>
-  </div>
+
+  </div><!-- end game-stage -->
 
 </div>
 <audio id="audio" preload="none"></audio>
