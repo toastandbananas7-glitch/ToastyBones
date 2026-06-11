@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Which ToastyBones Song Are You? | Slot Machine</title>
+  <title>Toasty Gamble | Which ToastyBones Song Are You?</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
@@ -645,7 +645,7 @@
   <a href="index.html" class="back-link">← Back to ToastyBones</a>
 
   <div class="header">
-    <h1>☠️ Toasty Gamble ☠️</h1>
+    <h1>🎰 Toasty Gamble 🎰</h1>
     <p>Which ToastyBones song are you?</p>
   </div>
 
@@ -1047,7 +1047,7 @@ function startSpin() {
   const nearMissIdx = ((realTargetIdx - 1) + n) % n;
   const firstTargetIdx = doNearMiss ? nearMissIdx : realTargetIdx;
 
-  const loops = 6 + Math.floor(Math.random() * 5);
+  const loops = 3 + Math.floor(Math.random() * 2);
   const currentCenter = getCenteredIndex(items);
   let extraSteps = firstTargetIdx - currentCenter;
   if (extraSteps <= 0) extraSteps += n;
@@ -1055,7 +1055,7 @@ function startSpin() {
 
   const startY = reelY;
   const endY = startY - totalDist;
-  const duration = doNearMiss ? 2200 : (2400 + Math.random() * 500);
+  const duration = doNearMiss ? 3200 : (3800 + Math.random() * 600);
   const startTime = performance.now();
   lastTickY = reelY;
 
