@@ -59,7 +59,7 @@
       100% { opacity: 0; }
     }
 
-    /* Page layout */
+    /* ── Dark page background overlay ── */
     .page {
       min-height: 100vh;
       display: flex;
@@ -68,6 +68,185 @@
       justify-content: flex-start;
       padding: 1.5rem 1rem 5rem;
       gap: 1.2rem;
+      background: rgba(0,0,0,0.72);
+    }
+
+    /* ══ CRT TV MACHINE ══ */
+    .machine-wrap {
+      width: min(560px, 96vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: relative; /* for lever positioning */
+    }
+
+    /* CRT TV outer casing — top bar */
+    .cabinet-top {
+      width: 100%;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      border: 4px solid #333;
+      border-bottom: none;
+      border-radius: 1.2rem 1.2rem 0 0;
+      padding: 0.7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 0 2px #555, 0 0 25px rgba(0,200,255,0.15);
+      position: relative;
+    }
+
+    /* CRT brand label */
+    .cabinet-top .label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      color: #aaa;
+      text-transform: uppercase;
+    }
+
+    .cabinet-lights {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .cabinet-lights span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      animation: cabinetBlink 1.8s ease-in-out infinite;
+    }
+    .cabinet-lights span:nth-child(1) { background: #ff0000; animation-delay: 0s; }
+    .cabinet-lights span:nth-child(2) { background: #fffb00; animation-delay: 0.3s; }
+    .cabinet-lights span:nth-child(3) { background: #00ff88; animation-delay: 0.6s; }
+    .cabinet-lights span:nth-child(4) { background: #ff00cc; animation-delay: 0.9s; }
+    .cabinet-lights span:nth-child(5) { background: #00ccff; animation-delay: 1.2s; }
+    @keyframes cabinetBlink {
+      0%,100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+      50% { opacity: 0.2; box-shadow: none; }
+    }
+
+    /* CRT screen bezel */
+    .reel-window {
+      width: 100%;
+      background: #000;
+      border-left: 4px solid #333;
+      border-right: 4px solid #333;
+      position: relative;
+      overflow: hidden;
+      height: 280px;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,200,255,0.06);
+    }
+
+    /* Phosphor screen glow */
+    .reel-window::before {
+      top: 0;
+      height: 90px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.97) 0%, transparent 100%);
+    }
+    .reel-window::after {
+      bottom: 0;
+      height: 90px;
+      background: linear-gradient(to top, rgba(0,0,0,0.97) 0%, transparent 100%);
+    }
+
+    /* Scanline overlay on the reel */
+    .reel-window .scanlines {
+      position: absolute;
+      inset: 0;
+      z-index: 11;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+      );
+    }
+
+    /* CRT bottom casing */
+    .cabinet-bottom {
+      width: 100%;
+      background: linear-gradient(180deg, #16213e 0%, #0f0f23 100%);
+      border: 4px solid #333;
+      border-top: 2px solid #222;
+      border-radius: 0 0 1.2rem 1.2rem;
+      padding: 1rem 1.5rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      box-shadow: 0 0 0 2px #555, 0 8px 30px rgba(0,0,0,0.6);
+    }
+
+    /* ── LEVER sticking out the right side ── */
+    .lever-area {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .lever {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      cursor: pointer;
+      user-select: none;
+      position: absolute;
+      right: -52px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+    }
+
+    .lever-ball {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ff9900, #cc3300);
+      border: 4px solid #ffaa00;
+      box-shadow: 0 0 16px rgba(255,120,0,0.8), 0 0 4px rgba(255,200,0,0.5);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .lever-shaft {
+      width: 10px;
+      height: 80px;
+      background: linear-gradient(90deg, #999 0%, #ccc 40%, #888 100%);
+      border-radius: 5px;
+      box-shadow: 2px 0 4px rgba(0,0,0,0.5);
+    }
+
+    .lever-base {
+      width: 32px; height: 14px;
+      background: linear-gradient(180deg, #666 0%, #333 100%);
+      border-radius: 4px;
+      border: 2px solid #888;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.6);
+    }
+
+    .lever:hover .lever-ball,
+    .lever:not(.disabled):active .lever-ball {
+      transform: translateY(8px);
+      box-shadow: 0 0 28px rgba(255,120,0,1);
+    }
+
+    .lever.pulling .lever-ball {
+      transform: translateY(62px);
+      box-shadow: 0 0 32px rgba(255,120,0,1);
+      transition: transform 0.18s ease-in, box-shadow 0.18s ease-in;
+    }
+    .lever.springing .lever-ball {
+      transform: translateY(0px);
+      box-shadow: 0 0 14px rgba(255,100,0,0.5);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+    }
+
+    .lever.disabled { cursor: not-allowed; opacity: 0.3; }
+    .lever.disabled .lever-ball { transform: none !important; }
+
+    /* Hide lever on small screens where it would overflow */
+    @media (max-width: 680px) {
+      .lever { display: none; }
     }
 
     .back-link {
@@ -140,100 +319,7 @@
       transition: all 0.3s;
     }
 
-    /* ══ SLOT MACHINE ══ */
-    .machine-wrap {
-      width: min(520px, 96vw);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-    }
-
-    /* Cabinet top bar */
-    .cabinet-top {
-      width: 100%;
-      background: linear-gradient(180deg, #1a0a00 0%, #2d1500 100%);
-      border: 3px solid #fffb00;
-      border-bottom: none;
-      border-radius: 1rem 1rem 0 0;
-      padding: 0.6rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 0 20px rgba(255,251,0,0.2);
-    }
-    .cabinet-top .label {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      color: #fffb00;
-      opacity: 0.7;
-    }
-    .cabinet-lights {
-      display: flex;
-      gap: 0.4rem;
-    }
-    .cabinet-lights span {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      animation: cabinetBlink 1.8s ease-in-out infinite;
-    }
-    .cabinet-lights span:nth-child(1) { background: #ff0000; animation-delay: 0s; }
-    .cabinet-lights span:nth-child(2) { background: #fffb00; animation-delay: 0.3s; }
-    .cabinet-lights span:nth-child(3) { background: #00ff88; animation-delay: 0.6s; }
-    .cabinet-lights span:nth-child(4) { background: #ff00cc; animation-delay: 0.9s; }
-    .cabinet-lights span:nth-child(5) { background: #00ccff; animation-delay: 1.2s; }
-    @keyframes cabinetBlink {
-      0%,100% { opacity: 1; box-shadow: 0 0 6px currentColor; }
-      50% { opacity: 0.25; box-shadow: none; }
-    }
-
-    /* Reel window */
-    .reel-window {
-      width: 100%;
-      background: #000;
-      border-left: 3px solid #fffb00;
-      border-right: 3px solid #fffb00;
-      position: relative;
-      overflow: hidden;
-      height: 260px;
-    }
-
-    /* Top/bottom gradient fades */
-    .reel-window::before,
-    .reel-window::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0;
-      z-index: 10;
-      pointer-events: none;
-    }
-    .reel-window::before {
-      top: 0;
-      height: 80px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 100%);
-    }
-    .reel-window::after {
-      bottom: 0;
-      height: 80px;
-      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
-    }
-
-    /* Center highlight bar */
-    .reel-center-bar {
-      position: absolute;
-      top: 50%;
-      left: 0; right: 0;
-      transform: translateY(-50%);
-      height: 80px;
-      border-top: 2px solid rgba(255,251,0,0.5);
-      border-bottom: 2px solid rgba(255,251,0,0.5);
-      background: rgba(255,251,0,0.04);
-      z-index: 9;
-      pointer-events: none;
-    }
-
-    /* The reel strip */
+    /* Reel strip items */
     .reel-strip {
       position: absolute;
       left: 0; right: 0;
@@ -269,80 +355,21 @@
       text-shadow: 0 0 15px #ff00ff, 0 0 30px #00ffff;
     }
 
-    /* Cabinet bottom / button area */
-    .cabinet-bottom {
-      width: 100%;
-      background: linear-gradient(180deg, #2d1500 0%, #1a0a00 100%);
-      border: 3px solid #fffb00;
-      border-top: none;
-      border-radius: 0 0 1rem 1rem;
-      padding: 1.2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
-      box-shadow: 0 0 20px rgba(255,251,0,0.2);
+    /* Center highlight bar */
+    .reel-center-bar {
+      position: absolute;
+      top: 50%;
+      left: 0; right: 0;
+      transform: translateY(-50%);
+      height: 80px;
+      border-top: 2px solid rgba(255,251,0,0.4);
+      border-bottom: 2px solid rgba(255,251,0,0.4);
+      background: rgba(255,251,0,0.03);
+      z-index: 9;
+      pointer-events: none;
     }
 
-    /* Lever / pull handle visual */
-    .lever-area {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .lever {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-      cursor: pointer;
-      user-select: none;
-    }
-    .lever-ball {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ff6600, #cc3300);
-      border: 3px solid #ff9900;
-      box-shadow: 0 0 12px rgba(255,100,0,0.6);
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .lever-shaft {
-      width: 6px;
-      height: 60px;
-      background: linear-gradient(180deg, #888 0%, #444 100%);
-      border-radius: 3px;
-      border: 1px solid #666;
-    }
-    .lever-base {
-      width: 24px; height: 8px;
-      background: #444;
-      border-radius: 2px;
-      border: 1px solid #666;
-    }
-
-    .lever:hover .lever-ball,
-    .lever:not(.disabled):active .lever-ball {
-      transform: translateY(8px);
-      box-shadow: 0 0 20px rgba(255,100,0,0.9);
-    }
-
-    .lever.pulling .lever-ball {
-      transform: translateY(48px);
-      box-shadow: 0 0 24px rgba(255,100,0,1);
-      transition: transform 0.18s ease-in, box-shadow 0.18s ease-in;
-    }
-    .lever.springing .lever-ball {
-      transform: translateY(0px);
-      box-shadow: 0 0 10px rgba(255,100,0,0.5);
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
-    }
-
-    .lever.disabled { cursor: not-allowed; opacity: 0.35; }
-    .lever.disabled .lever-ball { transform: none !important; }
-
+    /* ══ SPIN BUTTON ══ */
     .spin-btn {
       font-family: 'Orbitron', sans-serif;
       font-size: clamp(1rem, 3.5vw, 1.4rem);
@@ -534,7 +561,7 @@
       position: fixed;
       top: 0;
       bottom: 0;
-      width: 80px;
+      width: 110px;
       z-index: 1;
       pointer-events: none;
       display: flex;
@@ -542,7 +569,7 @@
       justify-content: space-around;
       align-items: center;
       padding: 2rem 0;
-      gap: 1rem;
+      gap: 0.5rem;
     }
 
     .side-deco.left  { left: 0; }
@@ -551,27 +578,29 @@
     @media (max-width: 900px) { .side-deco { display: none; } }
 
     .deco-skull {
-      font-size: 1.8rem;
-      opacity: 0.35;
+      font-size: 2.6rem;
+      opacity: 0.45;
       animation: decoFloat 4s ease-in-out infinite;
-      filter: drop-shadow(0 0 6px #ff00ff);
+      filter: drop-shadow(0 0 8px #ff00ff);
     }
 
-    .deco-skull:nth-child(2) { animation-delay: 1s; font-size: 1.2rem; opacity: 0.2; }
-    .deco-skull:nth-child(3) { animation-delay: 2s; font-size: 2.2rem; opacity: 0.25; filter: drop-shadow(0 0 8px #00ffff); }
-    .deco-skull:nth-child(4) { animation-delay: 0.5s; font-size: 1rem; opacity: 0.15; }
-    .deco-skull:nth-child(5) { animation-delay: 3s; font-size: 1.5rem; opacity: 0.3; filter: drop-shadow(0 0 6px #fffb00); }
+    .deco-skull:nth-child(2) { animation-delay: 1s; font-size: 1.6rem; opacity: 0.25; }
+    .deco-skull:nth-child(3) { animation-delay: 2s; font-size: 3rem; opacity: 0.35; filter: drop-shadow(0 0 10px #00ffff); }
+    .deco-skull:nth-child(4) { animation-delay: 0.5s; font-size: 1.4rem; opacity: 0.2; }
+    .deco-skull:nth-child(5) { animation-delay: 3s; font-size: 2rem; opacity: 0.4; filter: drop-shadow(0 0 8px #fffb00); }
+    .deco-skull:nth-child(7) { animation-delay: 1.5s; font-size: 2.4rem; opacity: 0.3; filter: drop-shadow(0 0 6px #ff00cc); }
+    .deco-skull:nth-child(9) { animation-delay: 2.5s; font-size: 1.8rem; opacity: 0.35; }
 
     @keyframes decoFloat {
       0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50%       { transform: translateY(-12px) rotate(5deg); }
+      50%       { transform: translateY(-14px) rotate(5deg); }
     }
 
     .deco-bar {
-      width: 2px;
-      height: 60px;
+      width: 3px;
+      height: 70px;
       background: linear-gradient(to bottom, transparent, #ff00ff, transparent);
-      opacity: 0.3;
+      opacity: 0.35;
       animation: decoBar 2s ease-in-out infinite;
     }
 
@@ -581,21 +610,21 @@
     }
 
     @keyframes decoBar {
-      0%, 100% { opacity: 0.15; transform: scaleY(1); }
-      50%       { opacity: 0.5;  transform: scaleY(1.3); }
+      0%, 100% { opacity: 0.2; transform: scaleY(1); }
+      50%       { opacity: 0.6;  transform: scaleY(1.3); }
     }
 
     .deco-static {
-      width: 50px;
-      height: 50px;
-      border: 1px solid rgba(255,251,0,0.2);
-      border-radius: 4px;
+      width: 70px;
+      height: 70px;
+      border: 2px solid rgba(255,251,0,0.25);
+      border-radius: 6px;
       overflow: hidden;
-      opacity: 0.25;
+      opacity: 0.3;
       animation: staticFlash 0.3s steps(1) infinite;
       background: repeating-linear-gradient(
         45deg,
-        rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 2px,
+        rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px,
         transparent 2px, transparent 6px
       );
     }
@@ -673,6 +702,7 @@
     </div>
 
     <div class="reel-window" id="reel-window">
+      <div class="scanlines"></div>
       <div class="reel-center-bar"></div>
       <div class="reel-strip" id="reel-strip"></div>
     </div>
