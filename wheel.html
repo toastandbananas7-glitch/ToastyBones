@@ -388,12 +388,12 @@
     /* Result card */
     #result-card {
       width: min(520px, 96vw);
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.92);
       border: 2px solid #fffb00;
       border-radius: 1rem;
       padding: 1.5rem 1.5rem 1.2rem;
       text-align: center;
-      box-shadow: 0 0 30px rgba(255,251,0,0.15);
+      box-shadow: 0 0 30px rgba(255,251,0,0.15), inset 0 0 40px rgba(0,0,0,0.6);
       display: none;
     }
     #result-card.visible {
@@ -464,6 +464,21 @@
       cursor: pointer;
     }
     .btn-spotify:hover { background: #17a349; transform: scale(1.04); }
+    .btn-ytmusic {
+      background: #ff0000;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.4rem;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-ytmusic:hover { background: #cc0000; transform: scale(1.04); }
     .btn-again {
       background: transparent;
       color: #fffb00;
@@ -514,19 +529,122 @@
       color: #ff00cc;
       text-shadow: 0 0 10px #ff00cc;
     }
-  </style>
+    /* ============ SIDE DECORATIONS ============ */
+    .side-deco {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 1;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      padding: 2rem 0;
+      gap: 1rem;
+    }
+
+    .side-deco.left  { left: 0; }
+    .side-deco.right { right: 0; }
+
+    @media (max-width: 900px) { .side-deco { display: none; } }
+
+    .deco-skull {
+      font-size: 1.8rem;
+      opacity: 0.35;
+      animation: decoFloat 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 6px #ff00ff);
+    }
+
+    .deco-skull:nth-child(2) { animation-delay: 1s; font-size: 1.2rem; opacity: 0.2; }
+    .deco-skull:nth-child(3) { animation-delay: 2s; font-size: 2.2rem; opacity: 0.25; filter: drop-shadow(0 0 8px #00ffff); }
+    .deco-skull:nth-child(4) { animation-delay: 0.5s; font-size: 1rem; opacity: 0.15; }
+    .deco-skull:nth-child(5) { animation-delay: 3s; font-size: 1.5rem; opacity: 0.3; filter: drop-shadow(0 0 6px #fffb00); }
+
+    @keyframes decoFloat {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50%       { transform: translateY(-12px) rotate(5deg); }
+    }
+
+    .deco-bar {
+      width: 2px;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, #ff00ff, transparent);
+      opacity: 0.3;
+      animation: decoBar 2s ease-in-out infinite;
+    }
+
+    .deco-bar:nth-child(even) {
+      background: linear-gradient(to bottom, transparent, #00ffff, transparent);
+      animation-delay: 1s;
+    }
+
+    @keyframes decoBar {
+      0%, 100% { opacity: 0.15; transform: scaleY(1); }
+      50%       { opacity: 0.5;  transform: scaleY(1.3); }
+    }
+
+    .deco-static {
+      width: 50px;
+      height: 50px;
+      border: 1px solid rgba(255,251,0,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      opacity: 0.25;
+      animation: staticFlash 0.3s steps(1) infinite;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 2px,
+        transparent 2px, transparent 6px
+      );
+    }
+
+    @keyframes staticFlash {
+      0%   { background-position: 0 0; opacity: 0.2; }
+      25%  { background-position: 5px -3px; opacity: 0.3; }
+      50%  { background-position: -3px 5px; opacity: 0.15; }
+      75%  { background-position: 3px 3px; opacity: 0.25; }
+      100% { background-position: 0 0; opacity: 0.2; }
+    }
 </head>
 <body>
 
 <div id="crt" aria-hidden="true"></div>
 <div id="flash" aria-hidden="true"></div>
 
+<!-- Left side decorations -->
+<div class="side-deco left" aria-hidden="true">
+  <div class="deco-skull">☠️</div>
+  <div class="deco-bar"></div>
+  <div class="deco-skull">🍞</div>
+  <div class="deco-static"></div>
+  <div class="deco-bar"></div>
+  <div class="deco-skull">☠️</div>
+  <div class="deco-bar"></div>
+  <div class="deco-static"></div>
+  <div class="deco-skull">🎰</div>
+</div>
+
+<!-- Right side decorations -->
+<div class="side-deco right" aria-hidden="true">
+  <div class="deco-skull">🍞</div>
+  <div class="deco-bar"></div>
+  <div class="deco-static"></div>
+  <div class="deco-skull">☠️</div>
+  <div class="deco-bar"></div>
+  <div class="deco-skull">🎰</div>
+  <div class="deco-static"></div>
+  <div class="deco-bar"></div>
+  <div class="deco-skull">🍞</div>
+</div>
+
 <div class="page">
 
   <a href="index.html" class="back-link">← Back to ToastyBones</a>
 
   <div class="header">
-    <h1>☠️ Toasty Gamble ☠️</h1>
+    <h1>☠️ Slot of Fate ☠️</h1>
     <p>Which ToastyBones song are you?</p>
   </div>
 
@@ -588,6 +706,7 @@
     <div id="spotify-wrap"></div>
     <div class="res-actions">
       <a class="btn-spotify" id="btn-spotify" href="#" target="_blank">▶ OPEN IN SPOTIFY</a>
+      <a class="btn-ytmusic" id="btn-ytmusic" href="#" target="_blank">▶ YT MUSIC</a>
       <button class="btn-again" onclick="resetMachine()">SPIN AGAIN</button>
     </div>
   </div>
@@ -927,7 +1046,7 @@ function startSpin() {
   const nearMissIdx = ((realTargetIdx - 1) + n) % n;
   const firstTargetIdx = doNearMiss ? nearMissIdx : realTargetIdx;
 
-  const loops = 3 + Math.floor(Math.random() * 2);
+  const loops = 6 + Math.floor(Math.random() * 5);
   const currentCenter = getCenteredIndex(items);
   let extraSteps = firstTargetIdx - currentCenter;
   if (extraSteps <= 0) extraSteps += n;
@@ -935,7 +1054,7 @@ function startSpin() {
 
   const startY = reelY;
   const endY = startY - totalDist;
-  const duration = doNearMiss ? 3200 : (3800 + Math.random() * 600);
+  const duration = doNearMiss ? 2200 : (2400 + Math.random() * 500);
   const startTime = performance.now();
   lastTickY = reelY;
 
@@ -1053,6 +1172,7 @@ function showFinalResult(album, song) {
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="eager"></iframe>`;
   document.getElementById('btn-spotify').href = `https://open.spotify.com/track/${song.id}`;
+  document.getElementById('btn-ytmusic').href = `https://music.youtube.com/search?q=ToastyBones+${encodeURIComponent(song.name)}`;
   card.classList.add('visible');
 
   document.getElementById('pip2').className = 'pip done';
