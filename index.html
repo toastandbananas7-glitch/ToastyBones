@@ -700,12 +700,29 @@
   <span id="crt-label">CRT: OFF</span>
 </button>
 
-<!-- Desktop Floating Merch Banner -->
+<!-- Desktop Floating Buttons (left side) -->
 <div class="hidden sm:block">
-  <a href="https://toastybonesmerch.printful.me/" target="_blank"
-     class="fixed top-1/2 left-4 transform -translate-y-1/2 z-50 w-[24rem] px-8 py-5 text-2xl font-orbitron text-yellow-300 bg-pink-600 rounded-xl shadow-2xl hover:bg-yellow-400 hover:text-black transition duration-300 text-center">
-    🛒 Check out the new merch!
-  </a>
+  <div class="fixed top-1/2 left-4 transform -translate-y-1/2 z-50 flex flex-col gap-3" style="width:13rem;">
+
+    <!-- Merch Button -->
+    <a href="https://toastybonesmerch.printful.me/" target="_blank"
+       class="block w-full px-5 py-4 font-orbitron rounded-xl shadow-2xl text-center transition duration-300"
+       style="font-size:1rem; line-height:1.3; color:#fffb00; background:#c0006a; box-shadow: 0 0 18px rgba(255,0,200,0.45), 0 4px 0 #7a0045;"
+       onmouseover="this.style.background='#fffb00';this.style.color='#000';this.style.boxShadow='0 0 30px rgba(255,251,0,0.7), 0 4px 0 #887700';"
+       onmouseout="this.style.background='#c0006a';this.style.color='#fffb00';this.style.boxShadow='0 0 18px rgba(255,0,200,0.45), 0 4px 0 #7a0045';">
+      🛒 New Merch!
+    </a>
+
+    <!-- Wheel Button -->
+    <a href="wheel.html"
+       class="block w-full px-5 py-4 font-orbitron rounded-xl shadow-2xl text-center transition duration-300"
+       style="font-size:1rem; line-height:1.3; background:#111; color:#fffb00; border: 2px solid #fffb00; box-shadow: 0 0 18px rgba(255,251,0,0.35), 0 4px 0 #887700;"
+       onmouseover="this.style.background='#fffb00';this.style.color='#000';this.style.boxShadow='0 0 30px rgba(255,251,0,0.8), 0 4px 0 #887700';"
+       onmouseout="this.style.background='#111';this.style.color='#fffb00';this.style.boxShadow='0 0 18px rgba(255,251,0,0.35), 0 4px 0 #887700';">
+      🎰 Slot of Fate
+    </a>
+
+  </div>
 </div>
 
 <!-- Mobile Bottom Merch Banner -->
@@ -1344,10 +1361,6 @@
   function closeSecret() { secretMsg.classList.remove('visible'); }
   secretMsg.addEventListener('click', (e) => { if (e.target === secretMsg) closeSecret(); });
 
-
-  document.getElementById('email-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleSignup();
-  });
 </script>
 
 </body>
