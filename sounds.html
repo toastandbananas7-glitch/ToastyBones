@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToastyBones — Sound Trivia</title>
+  <link rel="icon" href="favicon.ico">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --green: #00ff41;
+      --green-dim: #00aa2a;
+      --red: #ff2244;
+      --amber: #ffb700;
+      --bg: #0a0a0a;
+      --panel: #111;
+      --border: #1a1a1a;
+      --scanline: rgba(0,255,65,0.03);
+      --text: #d0d0d0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* CRT scanlines overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        var(--scanline) 0px,
+        var(--scanline) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* CRT vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* Top bar matching site */
+    .topbar {
+      background: #0d0d0d;
+      border-bottom: 1px solid var(--green-dim);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      color: var(--green-dim);
+    }
+
+    .topbar a {
+      color: var(--green);
+      text-decoration: none;
+      font-size: 1rem;
+      border: 1px solid var(--green-dim);
+      padding: 2px 10px;
+      transition: all 0.2s;
+    }
+
+    .topbar a:hover {
+      background: var(--green);
+      color: #000;
+    }
+
+    .on-air {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .on-air-dot {
+      width: 8px; height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Main container */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    /* Title */
+    .game-title {
+      font-family: 'VT323', monospace;
+      font-size: clamp(2.2rem, 8vw, 3.5rem);
+      color: var(--green);
+      text-align: center;
+      text-shadow: 0 0 20px var(--green), 0 0 40px var(--green-dim);
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+      animation: flicker 8s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 94%, 96%, 98%, 100% { opacity: 1; }
+      95%, 97%, 99% { opacity: 0.85; }
+    }
+
+    .game-subtitle {
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      color: var(--green-dim);
+      text-align: center;
+      margin-bottom: 32px;
+      letter-spacing: 3px;
+    }
+
+    /* Score / round bar */
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--green-dim);
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      background: #0d0d0d;
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+    }
+
+    .hud-label { color: var(--green-dim); font-size: 0.85rem; display: block; }
+    .hud-value { color: var(--green); font-size: 1.6rem; }
+
+    /* Sound player panel */
+    .sound-panel {
+      border: 2px solid var(--green-dim);
+      background: #0d0d0d;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .sound-panel::before {
+      content: '[ TRANSMISSION INCOMING ]';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg);
+      color: var(--green-dim);
+      font-size: 0.75rem;
+      padding: 0 8px;
+      white-space: nowrap;
+      font-family: 'VT323', monospace;
+      letter-spacing: 2px;
+    }
+
+    .play-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid var(--green);
+      background: transparent;
+      color: var(--green);
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 0 20px rgba(0,255,65,0.2);
+    }
+
+    .play-btn:hover:not(:disabled) {
+      background: rgba(0,255,65,0.1);
+      box-shadow: 0 0 30px rgba(0,255,65,0.4);
+      transform: scale(1.05);
+    }
+
+    .play-btn:active:not(:disabled) { transform: scale(0.95); }
+    .play-btn:disabled { opacity: 0.3; cursor: default; }
+
+    .play-btn.playing {
+      border-color: var(--amber);
+      color: var(--amber);
+      box-shadow: 0 0 30px rgba(255,183,0,0.3);
+      animation: pulse-ring 1s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(255,183,0,0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(255,183,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,183,0,0); }
+    }
+
+    .waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+
+    .wave-bar {
+      width: 4px;
+      background: var(--green-dim);
+      border-radius: 2px;
+      transition: height 0.1s;
+    }
+
+    .waveform.active .wave-bar {
+      animation: wave-anim 0.6s ease-in-out infinite alternate;
+      background: var(--green);
+    }
+
+    .wave-bar:nth-child(1) { animation-delay: 0s; }
+    .wave-bar:nth-child(2) { animation-delay: 0.08s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.16s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.24s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.32s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.48s; }
+    .wave-bar:nth-child(8) { animation-delay: 0.16s; }
+    .wave-bar:nth-child(9) { animation-delay: 0.08s; }
+    .wave-bar:nth-child(10) { animation-delay: 0s; }
+
+    @keyframes wave-anim {
+      from { height: 6px; }
+      to { height: 32px; }
+    }
+
+    .play-hint {
+      font-size: 0.8rem;
+      color: var(--green-dim);
+      letter-spacing: 1px;
+    }
+
+    .replay-btn {
+      background: transparent;
+      border: 1px solid var(--green-dim);
+      color: var(--green-dim);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.15s;
+      letter-spacing: 1px;
+    }
+
+    .replay-btn:hover { color: var(--green); border-color: var(--green); }
+
+    /* Answer buttons */
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .answer-btn {
+      background: #0d0d0d;
+      border: 2px solid #2a2a2a;
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      line-height: 1.3;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .answer-btn .btn-letter {
+      position: absolute;
+      top: 5px;
+      left: 8px;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .answer-btn:hover:not(:disabled) {
+      border-color: var(--green-dim);
+      color: var(--green);
+      background: rgba(0,255,65,0.05);
+    }
+
+    .answer-btn:active:not(:disabled) { transform: scale(0.97); }
+
+    .answer-btn:disabled { cursor: default; }
+
+    .answer-btn.correct {
+      border-color: var(--green);
+      background: rgba(0,255,65,0.15);
+      color: var(--green);
+      box-shadow: 0 0 20px rgba(0,255,65,0.3);
+    }
+
+    .answer-btn.wrong {
+      border-color: var(--red);
+      background: rgba(255,34,68,0.1);
+      color: var(--red);
+    }
+
+    .answer-btn.reveal {
+      border-color: var(--green-dim);
+      color: var(--green-dim);
+    }
+
+    /* Feedback bar */
+    .feedback {
+      font-family: 'VT323', monospace;
+      font-size: 1.5rem;
+      text-align: center;
+      min-height: 36px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+      letter-spacing: 2px;
+    }
+
+    .feedback.correct { color: var(--green); text-shadow: 0 0 10px var(--green); }
+    .feedback.wrong { color: var(--red); text-shadow: 0 0 10px var(--red); }
+
+    /* Next button */
+    .next-btn {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: 2px solid var(--green);
+      color: var(--green);
+      font-family: 'VT323', monospace;
+      font-size: 1.6rem;
+      padding: 12px;
+      cursor: pointer;
+      letter-spacing: 3px;
+      transition: all 0.15s;
+      box-shadow: 0 0 10px rgba(0,255,65,0.1);
+    }
+
+    .next-btn:hover {
+      background: rgba(0,255,65,0.1);
+      box-shadow: 0 0 20px rgba(0,255,65,0.3);
+    }
+
+    .next-btn:hidden { display: none; }
+
+    /* Progress bar */
+    .progress-wrap {
+      height: 4px;
+      background: #1a1a1a;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--green);
+      transition: width 0.4s ease;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* Game over screen */
+    .gameover {
+      text-align: center;
+      padding: 40px 20px;
+      display: none;
+    }
+
+    .gameover.show { display: block; }
+
+    .gameover-title {
+      font-family: 'VT323', monospace;
+      font-size: clamp(2.5rem, 10vw, 4rem);
+      color: var(--amber);
+      text-shadow: 0 0 20px var(--amber);
+      margin-bottom: 16px;
+    }
+
+    .final-score {
+      font-family: 'VT323', monospace;
+      font-size: clamp(3rem, 12vw, 5rem);
+      color: var(--green);
+      text-shadow: 0 0 30px var(--green);
+      margin-bottom: 8px;
+    }
+
+    .final-label {
+      color: var(--green-dim);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+    }
+
+    .verdict {
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      color: var(--text);
+      margin-bottom: 32px;
+      line-height: 1.4;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .restart-btn {
+      background: transparent;
+      border: 2px solid var(--green);
+      color: var(--green);
+      font-family: 'VT323', monospace;
+      font-size: 1.8rem;
+      padding: 12px 40px;
+      cursor: pointer;
+      letter-spacing: 3px;
+      transition: all 0.15s;
+      margin-bottom: 20px;
+    }
+
+    .restart-btn:hover {
+      background: rgba(0,255,65,0.1);
+      box-shadow: 0 0 20px rgba(0,255,65,0.3);
+    }
+
+    .home-link {
+      display: block;
+      color: var(--green-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-top: 16px;
+    }
+
+    .home-link:hover { color: var(--green); }
+
+    /* Start screen */
+    .startscreen {
+      text-align: center;
+      padding: 20px 0 40px;
+    }
+
+    .start-desc {
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .start-btn {
+      background: transparent;
+      border: 2px solid var(--green);
+      color: var(--green);
+      font-family: 'VT323', monospace;
+      font-size: 2rem;
+      padding: 14px 48px;
+      cursor: pointer;
+      letter-spacing: 3px;
+      transition: all 0.15s;
+      box-shadow: 0 0 20px rgba(0,255,65,0.15);
+    }
+
+    .start-btn:hover {
+      background: rgba(0,255,65,0.1);
+      box-shadow: 0 0 30px rgba(0,255,65,0.35);
+    }
+
+    .song-count {
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      color: var(--green-dim);
+      margin-top: 16px;
+      letter-spacing: 2px;
+    }
+
+    /* Game area */
+    #game-area { display: none; }
+    #game-area.show { display: block; }
+
+    /* Glitch effect on wrong answer */
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+      40% { transform: translate(3px, -2px); }
+      60% { transform: translate(-2px, 1px); filter: hue-rotate(-90deg); }
+      80% { transform: translate(2px, -1px); }
+      100% { transform: translate(0); filter: none; }
+    }
+
+    .glitch-anim { animation: glitch 0.3s ease; }
+
+    /* Keyboard hint */
+    .key-hints {
+      text-align: center;
+      color: #333;
+      font-size: 0.7rem;
+      margin-top: 12px;
+      letter-spacing: 1px;
+    }
+
+    .key-hints span {
+      border: 1px solid #333;
+      padding: 1px 5px;
+      margin: 0 2px;
+      border-radius: 2px;
+    }
+
+    /* Round indicator dots */
+    .round-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .round-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      background: transparent;
+    }
+
+    .round-dot.done-correct { background: var(--green); border-color: var(--green); }
+    .round-dot.done-wrong { background: var(--red); border-color: var(--red); }
+    .round-dot.current { border-color: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="on-air">
+      <div class="on-air-dot"></div>
+      <span>ON AIR</span>
+    </div>
+    <a href="https://toastybones.com">← BACK TO SITE</a>
+  </div>
+
+  <div class="container">
+    <div class="game-title">🔊 SOUND TRIVIA</div>
+    <div class="game-subtitle">[ TOASTYBONES EDITION ]</div>
+
+    <!-- Start screen -->
+    <div class="startscreen" id="startscreen">
+      <div class="start-desc">
+        22 bizarre sound clips ripped straight from the ToastyBones catalog.<br>
+        Can you name the song? Press PLAY. Pick your answer. Try not to embarrass yourself.
+      </div>
+      <button class="start-btn" onclick="startGame()">▶ START TRANSMISSION</button>
+      <div class="song-count">22 CLIPS · 4 CHOICES · 1 WINNER (hopefully)</div>
+    </div>
+
+    <!-- Game area -->
+    <div id="game-area">
+
+      <div class="round-dots" id="round-dots"></div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+      <div class="hud">
+        <div>
+          <span class="hud-label">ROUND</span>
+          <span class="hud-value" id="hud-round">1 / 22</span>
+        </div>
+        <div style="text-align:right">
+          <span class="hud-label">SCORE</span>
+          <span class="hud-value" id="hud-score">0</span>
+        </div>
+      </div>
+
+      <div class="sound-panel">
+        <div class="waveform" id="waveform">
+          <div class="wave-bar" style="height:8px"></div>
+          <div class="wave-bar" style="height:14px"></div>
+          <div class="wave-bar" style="height:20px"></div>
+          <div class="wave-bar" style="height:28px"></div>
+          <div class="wave-bar" style="height:22px"></div>
+          <div class="wave-bar" style="height:32px"></div>
+          <div class="wave-bar" style="height:24px"></div>
+          <div class="wave-bar" style="height:18px"></div>
+          <div class="wave-bar" style="height:12px"></div>
+          <div class="wave-bar" style="height:6px"></div>
+        </div>
+        <button class="play-btn" id="play-btn" onclick="playSound()">▶</button>
+        <div class="play-hint" id="play-hint">TAP TO PLAY CLIP</div>
+        <button class="replay-btn" id="replay-btn" onclick="replaySound()" style="display:none">↺ REPLAY</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="key-hints" id="key-hints">
+        <span>A</span> <span>B</span> <span>C</span> <span>D</span> — keyboard shortcuts
+      </div>
+
+      <button class="next-btn" id="next-btn" onclick="nextRound()" style="display:none">
+        NEXT CLIP ▶
+      </button>
+
+    </div>
+
+    <!-- Game over -->
+    <div class="gameover" id="gameover">
+      <div class="gameover-title" id="gameover-title">TRANSMISSION COMPLETE</div>
+      <div class="final-score" id="final-score">0 / 22</div>
+      <div class="final-label">CORRECT IDENTIFICATIONS</div>
+      <div class="verdict" id="verdict"></div>
+      <button class="restart-btn" onclick="restartGame()">↺ PLAY AGAIN</button>
+      <a class="home-link" href="https://toastybones.com">← RETURN TO BASE</a>
+    </div>
+
+  </div>
+
+  <audio id="audio-player" preload="none"></audio>
+
+  <script>
+    const SONGS = [
+      { file: 'BackUpYourData.mp3',                    title: 'Back Up Your Data' },
+      { file: 'CantRelate.mp3',                         title: "Can't Relate" },
+      { file: 'CantStop.mp3',                           title: "Can't Stop" },
+      { file: 'FartintheWind.mp3',                      title: 'Fart in the Wind' },
+      { file: 'ImJustStupid.mp3',                       title: "I'm Just Stupid" },
+      { file: 'IveNeverSeenStawWars.mp3',               title: "I've Never Seen Star Wars" },
+      { file: 'JustOneBadDay.mp3',                      title: 'Just One Bad Day' },
+      { file: 'KnotGnomes.mp3',                         title: 'Knot Gnomes' },
+      { file: 'LevelUp.mp3',                            title: 'Level Up' },
+      { file: 'MyDestinationIsYou.mp3',                 title: 'My Destination Is You' },
+      { file: 'MyKnifesBiggerThanYours.mp3',            title: "My Knife's Bigger Than Yours" },
+      { file: 'MyOwnLittleAlien.mp3',                   title: 'My Own Little Alien' },
+      { file: 'MySuperstar.mp3',                        title: 'My Superstar!' },
+      { file: 'OhSweetGus.mp3',                         title: 'Oh Sweet Gus' },
+      { file: 'PoppyisaPokemon.mp3',                    title: 'Poppy Is a Pokemon' },
+      { file: 'Qwensiwal.mp3',                          title: 'Qwensiwal' },
+      { file: 'Sunglasses.mp3',                         title: 'Sunglasses' },
+      { file: 'TheJackofallHats.mp3',                   title: 'The Jack of All Hats' },
+      { file: 'ThingsTasteBetterWhenTheyreTriangleShaped.mp3', title: "Things Taste Better When They're Triangle Shaped" },
+      { file: 'Trunk-or-Treat.mp3',                     title: 'Trunk-or-Treat' },
+      { file: 'TwoRedAnts.mp3',                         title: 'Two Red Ants' },
+      { file: 'WizardofBeans.mp3',                      title: 'Wizard of Beans' },
+    ];
+
+    const BASE_URL = 'https://toastybones.com/sounds/';
+
+    const VERDICTS = [
+      { min: 22, max: 22, text: "PERFECT SCORE. Either you made these songs or you have a problem. Possibly both." },
+      { min: 18, max: 21, text: "Extremely impressive. You have spent way too much time listening to ToastyBones. This is not a criticism." },
+      { min: 14, max: 17, text: "Solid. You know your way around the catalog. The wizard made of beans would be proud." },
+      { min: 10, max: 13, text: "Not bad. You've heard enough ToastyBones to be dangerous but not enough to be embarrassing." },
+      { min: 6,  max: 9,  text: "You tried. The bones respect the effort even if they do not respect the score." },
+      { min: 0,  max: 5,  text: "You have clearly never heard a single ToastyBones song. Go fix that immediately. We have 22 clips right here." },
+    ];
+
+    let shuffledSongs = [];
+    let currentRound = 0;
+    let score = 0;
+    let answered = false;
+    let hasPlayed = false;
+    let roundResults = [];
+
+    const audio = document.getElementById('audio-player');
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getDecoys(correctTitle) {
+      const others = SONGS.filter(s => s.title !== correctTitle);
+      return shuffle(others).slice(0, 3).map(s => s.title);
+    }
+
+    function startGame() {
+      shuffledSongs = shuffle(SONGS);
+      currentRound = 0;
+      score = 0;
+      answered = false;
+      hasPlayed = false;
+      roundResults = [];
+
+      document.getElementById('startscreen').style.display = 'none';
+      document.getElementById('gameover').classList.remove('show');
+      document.getElementById('game-area').classList.add('show');
+
+      buildRoundDots();
+      loadRound();
+    }
+
+    function buildRoundDots() {
+      const wrap = document.getElementById('round-dots');
+      wrap.innerHTML = '';
+      shuffledSongs.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'round-dot' + (i === 0 ? ' current' : '');
+        dot.id = `dot-${i}`;
+        wrap.appendChild(dot);
+      });
+    }
+
+    function updateDot(index, result) {
+      const dot = document.getElementById(`dot-${index}`);
+      if (!dot) return;
+      dot.classList.remove('current', 'done-correct', 'done-wrong');
+      dot.classList.add(result === 'correct' ? 'done-correct' : 'done-wrong');
+      const next = document.getElementById(`dot-${index + 1}`);
+      if (next) next.classList.add('current');
+    }
+
+    function loadRound() {
+      answered = false;
+      hasPlayed = false;
+
+      audio.pause();
+      audio.src = '';
+
+      const song = shuffledSongs[currentRound];
+      const total = shuffledSongs.length;
+
+      document.getElementById('hud-round').textContent = `${currentRound + 1} / ${total}`;
+      document.getElementById('hud-score').textContent = score;
+
+      const pct = (currentRound / total) * 100;
+      document.getElementById('progress-bar').style.width = pct + '%';
+
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.getElementById('next-btn').style.display = 'none';
+      document.getElementById('replay-btn').style.display = 'none';
+      document.getElementById('key-hints').style.display = '';
+
+      const playBtn = document.getElementById('play-btn');
+      playBtn.textContent = '▶';
+      playBtn.classList.remove('playing');
+      playBtn.disabled = false;
+      document.getElementById('play-hint').textContent = 'TAP TO PLAY CLIP';
+
+      document.getElementById('waveform').classList.remove('active');
+
+      // Build answers: correct + 3 decoys, shuffled
+      const decoys = getDecoys(song.title);
+      const allOptions = shuffle([song.title, ...decoys]);
+
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      allOptions.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.innerHTML = `<span class="btn-letter">${letters[i]}</span>${opt}`;
+        btn.dataset.answer = opt;
+        btn.dataset.correct = (opt === song.title) ? '1' : '0';
+        btn.onclick = () => submitAnswer(btn, song.title);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function playSound() {
+      if (answered) return;
+      const song = shuffledSongs[currentRound];
+      const url = BASE_URL + song.file;
+      const playBtn = document.getElementById('play-btn');
+
+      if (!hasPlayed) {
+        audio.src = url;
+        hasPlayed = true;
+      }
+
+      if (audio.paused) {
+        audio.play().catch(e => console.error(e));
+        playBtn.textContent = '⏸';
+        playBtn.classList.add('playing');
+        document.getElementById('play-hint').textContent = 'LISTENING...';
+        document.getElementById('waveform').classList.add('active');
+        document.getElementById('replay-btn').style.display = 'none';
+      } else {
+        audio.pause();
+        playBtn.textContent = '▶';
+        playBtn.classList.remove('playing');
+        document.getElementById('play-hint').textContent = 'TAP TO RESUME';
+        document.getElementById('waveform').classList.remove('active');
+      }
+    }
+
+    function replaySound() {
+      audio.currentTime = 0;
+      audio.play().catch(e => console.error(e));
+      const playBtn = document.getElementById('play-btn');
+      playBtn.textContent = '⏸';
+      playBtn.classList.add('playing');
+      document.getElementById('waveform').classList.add('active');
+      document.getElementById('replay-btn').style.display = 'none';
+    }
+
+    audio.addEventListener('ended', () => {
+      const playBtn = document.getElementById('play-btn');
+      playBtn.textContent = '▶';
+      playBtn.classList.remove('playing');
+      document.getElementById('waveform').classList.remove('active');
+      document.getElementById('play-hint').textContent = 'TAP TO REPLAY';
+      if (!answered) {
+        document.getElementById('replay-btn').style.display = 'inline-block';
+      }
+    });
+
+    function submitAnswer(btn, correctTitle) {
+      if (answered) return;
+      if (!hasPlayed) {
+        document.getElementById('feedback').textContent = '⚠ PLAY THE CLIP FIRST';
+        document.getElementById('feedback').className = 'feedback wrong';
+        return;
+      }
+      answered = true;
+
+      audio.pause();
+      document.getElementById('play-btn').disabled = true;
+      document.getElementById('replay-btn').style.display = 'none';
+      document.getElementById('waveform').classList.remove('active');
+      document.getElementById('key-hints').style.display = 'none';
+
+      const isCorrect = btn.dataset.correct === '1';
+
+      // Style all buttons
+      document.querySelectorAll('.answer-btn').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === '1') {
+          b.classList.add('correct');
+        } else if (b === btn && !isCorrect) {
+          b.classList.add('wrong');
+        } else {
+          b.classList.add('reveal');
+        }
+      });
+
+      const fb = document.getElementById('feedback');
+      if (isCorrect) {
+        score++;
+        document.getElementById('hud-score').textContent = score;
+        fb.textContent = '✓ CORRECT';
+        fb.className = 'feedback correct';
+        roundResults.push('correct');
+      } else {
+        fb.textContent = `✗ IT WAS: ${correctTitle}`;
+        fb.className = 'feedback wrong';
+        document.getElementById('game-area').classList.add('glitch-anim');
+        setTimeout(() => document.getElementById('game-area').classList.remove('glitch-anim'), 300);
+        roundResults.push('wrong');
+      }
+
+      updateDot(currentRound, roundResults[currentRound]);
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextRound() {
+      currentRound++;
+      if (currentRound >= shuffledSongs.length) {
+        showGameOver();
+      } else {
+        loadRound();
+      }
+    }
+
+    function showGameOver() {
+      audio.pause();
+      document.getElementById('game-area').classList.remove('show');
+      const go = document.getElementById('gameover');
+      go.classList.add('show');
+
+      const total = shuffledSongs.length;
+      document.getElementById('final-score').textContent = `${score} / ${total}`;
+
+      const verdict = VERDICTS.find(v => score >= v.min && score <= v.max);
+      document.getElementById('verdict').textContent = verdict ? verdict.text : '';
+
+      if (score === total) {
+        document.getElementById('gameover-title').textContent = '🔥 PERFECT TRANSMISSION 🔥';
+      } else if (score >= 18) {
+        document.getElementById('gameover-title').textContent = 'SIGNAL RECEIVED';
+      } else if (score >= 10) {
+        document.getElementById('gameover-title').textContent = 'TRANSMISSION COMPLETE';
+      } else {
+        document.getElementById('gameover-title').textContent = 'SIGNAL LOST';
+      }
+
+      document.getElementById('progress-bar').style.width = '100%';
+    }
+
+    function restartGame() {
+      document.getElementById('gameover').classList.remove('show');
+      startGame();
+    }
+
+    // Keyboard shortcuts A/B/C/D + Enter for next
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      if (['A','B','C','D'].includes(key) && !answered) {
+        const idx = ['A','B','C','D'].indexOf(key);
+        const btns = document.querySelectorAll('.answer-btn');
+        if (btns[idx]) btns[idx].click();
+      }
+      if (e.key === 'Enter') {
+        const nextBtn = document.getElementById('next-btn');
+        if (nextBtn && nextBtn.style.display !== 'none') nextBtn.click();
+      }
+      if (e.key === ' ') {
+        e.preventDefault();
+        const playBtn = document.getElementById('play-btn');
+        if (playBtn && !playBtn.disabled) playBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
