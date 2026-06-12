@@ -187,77 +187,150 @@
     .cable-wrap { width: 100%; max-width: 680px; display: none; justify-content: center; height: 44px; position: relative; }
     .cable { width: 4px; background: linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a); border-radius: 2px; margin: 0 auto; }
 
-    /* REMOTE */
-    .remote-wrap { width: 100%; max-width: 560px; display: none; }
+    /* AUDIO VISUALIZER CANVAS */
+    #viz-canvas {
+      width: 100%;
+      height: 56px;
+      display: block;
+      margin-bottom: 14px;
+      border-radius: 4px;
+      opacity: 0.9;
+    }
+
+    /* REMOTE GLOW-UP */
     .remote {
-      background: linear-gradient(160deg, #252525 0%, #181818 60%, #111 100%);
-      border-radius: 20px 20px 48px 48px;
+      background: linear-gradient(160deg, #2a2a2a 0%, #181818 40%, #111 100%);
+      border-radius: 20px 20px 52px 52px;
       padding: 20px 28px 36px;
-      border: 1px solid #333;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.7);
+      border: 1px solid #3a3a3a;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -1px 0 rgba(0,0,0,0.5),
+        0 12px 40px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(255,255,255,0.03);
       position: relative;
     }
-    .remote-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #2a2a2a; }
-    .remote-brand { font-family: 'VT323', monospace; font-size: 1rem; color: #3a3a3a; letter-spacing: 3px; }
-    .ir-emitter { width: 14px; height: 14px; border-radius: 50%; background: #1a0808; border: 1px solid #333; }
+    /* Subtle metallic sheen strip */
+    .remote::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent);
+      border-radius: 50%;
+    }
+
+    /* IR emitter always-dim glow */
+    .ir-emitter {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #2a0808, #0d0404);
+      border: 1px solid #444;
+      box-shadow: 0 0 4px rgba(255,80,0,0.2);
+      transition: all 0.1s;
+    }
     .ir-emitter.flash { animation: ir-flash 0.2s ease-out; }
-    @keyframes ir-flash { 0%{background:#ff8800;box-shadow:0 0 16px #ff8800} 100%{background:#1a0808;box-shadow:none} }
-    .answer-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; }
+    @keyframes ir-flash { 0%{background:radial-gradient(circle at 40% 35%,#ffaa00,#ff4400);box-shadow:0 0 20px #ff8800,0 0 40px #ff4400} 100%{background:radial-gradient(circle at 40% 35%,#2a0808,#0d0404);box-shadow:0 0 4px rgba(255,80,0,0.2)} }
+
+    /* Answer buttons neon glow per color */
     .answer-btn {
-      background: #1a1a1a; border: 1px solid #333; border-radius: 10px;
+      background: linear-gradient(135deg, #1e1e1e 0%, #161616 100%);
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
       color: var(--text); font-family: 'Share Tech Mono', monospace;
       font-size: 0.9rem;
-      padding: 13px 16px; cursor: pointer; transition: all 0.12s;
+      padding: 14px 16px; cursor: pointer; transition: all 0.12s;
       text-align: left; line-height: 1.2;
       display: flex; align-items: center; gap: 12px;
       white-space: nowrap; overflow: hidden;
       position: relative;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
     }
-    /* Fade-out mask for text that overflows */
     .answer-btn::after {
       content: '';
       position: absolute;
       right: 0; top: 0; bottom: 0;
-      width: 40px;
-      background: linear-gradient(to right, transparent, #1a1a1a);
+      width: 48px;
+      background: linear-gradient(to right, transparent, #1e1e1e);
       pointer-events: none;
       border-radius: 0 10px 10px 0;
       transition: background 0.12s;
     }
-    .answer-btn:hover:not(:disabled)::after { background: linear-gradient(to right, transparent, #222); }
-    .answer-btn.correct::after { background: linear-gradient(to right, transparent, rgba(0,255,65,0.12)); }
-    .answer-btn.wrong::after { background: linear-gradient(to right, transparent, rgba(255,51,85,0.12)); }
-    .answer-btn.reveal::after { background: linear-gradient(to right, transparent, #111); }
-    .btn-badge { font-family: 'VT323', monospace; font-size: 1.4rem; font-weight: bold; flex-shrink: 0; width: 24px; text-align: center; }
-    .btn-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
     .answer-btn:nth-child(1) { border-left: 4px solid var(--red); }
     .answer-btn:nth-child(1) .btn-badge { color: var(--red); }
+    .answer-btn:nth-child(1):hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 14px rgba(255,51,85,0.25), 4px 0 0 var(--red) inset; }
     .answer-btn:nth-child(2) { border-left: 4px solid var(--green); }
     .answer-btn:nth-child(2) .btn-badge { color: var(--green); }
+    .answer-btn:nth-child(2):hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 14px rgba(0,255,65,0.2), 4px 0 0 var(--green) inset; }
     .answer-btn:nth-child(3) { border-left: 4px solid var(--amber); }
     .answer-btn:nth-child(3) .btn-badge { color: var(--amber); }
+    .answer-btn:nth-child(3):hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 14px rgba(255,183,0,0.25), 4px 0 0 var(--amber) inset; }
     .answer-btn:nth-child(4) { border-left: 4px solid var(--blue); }
     .answer-btn:nth-child(4) .btn-badge { color: var(--blue); }
-    .answer-btn:hover:not(:disabled) { background: #222; transform: translateX(3px); box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
-    .answer-btn:active:not(:disabled) { transform: scale(0.98); }
+    .answer-btn:nth-child(4):hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 14px rgba(0,207,255,0.25), 4px 0 0 var(--blue) inset; }
+    .answer-btn:hover:not(:disabled) { background: linear-gradient(135deg, #242424 0%, #1a1a1a 100%); transform: translateX(4px); }
+    .answer-btn:hover:not(:disabled)::after { background: linear-gradient(to right, transparent, #242424); }
+    .answer-btn:active:not(:disabled) { transform: scale(0.98) translateX(2px); }
     .answer-btn:disabled { cursor: default; }
-    .answer-btn.correct { background: rgba(0,255,65,0.12); border-color: var(--green); color: var(--green); box-shadow: 0 0 16px rgba(0,255,65,0.2); }
-    .answer-btn.wrong { background: rgba(255,51,85,0.12); border-color: var(--red); color: var(--red); }
-    .answer-btn.reveal { background: #111; border-color: #1a1a1a; color: #2a2a2a; }
-    .answer-btn.reveal .btn-badge { color: #2a2a2a; }
+    .answer-btn.correct {
+      background: linear-gradient(135deg, rgba(0,255,65,0.15) 0%, rgba(0,255,65,0.08) 100%);
+      border-color: var(--green); color: var(--green);
+      box-shadow: 0 0 20px rgba(0,255,65,0.25), inset 0 0 20px rgba(0,255,65,0.05);
+    }
+    .answer-btn.correct::after { background: linear-gradient(to right, transparent, rgba(0,40,15,0.8)); }
+    .answer-btn.wrong {
+      background: linear-gradient(135deg, rgba(255,51,85,0.12) 0%, rgba(255,51,85,0.06) 100%);
+      border-color: var(--red); color: var(--red);
+      box-shadow: 0 0 16px rgba(255,51,85,0.2);
+    }
+    .answer-btn.wrong::after { background: linear-gradient(to right, transparent, rgba(40,0,10,0.8)); }
+    .answer-btn.reveal { background: #0f0f0f; border-color: #181818; color: #222; box-shadow: none; }
+    .answer-btn.reveal::after { background: linear-gradient(to right, transparent, #0f0f0f); }
+    .answer-btn.reveal .btn-badge { color: #222; }
+    .btn-badge { font-family: 'VT323', monospace; font-size: 1.4rem; font-weight: bold; flex-shrink: 0; width: 24px; text-align: center; }
+    .btn-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+
+    /* Red herring badge */
+    .btn-fake-tag {
+      font-family: 'VT323', monospace;
+      font-size: 0.7rem;
+      color: #c0392b;
+      flex-shrink: 0;
+      opacity: 0;
+      letter-spacing: 1px;
+    }
+    .answer-btn.reveal .btn-fake-tag[data-fake="1"] { opacity: 0.6; }
+
+    /* Next / bottom remote */
     .remote-bottom { display: flex; justify-content: center; margin-top: 6px; }
-    .next-btn { background: transparent; border: 1px solid var(--green-dim); border-radius: 8px; color: var(--green); font-family: 'VT323', monospace; font-size: 1.4rem; padding: 10px 36px; cursor: pointer; letter-spacing: 2px; transition: all 0.15s; display: none; }
+    .next-btn {
+      background: transparent; border: 1px solid var(--green-dim);
+      border-radius: 8px; color: var(--green);
+      font-family: 'VT323', monospace; font-size: 1.4rem;
+      padding: 10px 36px; cursor: pointer; letter-spacing: 2px;
+      transition: all 0.15s; display: none;
+      box-shadow: 0 0 8px rgba(0,255,65,0.1);
+    }
     .next-btn.show { display: block; animation: btn-appear 0.3s ease-out; }
     @keyframes btn-appear { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-    .next-btn:hover { background: rgba(0,255,65,0.1); border-color: var(--green); }
-    .remote-deco { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
-    .deco-btn { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #2a2a2a; }
-    .deco-btn:nth-child(1){background:#1f0808} .deco-btn:nth-child(2){background:#0a1a0a}
-    .deco-btn:nth-child(3){background:#1a1008} .deco-btn:nth-child(4){background:#080a1f}
+    .next-btn:hover { background: rgba(0,255,65,0.1); border-color: var(--green); box-shadow: 0 0 20px rgba(0,255,65,0.25); }
+    .remote-deco { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
+    .deco-btn {
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 1px solid #2a2a2a;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .deco-btn:nth-child(1){background:radial-gradient(circle at 35% 35%,#3a1010,#1f0808)}
+    .deco-btn:nth-child(2){background:radial-gradient(circle at 35% 35%,#103a10,#081f08)}
+    .deco-btn:nth-child(3){background:radial-gradient(circle at 35% 35%,#2a2008,#1a1008)}
+    .deco-btn:nth-child(4){background:radial-gradient(circle at 35% 35%,#10103a,#08081f)}
     .key-hints { text-align: center; color: #2a2a2a; font-size: 0.68rem; margin-top: 10px; letter-spacing: 1px; }
     .key-hints kbd { border: 1px solid #2a2a2a; padding: 1px 4px; border-radius: 2px; margin: 0 2px; }
 
-    /* GAME OVER */
+    /* REMOTE WRAP */
+    .remote-wrap { width: 100%; max-width: 560px; display: none; }
+    .remote-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #2a2a2a; }
+    .remote-brand { font-family: 'VT323', monospace; font-size: 1rem; color: #3a3a3a; letter-spacing: 3px; }
+    .answer-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; }
     .gameover-screen { text-align: center; padding: 20px 0 10px; width: 100%; max-width: 480px; display: none; }
     .gameover-screen.show { display: block; }
     .go-title { font-family: 'VT323', monospace; font-size: clamp(1.8rem, 7vw, 2.8rem); color: var(--amber); text-shadow: 0 0 20px rgba(255,183,0,0.4); margin-bottom: 8px; }
@@ -433,18 +506,7 @@
             <div class="channel-display" id="channel-display">CH 01</div>
             <div class="score-display" id="score-display">00/22</div>
             <div class="screen-content">
-              <div class="waveform" id="waveform">
-                <div class="wave-bar" style="height:8px"></div>
-                <div class="wave-bar" style="height:14px"></div>
-                <div class="wave-bar" style="height:20px"></div>
-                <div class="wave-bar" style="height:30px"></div>
-                <div class="wave-bar" style="height:22px"></div>
-                <div class="wave-bar" style="height:36px"></div>
-                <div class="wave-bar" style="height:24px"></div>
-                <div class="wave-bar" style="height:18px"></div>
-                <div class="wave-bar" style="height:12px"></div>
-                <div class="wave-bar" style="height:6px"></div>
-              </div>
+              <canvas id="viz-canvas"></canvas>
               <button class="screen-play-btn" id="play-btn" onclick="handlePlay()">▶</button>
               <div class="screen-hint" id="screen-hint">TAP TO PLAY CLIP</div>
               <button class="replay-link" id="replay-btn" onclick="replaySound()">↺ replay</button>
@@ -512,6 +574,22 @@ const SONGS=[
   {file:'TwoRedAnts.mp3',title:'Two Red Ants'},
   {file:'WizardofBeans.mp3',title:'Wizard of Beans'},
 ];
+
+// Red herrings — real ToastyBones song titles that have no clip
+const FAKE_SONGS=[
+  'Midnight Suppository','Big Dump','Big Dump 2: Return of the Dump',
+  'Fully Panted','Ear-aid','Boney Hollow','Isle of Beans','Lovey Dovey',
+  'Mystery Clown','Spobbly Not','The Legend of Duke','Unscheduled Programming',
+  'Hilariously Unfortunate','The Great Indoors','Sharing Socks with Strangers',
+  'Man\'s Breath','Festive Flush','Black and Blue and Punk All Over',
+  'Efforts and Errors','Knives Out (Acoustic Goblin Version)',
+  'The Soup Was Hot and So Was She','Diagonal','Haunted Tupperware',
+  'Professional Napper','Skeleton Hands (Reprise)','Teeth Budget',
+  'Toast Emergency','Bone Disclosure','My Second Least Favorite Wednesday',
+  'Cursed Gym Bag','The Bean Whisperer','Legally a Hat',
+  'Absolutely No Beef','Ghost of a Snack','Aggressively Medium',
+];
+
 const BASE='https://toastybones.com/sounds/';
 const VERDICTS=[
   {min:22,max:22,text:"PERFECT SCORE. Either you made these songs or you have a serious problem. Possibly both."},
@@ -521,11 +599,104 @@ const VERDICTS=[
   {min:6,max:9,text:"You tried. The bones respect the effort even if they don't respect the score."},
   {min:0,max:5,text:"You have clearly never listened to a single ToastyBones song. We have 22 clips RIGHT HERE."},
 ];
+
 let queue=[],round=0,score=0,answered=false,hasPlayed=false,results=[];
 const audio=document.getElementById('audio');
-function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
-function getDecoys(c){return shuffle(SONGS.filter(s=>s.title!==c)).slice(0,3).map(s=>s.title);}
 
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+// Build 3 decoys: random mix of real songs + fake songs, never the correct answer
+function getDecoys(correctTitle){
+  const realPool=SONGS.filter(s=>s.title!==correctTitle).map(s=>s.title);
+  const fakePool=shuffle([...FAKE_SONGS]);
+  // Randomly decide how many fakes (1-3), rest from real songs
+  const numFakes=Math.floor(Math.random()*3)+1; // 1, 2, or 3 fakes
+  const fakes=fakePool.slice(0,numFakes).map(t=>({title:t,fake:true}));
+  const reals=shuffle(realPool).slice(0,3-numFakes).map(t=>({title:t,fake:false}));
+  return shuffle([...fakes,...reals]);
+}
+
+// ===== WEB AUDIO VISUALIZER =====
+let audioCtx=null,analyser=null,sourceNode=null,vizRAF=null;
+
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  analyser=audioCtx.createAnalyser();
+  analyser.fftSize=128;
+  analyser.smoothingTimeConstant=0.8;
+  sourceNode=audioCtx.createMediaElementSource(audio);
+  sourceNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+}
+
+function startViz(){
+  const canvas=document.getElementById('viz-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth;const H=canvas.offsetHeight;
+  canvas.width=W;canvas.height=H;
+
+  const bufLen=analyser.frequencyBinCount;
+  const dataArr=new Uint8Array(bufLen);
+  const barW=Math.floor(W/bufLen*2);
+  const gap=2;
+
+  function draw(){
+    vizRAF=requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArr);
+    ctx.clearRect(0,0,W,H);
+
+    const bars=Math.floor(W/(barW+gap));
+    for(let i=0;i<bars;i++){
+      const val=dataArr[Math.floor(i*bufLen/bars)];
+      const pct=val/255;
+      const barH=Math.max(2,pct*H);
+
+      // Color gradient: green → amber → red based on height
+      const r=pct>0.6?255:Math.floor(pct/0.6*180);
+      const g=pct<0.7?255:Math.floor((1-pct)/0.3*200);
+      const b=50;
+      ctx.fillStyle=`rgba(${r},${g},${b},${0.5+pct*0.5})`;
+
+      // Center-reflect bars (mirror top and bottom)
+      const x=i*(barW+gap);
+      const y=(H-barH)/2;
+      ctx.beginPath();
+      ctx.roundRect(x,y,barW,barH,2);
+      ctx.fill();
+
+      // Glow
+      ctx.shadowBlur=pct*12;
+      ctx.shadowColor=`rgb(${r},${g},${b})`;
+      ctx.fill();
+      ctx.shadowBlur=0;
+    }
+  }
+  draw();
+}
+
+function drawIdleViz(){
+  const canvas=document.getElementById('viz-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth;const H=canvas.offsetHeight;
+  canvas.width=W;canvas.height=H;
+  const bars=32;
+  const barW=Math.floor(W/bars)-2;
+  for(let i=0;i<bars;i++){
+    const h=2+Math.sin(i*0.4)*2;
+    ctx.fillStyle='rgba(0,170,42,0.25)';
+    ctx.beginPath();
+    ctx.roundRect(i*(barW+2),(H-h)/2,barW,h,1);
+    ctx.fill();
+  }
+}
+
+function stopViz(){
+  if(vizRAF){cancelAnimationFrame(vizRAF);vizRAF=null;}
+  drawIdleViz();
+}
+
+// ===== STATIC CANVAS =====
 let staticRAF=null;
 function drawStatic(canvas){
   const ctx=canvas.getContext('2d');
@@ -542,6 +713,7 @@ function showStatic(dur){
   canvas.classList.add('show');drawStatic(canvas);
   setTimeout(()=>{canvas.classList.remove('show');if(staticRAF){cancelAnimationFrame(staticRAF);staticRAF=null;}},dur);
 }
+
 function flashIR(){const ir=document.getElementById('ir-emitter');ir.classList.remove('flash');void ir.offsetWidth;ir.classList.add('flash');setTimeout(()=>ir.classList.remove('flash'),250);}
 
 function startGame(){
@@ -552,7 +724,9 @@ function startGame(){
   document.getElementById('cable-wrap').style.display='flex';
   document.getElementById('remote-wrap').style.display='block';
   buildDots();loadRound();
+  setTimeout(drawIdleViz,100);
 }
+
 function buildDots(){
   const wrap=document.getElementById('round-dots');wrap.innerHTML='';
   queue.forEach((_,i)=>{const d=document.createElement('div');d.className='round-dot'+(i===0?' current':'');d.id='dot-'+i;wrap.appendChild(d);});
@@ -562,8 +736,10 @@ function updateDot(idx,result){
   d.classList.remove('current');d.classList.add(result==='correct'?'done-correct':'done-wrong');
   const next=document.getElementById('dot-'+(idx+1));if(next)next.classList.add('current');
 }
+
 function loadRound(){
   answered=false;hasPlayed=false;audio.pause();audio.src='';
+  stopViz();
   const song=queue[round];const total=queue.length;
   document.getElementById('channel-display').textContent='CH '+String(round+1).padStart(2,'0');
   document.getElementById('score-display').textContent=String(score).padStart(2,'0')+'/'+String(total).padStart(2,'0');
@@ -575,62 +751,72 @@ function loadRound(){
   const pb=document.getElementById('play-btn');
   pb.textContent='▶';pb.classList.remove('playing');pb.disabled=false;
   document.getElementById('screen-hint').textContent='TAP TO PLAY CLIP';
-  document.getElementById('waveform').classList.remove('active');
-  const opts=shuffle([song.title,...getDecoys(song.title)]);
+
+  // Build answer options: correct + 3 decoys (some fake)
+  const decoys=getDecoys(song.title);
+  const allOpts=shuffle([{title:song.title,fake:false,correct:true},...decoys]);
   const letters=['A','B','C','D'];
   const grid=document.getElementById('answer-grid');grid.innerHTML='';
-  opts.forEach((opt,i)=>{
+  allOpts.forEach((opt,i)=>{
     const btn=document.createElement('button');
     btn.className='answer-btn';
-    btn.innerHTML='<span class="btn-badge">'+letters[i]+'</span><span class="btn-text">'+opt+'</span>';
-    btn.dataset.correct=(opt===song.title)?'1':'0';
+    btn.innerHTML=
+      '<span class="btn-badge">'+letters[i]+'</span>'+
+      '<span class="btn-text">'+opt.title+'</span>'+
+      '<span class="btn-fake-tag" data-fake="'+(opt.fake?'1':'0')+'">'+(opt.fake?'[FAKE]':'')+'</span>';
+    btn.dataset.correct=opt.correct?'1':'0';
+    btn.dataset.fake=opt.fake?'1':'0';
     btn.onclick=()=>{flashIR();submitAnswer(btn,song.title);};
     grid.appendChild(btn);
   });
 }
+
 function handlePlay(){
   if(answered)return;
   const song=queue[round];
+  // Init Web Audio on first user gesture
+  try{ initAudio(); if(audioCtx.state==='suspended') audioCtx.resume(); }catch(e){}
   if(!hasPlayed){audio.src=BASE+song.file;hasPlayed=true;}
   const pb=document.getElementById('play-btn');
   if(audio.paused){
     audio.play().catch(e=>console.error(e));
     pb.textContent='⏸';pb.classList.add('playing');
     document.getElementById('screen-hint').textContent='LISTENING...';
-    document.getElementById('waveform').classList.add('active');
     document.getElementById('replay-btn').classList.remove('show');
+    if(analyser) startViz(); else drawIdleViz();
   } else {
     audio.pause();pb.textContent='▶';pb.classList.remove('playing');
     document.getElementById('screen-hint').textContent='TAP TO RESUME';
-    document.getElementById('waveform').classList.remove('active');
+    stopViz();
   }
 }
 function replaySound(){
+  try{ initAudio(); if(audioCtx.state==='suspended') audioCtx.resume(); }catch(e){}
   audio.currentTime=0;audio.play().catch(e=>console.error(e));
   const pb=document.getElementById('play-btn');pb.textContent='⏸';pb.classList.add('playing');
-  document.getElementById('waveform').classList.add('active');
   document.getElementById('replay-btn').classList.remove('show');
+  if(analyser) startViz(); else drawIdleViz();
 }
 audio.addEventListener('ended',()=>{
   const pb=document.getElementById('play-btn');pb.textContent='▶';pb.classList.remove('playing');
-  document.getElementById('waveform').classList.remove('active');
+  stopViz();
   document.getElementById('screen-hint').textContent='TAP TO REPLAY';
   if(!answered)document.getElementById('replay-btn').classList.add('show');
 });
+
 function submitAnswer(btn,correctTitle){
   if(answered)return;
   if(!hasPlayed){
     const fb=document.getElementById('screen-feedback');fb.textContent='⚠ PLAY THE CLIP FIRST';fb.className='screen-feedback wrong';return;
   }
-  answered=true;audio.pause();
+  answered=true;audio.pause();stopViz();
   document.getElementById('play-btn').disabled=true;
   document.getElementById('replay-btn').classList.remove('show');
-  document.getElementById('waveform').classList.remove('active');
   const isCorrect=btn.dataset.correct==='1';
   document.querySelectorAll('.answer-btn').forEach(b=>{
     b.disabled=true;
-    if(b.dataset.correct==='1')b.classList.add('correct');
-    else if(b===btn&&!isCorrect)b.classList.add('wrong');
+    if(b.dataset.correct==='1') b.classList.add('correct');
+    else if(b===btn&&!isCorrect) b.classList.add('wrong');
     else b.classList.add('reveal');
   });
   const fb=document.getElementById('screen-feedback');
@@ -644,13 +830,14 @@ function submitAnswer(btn,correctTitle){
   updateDot(round,results[round]);
   document.getElementById('next-btn').classList.add('show');
 }
+
 function nextRound(){
   round++;
   if(round>=queue.length){showGameOver();return;}
   showStatic(180);setTimeout(loadRound,120);
 }
 function showGameOver(){
-  audio.pause();
+  audio.pause();stopViz();
   document.getElementById('tv-wrap').style.display='none';
   document.getElementById('cable-wrap').style.display='none';
   document.getElementById('remote-wrap').style.display='none';
@@ -662,6 +849,7 @@ function showGameOver(){
   document.getElementById('go-title').textContent=t;
 }
 function restartGame(){document.getElementById('gameover-screen').classList.remove('show');startGame();}
+
 document.addEventListener('keydown',e=>{
   const k=e.key.toUpperCase();
   if(['A','B','C','D'].includes(k)&&!answered){
