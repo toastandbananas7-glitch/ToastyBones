@@ -108,7 +108,7 @@
   <!-- HUD -->
   <div id="hud">
     <div>HEIGHT: <span class="hh" id="hud-height">0</span>m</div>
-    <div>🦴 <span class="hb" id="hud-bones">0</span> &nbsp; 🎵 <span style="color:#00cfff" id="hud-bread">0</span></div>
+    <div>🦴 <span class="hb" id="hud-bones">0</span><span id="hud-bone-hint" style="color:#555;font-size:0.85em;"></span> &nbsp; 🎵 <span style="color:#00cfff" id="hud-bread">0</span></div>
     <div id="hud-pu" class="pu-row"></div>
     <div id="hud-warn"></div>
   </div>
@@ -134,7 +134,9 @@
       &nbsp;&nbsp;&nbsp;&nbsp;Press jump again mid-air to use it!<br><br>
       🦴 Collect <strong style="color:#d4cfa8">50 bones</strong> → <span style="color:#ff3355">ROCKET AUTO-FIRES!</span><br>
       &nbsp;&nbsp;&nbsp;&nbsp;Blasts you upward automatically!<br><br>
-      🎵 Music Notes = +2m bonus height<br>
+      🎵 Music Notes → <span style="color:#00cfff">SLOW FALL</span> for 3 seconds!<br>
+      ☁️ <span style="color:#00cfff">Bouncy Clouds</span> → mega-jump boost!<br>
+      🧲 <span style="color:#ffb700">Magnet</span> → sucks in bones for 8 seconds!<br>
       🫘 Evil Beans = knockback!<br><br>
       <strong style="color:#888">SPACE/W/↑ jump &nbsp; A/D/← → move &nbsp; R restart</strong>
     </div>
@@ -300,7 +302,11 @@ let peakY  = 0;        // lowest screen Y the player has reached (= highest poin
 let startY = 0;        // initial player Y for height calc
 let unlockedCount = 0, showUnlock = false;
 let platforms = [], collectibles = [], beans = [];
-let beanTimer = 0, beanInterval = 320;
+let beanTimer = 0, beanInterval = 480;
+let magnetActive = false, magnetTimer = 0;
+const MAGNET_DUR = 480; // ~8s at 60fps
+let slowFallActive = false, slowFallTimer = 0;
+const SLOWFALL_DUR = 180; // ~3s at 60fps
 let genFrontier = 0;
 let lastPlatX = 0, lastPlatW = 90; // for neighbor-aware generation
 
@@ -361,13 +367,13 @@ function generateUp() {
     const dist = Math.max(0, (H - 100) - genFrontier);
     const t    = Math.min(1, dist / (H * 5));
 
-    // Vertical gap ramps up with height
-    const minGap = 62 + t * 45;
-    const maxGap = 82 + t * 58;
+    // Vertical gap ramps up with height (gentler start)
+    const minGap = 52 + t * 58;
+    const maxGap = 68 + t * 72;
     const gap    = minGap + Math.random() * (maxGap - minGap);
 
-    // Platform width narrows with height
-    const platW = Math.round(115 - t * 35);
+    // Platform width narrows with height (start wider)
+    const platW = Math.round(130 - t * 50);
 
     // Horizontal: pure random across full width, but nudge toward center over time
     // so platforms never cluster on one side
@@ -382,13 +388,22 @@ function generateUp() {
 
     platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
 
+    // Bouncy cloud — more common early, rare at height
+    if (Math.random() < Math.max(0.04, 0.18 - t * 0.14)) {
+      const bx = margin + Math.random() * (W - 80 - margin * 2);
+      const by = y - (minGap + Math.random() * (maxGap - minGap));
+      platforms.push({ x: bx, y: by, w: 80, h: PLATH, flash: 0, bouncy: true });
+    }
+
     // Collectible above platform
     if (Math.random() < 0.68) {
-      const bread = Math.random() < 0.18;
+      // Magnet: rare, only appears after 100m, more common mid-game
+      const isMagnet = height > 100 && Math.random() < 0.05;
+      const bread = !isMagnet && Math.random() < 0.18;
       collectibles.push({
         x: x + platW/2 + (Math.random()-0.5)*36,
         y: y - 26,
-        type: bread ? "note" : "bone",
+        type: isMagnet ? 'magnet' : bread ? "note" : "bone",
         collected: false, popFrame: -1,
         bob: Math.random() * Math.PI * 2
       });
@@ -430,6 +445,29 @@ function updatePowerupHUD() {
     el.className = 'pu-icon dj';
     el.textContent = '2x';
     row.appendChild(el);
+  }
+  if (magnetActive) {
+    const el = document.createElement('span');
+    el.className = 'pu-icon';
+    el.style.borderColor = '#ffb700'; el.style.color = '#ffb700';
+    el.textContent = '🧲';
+    row.appendChild(el);
+  }
+  if (slowFallActive) {
+    const el = document.createElement('span');
+    el.className = 'pu-icon';
+    el.style.borderColor = '#00cfff'; el.style.color = '#00cfff';
+    el.textContent = '🪶';
+    row.appendChild(el);
+  }
+  // Bone progress hint
+  const boneProgress = document.getElementById('hud-bones');
+  if (boneProgress) {
+    const toNextDJ = nextDJ - boneBank;
+    const toNextRK = nextRK - boneBank;
+    const nearest = Math.min(toNextDJ, toNextRK);
+    const label = toNextDJ <= toNextRK ? '→💨' : '→🚀';
+    document.getElementById('hud-bone-hint').textContent = nearest <= 8 ? ` (${nearest}${label})` : '';
   }
 }
 
@@ -476,6 +514,8 @@ function initGame() {
   boneBank=0; breadBank=0; airJumps=0; rockets=0;
   nextDJ=5; nextRK=50;
   rocketActive=false; rocketTimer=0;
+  magnetActive=false; magnetTimer=0;
+  slowFallActive=false; slowFallTimer=0;
   jumpPressed=false;
   keys.left=keys.right=keys.jump=false;
   resize();
@@ -645,8 +685,10 @@ function update() {
 
   // ---- GRAVITY ----
   if (!rocketActive) {
-    pvy += pvy < 0 ? GRAV_UP : GRAV_DOWN;
-    if (pvy > 3.2) pvy = 3.2;
+    const gravMult = slowFallActive ? 0.38 : 1.0;
+    pvy += (pvy < 0 ? GRAV_UP : GRAV_DOWN) * gravMult;
+    const maxFall = slowFallActive ? 1.2 : 3.2;
+    if (pvy > maxFall) pvy = maxFall;
   }
 
   // ---- MOVE ----
@@ -664,10 +706,17 @@ function update() {
       const prevFeet = feet - pvy;
       if (px+PW > p.x && px < p.x+p.w && feet >= p.y && prevFeet <= p.y+4) {
         py = p.y - PH;
-        pvy = 0;
         onGround = true;
         p.flash = 6;
         rocketActive = false;
+        if (p.bouncy) {
+          pvy = JUMP * 1.55; // mega bounce!
+          onGround = false;
+          p.flash = 18;
+          showWarn('🌀 BOUNCY CLOUD! ☁️', 700);
+        } else {
+          pvy = 0;
+        }
         break;
       }
     }
@@ -698,6 +747,37 @@ function update() {
 
   if (pinv > 0) pinv--;
 
+  // ---- MAGNET ATTRACTION ----
+  if (magnetActive) {
+    magnetTimer--;
+    if (magnetTimer <= 0) {
+      magnetActive = false;
+      updatePowerupHUD();
+    } else {
+      const PULL_RADIUS = 120;
+      collectibles.forEach(c => {
+        if (c.collected) return;
+        const dx = (px + PW/2) - c.x;
+        const dy = (py + PH/2) - c.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < PULL_RADIUS && dist > 1) {
+          const force = (1 - dist / PULL_RADIUS) * 5;
+          c.x += (dx / dist) * force;
+          c.y += (dy / dist) * force;
+        }
+      });
+    }
+  }
+
+  // ---- SLOW FALL ----
+  if (slowFallActive) {
+    slowFallTimer--;
+    if (slowFallTimer <= 0) {
+      slowFallActive = false;
+      updatePowerupHUD();
+    }
+  }
+
   // ---- COLLECTIBLES ----
   collectibles.forEach(c => {
     if (c.collected) return;
@@ -724,12 +804,22 @@ function update() {
           pvy = Math.min(pvy, -4); // give initial kick upward
           showBigRocketFlash();
         }
-      } else {
+        updatePowerupHUD();
+      } else if (c.type === 'note') {
         breadBank++;
         document.getElementById('hud-bread').textContent = breadBank;
-        // Bread gives bonus height
-        height += 2;
+        // Notes now grant slow-fall (floaty gravity for 3s) + small height bonus
+        height += 1;
+        slowFallActive = true;
+        slowFallTimer = SLOWFALL_DUR;
+        updatePowerupHUD();
+        showWarn('🎵 SLOW FALL! 🪶', 900);
         updateMilestones();
+      } else if (c.type === 'magnet') {
+        magnetActive = true;
+        magnetTimer = MAGNET_DUR;
+        updatePowerupHUD();
+        showWarn('🧲 MAGNET! Bones attracted!', 1400);
       }
     }
   });
@@ -738,7 +828,7 @@ function update() {
   beanTimer++;
   if (beanTimer >= beanInterval) {
     beanTimer = 0;
-    beanInterval = Math.max(100, 320 - height * 0.08);
+    beanInterval = Math.max(150, 480 - height * 0.06);
     spawnBean();
   }
   beans.forEach(b => {
@@ -848,13 +938,31 @@ function draw() {
     if (p.y < -20 || p.y > H+20) return;
     const lit = p.flash > 0;
     if (lit) p.flash--;
-    ctx.fillStyle = lit ? '#0d2a0d' : '#0a180a';
-    ctx.fillRect(p.x, p.y, p.w, p.h);
-    ctx.fillStyle = lit ? '#00ff41' : '#00aa2a';
-    ctx.shadowBlur = lit ? 14 : 4;
-    ctx.shadowColor = lit ? '#00ff41' : '#006620';
-    ctx.fillRect(p.x, p.y, p.w, 3);
-    ctx.shadowBlur = 0;
+    if (p.bouncy) {
+      // Draw as a glowing cyan cloud pad
+      const wobble = Math.sin(frame * 0.08 + p.x) * 2;
+      ctx.save();
+      ctx.translate(p.x + p.w/2, p.y + p.h/2 + wobble);
+      ctx.shadowBlur = lit ? 20 : 8;
+      ctx.shadowColor = '#00cfff';
+      ctx.fillStyle = lit ? '#00efff' : '#00cfff';
+      ctx.font = `${p.w * 0.7}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.85;
+      ctx.fillText('☁️', 0, 0);
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    } else {
+      ctx.fillStyle = lit ? '#0d2a0d' : '#0a180a';
+      ctx.fillRect(p.x, p.y, p.w, p.h);
+      ctx.fillStyle = lit ? '#00ff41' : '#00aa2a';
+      ctx.shadowBlur = lit ? 14 : 4;
+      ctx.shadowColor = lit ? '#00ff41' : '#006620';
+      ctx.fillRect(p.x, p.y, p.w, 3);
+      ctx.shadowBlur = 0;
+    }
   });
 
   // Collectibles
@@ -863,10 +971,10 @@ function draw() {
       const age = frame - c.popFrame;
       if (age < 26) {
         ctx.globalAlpha = 1 - age/26;
-        ctx.fillStyle = c.type==='note' ? '#00cfff' : '#d4cfa8';
+        ctx.fillStyle = c.type==='note' ? '#00cfff' : c.type==='magnet' ? '#ffb700' : '#d4cfa8';
         ctx.font = 'bold 13px VT323';
         ctx.textAlign = 'center';
-        const label = c.type==='note' ? '+2m 🎵' : '+🦴';
+        const label = c.type==='note' ? '🪶 SLOW FALL' : c.type==='magnet' ? '🧲 MAGNET!' : '+🦴';
         ctx.fillText(label, c.x, c.y - age*1.8);
         ctx.globalAlpha=1; ctx.textAlign='left';
       }
@@ -875,7 +983,9 @@ function draw() {
     if (c.collected) return;
     const cy = c.y + Math.sin(frame*0.07+c.bob)*4;
     if (cy < -20 || cy > H+20) return;
-    c.type==='bone' ? drawBone(c.x, cy) : drawNote(c.x, cy);
+    if (c.type==='bone') drawBone(c.x, cy);
+    else if (c.type==='note') drawNote(c.x, cy);
+    else if (c.type==='magnet') drawMagnet(c.x, cy);
   });
 
   // Beans
@@ -886,6 +996,30 @@ function draw() {
 
   // Player
   drawSkull(px, py, pinv);
+
+  // Magnet aura
+  if (magnetActive) {
+    const pulse = 0.5 + Math.sin(frame * 0.15) * 0.25;
+    ctx.strokeStyle = `rgba(255,183,0,${pulse})`;
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#ffb700';
+    ctx.beginPath();
+    ctx.arc(px+PW/2, py+PH/2, 120, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = 1;
+  }
+
+  // Slow-fall feather trail
+  if (slowFallActive && pvy > 0) {
+    ctx.globalAlpha = 0.35 + Math.sin(frame * 0.2) * 0.15;
+    ctx.font = '16px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🪶', px+PW/2 + (Math.random()-0.5)*12, py+PH + 10 + Math.random()*12);
+    ctx.globalAlpha = 1;
+    ctx.textAlign = 'left';
+  }
 
   // Next album hint
   if (unlockedCount < ALBUMS.length) {
@@ -960,6 +1094,22 @@ function drawNote(bx, by) {
   ctx.shadowBlur = 8;
   ctx.shadowColor = '#00cfff';
   ctx.fillText('🎵', 0, 0);
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+function drawMagnet(bx, by) {
+  ctx.save();
+  ctx.font = '22px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Spin the magnet
+  const angle = frame * 0.06;
+  ctx.translate(bx, by);
+  ctx.rotate(angle);
+  ctx.shadowBlur = 12;
+  ctx.shadowColor = '#ffb700';
+  ctx.fillText('🧲', 0, 0);
   ctx.shadowBlur = 0;
   ctx.restore();
 }
