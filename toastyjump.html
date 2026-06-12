@@ -8,56 +8,69 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
     :root {
-      --green:#00ff41;--green-dim:#00aa2a;--red:#ff3355;
-      --amber:#ffb700;--blue:#00cfff;--bg:#0a0a0a;--text:#d0d0d0;
+      --green:#00ff41;--gdim:#00aa2a;--red:#ff3355;
+      --amber:#ffb700;--bg:#0a0a0a;--text:#d0d0d0;
     }
-    *{box-sizing:border-box;margin:0;padding:0;touch-action:none;}
-    body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
-    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px);pointer-events:none;z-index:9999;}
-    .topbar{background:#080808;border-bottom:1px solid #1a1a1a;padding:6px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'VT323',monospace;font-size:1rem;color:#444;flex-shrink:0;z-index:100;}
-    .topbar a{color:var(--green);text-decoration:none;border:1px solid var(--green-dim);padding:2px 10px;transition:all 0.2s;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{width:100%;height:100%;overflow:hidden;touch-action:none;}
+    body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;display:flex;flex-direction:column;}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,0.15) 3px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:9000;}
+    .topbar{background:#080808;border-bottom:1px solid #1a1a1a;padding:6px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'VT323',monospace;font-size:1rem;color:#444;flex-shrink:0;}
+    .topbar a{color:var(--green);text-decoration:none;border:1px solid var(--gdim);padding:2px 10px;}
     .topbar a:hover{background:var(--green);color:#000;}
     .on-air{display:flex;align-items:center;gap:6px;}
     .on-air-dot{width:7px;height:7px;background:var(--red);border-radius:50%;animation:blink 1s step-end infinite;}
     @keyframes blink{50%{opacity:0;}}
-    .game-wrapper{display:flex;flex:1;overflow:hidden;position:relative;}
-    #game-canvas{flex:1;display:block;}
-    .progress-panel{width:100px;background:#080808;border-left:1px solid #1a1a1a;display:flex;flex-direction:column;align-items:center;padding:8px 4px;overflow:hidden;flex-shrink:0;}
-    .panel-title{font-family:'VT323',monospace;font-size:0.7rem;color:#333;letter-spacing:2px;margin-bottom:8px;text-align:center;}
-    .progress-track{flex:1;width:20px;background:#111;border:1px solid #1a1a1a;border-radius:10px;position:relative;overflow:visible;margin:0 auto;}
-    .progress-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--green-dim),var(--green));border-radius:10px;transition:height 0.3s ease;box-shadow:0 0 8px var(--green);}
-    .album-milestone{position:absolute;right:26px;width:28px;height:28px;border-radius:4px;border:1px solid #222;overflow:hidden;transition:all 0.3s;}
-    .album-milestone img{width:100%;height:100%;object-fit:cover;opacity:0.25;transition:opacity 0.4s;filter:grayscale(100%);}
+
+    .game-wrapper{display:flex;flex:1;min-height:0;position:relative;}
+    #game-canvas{flex:1;display:block;min-width:0;}
+
+    /* RIGHT PANEL */
+    .progress-panel{width:88px;background:#060606;border-left:1px solid #181818;display:flex;flex-direction:column;align-items:center;padding:8px 4px 8px;flex-shrink:0;}
+    .panel-title{font-family:'VT323',monospace;font-size:0.65rem;color:#2a2a2a;letter-spacing:2px;margin-bottom:6px;text-align:center;}
+    .progress-track{flex:1;width:18px;background:#0d0d0d;border:1px solid #181818;border-radius:9px;position:relative;overflow:visible;margin:0 auto;}
+    .progress-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--gdim),var(--green));border-radius:9px;transition:height 0.3s;box-shadow:0 0 6px var(--green);}
+    .album-milestone{position:absolute;right:24px;width:26px;height:26px;border-radius:3px;border:1px solid #1a1a1a;overflow:hidden;transition:all 0.3s;}
+    .album-milestone img{width:100%;height:100%;object-fit:cover;opacity:0.2;filter:grayscale(100%);transition:all 0.4s;}
     .album-milestone.unlocked img{opacity:1;filter:none;}
-    .album-milestone.unlocked{border-color:var(--green);box-shadow:0 0 8px rgba(0,255,65,0.4);}
-    .album-milestone.current{border-color:var(--amber);box-shadow:0 0 10px rgba(255,183,0,0.5);animation:mpulse 1s ease-in-out infinite;}
-    @keyframes mpulse{0%,100%{box-shadow:0 0 6px rgba(255,183,0,0.4);}50%{box-shadow:0 0 16px rgba(255,183,0,0.8);}}
-    .score-display{font-family:'VT323',monospace;font-size:0.85rem;color:var(--green);text-align:center;margin-top:8px;letter-spacing:1px;}
-    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.88);z-index:200;font-family:'VT323',monospace;text-align:center;padding:20px;}
+    .album-milestone.unlocked{border-color:var(--green);box-shadow:0 0 6px rgba(0,255,65,0.4);}
+    .album-milestone.current{border-color:var(--amber);animation:mpulse 1.2s ease-in-out infinite;}
+    @keyframes mpulse{0%,100%{box-shadow:0 0 4px rgba(255,183,0,0.3);}50%{box-shadow:0 0 12px rgba(255,183,0,0.7);}}
+    .panel-score{font-family:'VT323',monospace;font-size:0.8rem;color:var(--green);text-align:center;margin-top:6px;letter-spacing:1px;line-height:1.3;}
+
+    /* OVERLAYS */
+    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:500;font-family:'VT323',monospace;text-align:center;padding:20px;}
     .overlay.hidden{display:none;}
-    .ov-title{font-size:clamp(2rem,8vw,3.5rem);color:var(--amber);text-shadow:0 0 20px rgba(255,183,0,0.5);margin-bottom:8px;letter-spacing:2px;}
-    .ov-sub{font-size:1rem;color:#555;letter-spacing:3px;margin-bottom:24px;}
-    .ov-desc{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:#666;line-height:1.7;max-width:340px;margin-bottom:28px;}
-    .ov-btn{background:transparent;border:2px solid var(--amber);color:var(--amber);font-family:'VT323',monospace;font-size:1.8rem;padding:10px 40px;cursor:pointer;letter-spacing:3px;transition:all 0.15s;border-radius:6px;}
-    .ov-btn:hover{background:rgba(255,183,0,0.1);box-shadow:0 0 20px rgba(255,183,0,0.3);}
-    .ov-btn.green{border-color:var(--green);color:var(--green);}
-    .ov-btn.green:hover{background:rgba(0,255,65,0.1);}
-    .score-big{font-size:clamp(3rem,12vw,5rem);color:var(--green);text-shadow:0 0 30px rgba(0,255,65,0.5);line-height:1;margin-bottom:4px;}
-    .score-lbl{font-size:0.8rem;color:#444;letter-spacing:3px;margin-bottom:16px;}
-    .go-summary{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#555;margin-bottom:24px;line-height:1.6;max-width:320px;}
-    #unlock-flash{position:absolute;inset:0;z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0.85);}
-    #unlock-flash.show{display:flex;animation:fin 0.2s ease-out;}
-    @keyframes fin{from{opacity:0;transform:scale(1.05);}to{opacity:1;transform:scale(1);}}
-    .unlock-art{width:160px;height:160px;border-radius:12px;border:3px solid var(--green);box-shadow:0 0 40px rgba(0,255,65,0.4);object-fit:cover;margin-bottom:16px;}
-    .unlock-lbl{font-family:'VT323',monospace;font-size:1.4rem;color:var(--green);letter-spacing:2px;margin-bottom:4px;}
-    .unlock-name{font-family:'VT323',monospace;font-size:1.8rem;color:#fff;text-shadow:0 0 20px rgba(255,255,255,0.3);}
-    .hud-overlay{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.1rem;color:var(--green);pointer-events:none;z-index:60;text-shadow:0 0 8px rgba(0,255,65,0.5);line-height:1.4;}
-    .pts{color:var(--amber);}
-    .danger{color:var(--red);animation:dp 0.5s step-end infinite;}
-    @keyframes dp{50%{opacity:0.4;}}
-    .tap-left,.tap-right{position:absolute;top:0;bottom:0;z-index:50;opacity:0;}
-    .tap-left{left:0;width:35%;}
-    .tap-right{left:35%;right:100px;}
+    .ov-title{font-size:clamp(1.8rem,6vw,3rem);color:var(--amber);text-shadow:0 0 20px rgba(255,183,0,0.4);margin-bottom:6px;letter-spacing:2px;}
+    .ov-sub{font-size:0.9rem;color:#444;letter-spacing:3px;margin-bottom:20px;}
+    .ov-desc{font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:#555;line-height:1.75;max-width:320px;margin-bottom:24px;}
+    .ov-btn{background:transparent;border:2px solid var(--amber);color:var(--amber);font-family:'VT323',monospace;font-size:1.6rem;padding:9px 36px;cursor:pointer;letter-spacing:3px;border-radius:5px;transition:all 0.15s;display:inline-block;}
+    .ov-btn:hover{background:rgba(255,183,0,0.12);}
+    .ov-btn.g{border-color:var(--green);color:var(--green);}
+    .ov-btn.g:hover{background:rgba(0,255,65,0.1);}
+    .score-big{font-size:clamp(2.5rem,10vw,4.5rem);color:var(--green);text-shadow:0 0 24px rgba(0,255,65,0.5);line-height:1;margin-bottom:4px;}
+    .score-lbl{font-size:0.75rem;color:#333;letter-spacing:3px;margin-bottom:14px;}
+    .go-sum{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#444;margin-bottom:20px;line-height:1.6;max-width:300px;}
+
+    /* UNLOCK FLASH */
+    #unlock-flash{position:absolute;inset:0;z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0.87);}
+    #unlock-flash.show{display:flex;animation:ufin 0.18s ease-out;}
+    @keyframes ufin{from{opacity:0;transform:scale(1.04);}to{opacity:1;transform:scale(1);}}
+    .u-art{width:150px;height:150px;border-radius:10px;border:3px solid var(--green);box-shadow:0 0 36px rgba(0,255,65,0.35);object-fit:cover;margin-bottom:14px;}
+    .u-lbl{font-family:'VT323',monospace;font-size:1.3rem;color:var(--green);letter-spacing:2px;margin-bottom:4px;}
+    .u-name{font-family:'VT323',monospace;font-size:1.7rem;color:#fff;}
+
+    /* HUD */
+    #hud{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.05rem;color:var(--green);pointer-events:none;z-index:200;line-height:1.45;}
+    .hpts{color:var(--amber);}
+    .hwarn{color:var(--red);animation:dp 0.5s step-end infinite;}
+    @keyframes dp{50%{opacity:0.3;}}
+
+    /* MOBILE TAP ZONES */
+    #tap-left,#tap-right,#tap-jump{position:absolute;bottom:0;z-index:300;opacity:0;cursor:pointer;}
+    #tap-left{left:0;width:30%;height:100%;}
+    #tap-right{left:30%;width:calc(40% - 0px);right:88px;height:100%;}
+    #tap-jump{right:88px;width:30%;height:50%;bottom:0;}
   </style>
 </head>
 <body>
@@ -65,309 +78,474 @@
   <div class="on-air"><div class="on-air-dot"></div><span>ON AIR</span></div>
   <a href="https://toastybones.com">← BACK TO SITE</a>
 </div>
+
 <div class="game-wrapper">
-  <div class="tap-left" id="tap-left"></div>
-  <div class="tap-right" id="tap-right"></div>
-  <div class="hud-overlay" id="hud">
-    <div>PTS: <span class="pts" id="hud-pts">0</span></div>
+  <!-- Mobile tap zones -->
+  <div id="tap-left"></div>
+  <div id="tap-right"></div>
+  <div id="tap-jump"></div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div>PTS: <span class="hpts" id="hud-pts">0</span></div>
     <div id="hud-warn"></div>
   </div>
+
   <canvas id="game-canvas"></canvas>
+
+  <!-- Progress panel -->
   <div class="progress-panel">
     <div class="panel-title">ALBUMS</div>
     <div class="progress-track" id="progress-track">
       <div class="progress-fill" id="progress-fill" style="height:0%"></div>
     </div>
-    <div class="score-display" id="panel-score">0<br>pts</div>
+    <div class="panel-score" id="panel-score">0<br>pts</div>
   </div>
 
-  <!-- Start -->
-  <div class="overlay" id="start-screen">
+  <!-- START SCREEN -->
+  <div class="overlay" id="scr-start">
     <div class="ov-title">🍞 TOASTY JUMP</div>
     <div class="ov-sub">[ TOASTYBONES EDITION ]</div>
     <div class="ov-desc">
-      Jump up through the ToastyBones discography!<br><br>
-      🦴 Bones = +1 pt &nbsp;&nbsp; 🍞 Bread = +5 pts<br>
-      🍞☠️ Toasters = -5 pts + KNOCKBACK<br><br>
+      Jump through the ToastyBones discography!<br><br>
+      🦴 Bone = +1 pt &nbsp; 🍞 Bread = +5 pts<br>
+      ☠ Toasters = -5 pts + knockback!<br><br>
       Unlock all 24 albums to win.<br>
-      1,600 pts to complete the collection!
+      1,600 pts to complete the collection!<br><br>
+      <strong style="color:#888">SPACE / W / ↑ to jump<br>A / D / ← → to move</strong>
     </div>
-    <button class="ov-btn" onclick="startGame()">▶ JUMP IN</button>
-    <div style="margin-top:12px;font-size:0.7rem;color:#333;letter-spacing:2px;">← → KEYS OR TAP SIDES TO MOVE</div>
+    <button class="ov-btn" id="btn-start">▶ JUMP IN</button>
+    <div style="margin-top:10px;font-size:0.65rem;color:#2a2a2a;letter-spacing:2px;">TAP LEFT / RIGHT SIDE TO MOVE · TAP BOTTOM-RIGHT TO JUMP</div>
   </div>
 
-  <!-- Game Over -->
-  <div class="overlay hidden" id="gameover-screen">
+  <!-- GAME OVER -->
+  <div class="overlay hidden" id="scr-gameover">
     <div class="ov-title" id="go-title">GAME OVER</div>
     <div class="score-big" id="go-score">0</div>
     <div class="score-lbl">POINTS</div>
-    <div class="go-summary" id="go-summary"></div>
-    <button class="ov-btn green" onclick="startGame()" style="margin-bottom:12px;">↺ TRY AGAIN</button>
-    <a href="https://toastybones.com" style="color:#333;font-size:0.75rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
+    <div class="go-sum" id="go-sum"></div>
+    <button class="ov-btn g" id="btn-retry" style="margin-bottom:10px;">↺ TRY AGAIN</button>
+    <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
 
-  <!-- Win -->
-  <div class="overlay hidden" id="win-screen">
+  <!-- WIN -->
+  <div class="overlay hidden" id="scr-win">
     <div class="ov-title">🔥 COLLECTION COMPLETE! 🔥</div>
     <div class="score-big" id="win-score">1600</div>
     <div class="score-lbl">TOTAL POINTS</div>
-    <div class="go-summary">All 24 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
-    <button class="ov-btn" onclick="startGame()" style="margin-bottom:12px;">↺ PLAY AGAIN</button>
-    <a href="https://toastybones.com" style="color:#333;font-size:0.75rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
+    <div class="go-sum">All 24 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
+    <button class="ov-btn" id="btn-winretry" style="margin-bottom:10px;">↺ PLAY AGAIN</button>
+    <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
 
-  <!-- Unlock flash -->
+  <!-- UNLOCK FLASH -->
   <div id="unlock-flash">
-    <div class="unlock-lbl">🔓 ALBUM UNLOCKED</div>
-    <img class="unlock-art" id="unlock-art" src="" alt="">
-    <div class="unlock-name" id="unlock-name"></div>
+    <div class="u-lbl">🔓 ALBUM UNLOCKED</div>
+    <img class="u-art" id="u-art" src="" alt="">
+    <div class="u-name" id="u-name"></div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// ALL COORDINATES ARE PURE SCREEN COORDS (Y increases downward)
-// Camera scrolls by shifting everything down each frame
-// ============================================================
-
-const ALBUMS=[
-  {name:'Isle of Beans',              img:'IOB.png',                    pts:30},
-  {name:'Ear-aid',                    img:'earaid.png',                 pts:60},
-  {name:'Fully Panted',               img:'fullypanted.png',            pts:95},
-  {name:'Lovey Dovey',                img:'loveydovey.png',             pts:130},
-  {name:'Big Dump',                   img:'bigdump.png',                pts:170},
-  {name:'Mystery Clown',              img:'mysteryclown.png',           pts:215},
-  {name:'The Legend of Duke',         img:'LOD.png',                    pts:265},
-  {name:"Man's Breath",               img:'MANSBREATH.png',             pts:320},
-  {name:'Neon Banana',                img:'neonbanana.png',             pts:380},
-  {name:'Sharing Socks with Strangers',img:'sharingsocks.png',          pts:445},
-  {name:'Boney Hollow',               img:'boneyhollow.png',            pts:515},
-  {name:'Black and Blue and Punk All Over',img:'blackandblue.png',      pts:590},
-  {name:'Covered in Myself',          img:'coveredinmyself.png',        pts:670},
-  {name:'Midnight Suppository',       img:'midnightsuppository.png',    pts:755},
-  {name:'Festive Flush',              img:'festivefush.png',            pts:845},
-  {name:'The Great Indoors',          img:'greatindoors.png',           pts:940},
-  {name:'Spobbly Not',                img:'spobblynot.png',             pts:1000},
-  {name:'Big Dump 2: Return of the Dump',img:'bigdump2.png',           pts:1075},
-  {name:'Hilariously Unfortunate',    img:'hilariouslyunfortunate.png', pts:1155},
-  {name:'Dewey Doofus and the Due Dues',img:'deweydoofus.png',         pts:1235},
-  {name:'Try Again',                  img:'tryagain.png',               pts:1315},
-  {name:'Almost Live',                img:'almostlive.png',             pts:1400},
-  {name:'Efforts and Errors',         img:'EE.png',                     pts:1490},
-  {name:'Unscheduled Programming',    img:'unscheduled.png',            pts:1600},
+// =============================================================
+// DATA
+// =============================================================
+const ALBUMS = [
+  {name:'Isle of Beans',                    img:'IOB.png',                    pts:30},
+  {name:'Ear-aid',                          img:'earaid.png',                 pts:60},
+  {name:'Fully Panted',                     img:'fullypanted.png',            pts:95},
+  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:130},
+  {name:'Big Dump',                         img:'bigdump.png',                pts:170},
+  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:215},
+  {name:'The Legend of Duke',               img:'LOD.png',                    pts:265},
+  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:320},
+  {name:'Neon Banana',                      img:'neonbanana.png',             pts:380},
+  {name:'Sharing Socks with Strangers',     img:'sharingsocks.png',           pts:445},
+  {name:'Boney Hollow',                     img:'boneyhollow.png',            pts:515},
+  {name:'Black and Blue and Punk All Over', img:'blackandblue.png',           pts:590},
+  {name:'Covered in Myself',               img:'coveredinmyself.png',         pts:670},
+  {name:'Midnight Suppository',             img:'midnightsuppository.png',    pts:755},
+  {name:'Festive Flush',                    img:'festivefush.png',            pts:845},
+  {name:'The Great Indoors',               img:'greatindoors.png',            pts:940},
+  {name:'Spobbly Not',                      img:'spobblynot.png',             pts:1000},
+  {name:'Big Dump 2: Return of the Dump',  img:'bigdump2.png',               pts:1075},
+  {name:'Hilariously Unfortunate',          img:'hilariouslyunfortunate.png', pts:1155},
+  {name:'Dewey Doofus and the Due Dues',   img:'deweydoofus.png',            pts:1235},
+  {name:'Try Again',                        img:'tryagain.png',               pts:1315},
+  {name:'Almost Live',                      img:'almostlive.png',             pts:1400},
+  {name:'Efforts and Errors',              img:'EE.png',                      pts:1490},
+  {name:'Unscheduled Programming',          img:'unscheduled.png',            pts:1600},
 ];
-const TOTAL_PTS=1600;
+const TOTAL_PTS = 1600;
 
-const canvas=document.getElementById('game-canvas');
-const ctx=canvas.getContext('2d');
-let W=0,H=0;
+// BGM tracks (in /sounds/ folder) — add as many as you upload
+const BGM_TRACKS = [
+  'sounds/toastyjumpBGM1.mp3',
+  'sounds/toastyjumpBGM2.mp3',
+  'sounds/toastyjumpBGM3.mp3',
+];
 
-// Game constants
-const PW=26,PH=26;       // player size
-const PLATW=82,PLATH=10; // platform size
-const GRAV=0.5;
-const JUMP=-12;
-const SPEED=4.2;
-const KNOCK_VX=5;
-const KNOCK_VY=-9;
+// =============================================================
+// CANVAS + RESIZE
+// =============================================================
+const canvas = document.getElementById('game-canvas');
+const ctx    = canvas.getContext('2d');
+let W = 0, H = 0;
 
-// Game state
-let gameRunning=false;
-let score=0,unlockedCount=0;
-let showingUnlock=false;
-let frame=0,animId=null;
-let keys={left:false,right:false};
-
-// Player (screen coords)
-let px,py,pvx,pvy,pinv,pknock,pknockT;
-
-// World objects — all in screen coords, scrolled each frame
-let platforms=[];
-let collectibles=[];
-let toasters=[];
-let toasterTimer=0,toasterInterval=300;
-
-// Camera scroll — how many px we've shifted upward total
-let camShift=0;
-// Lowest Y we've generated platforms up to (starts high, decreases as we go up)
-let genFrontier=0;
-
-// ============================================================
-function resize(){
-  W=canvas.offsetWidth; H=canvas.offsetHeight;
-  canvas.width=W; canvas.height=H;
+function resize() {
+  W = canvas.offsetWidth;
+  H = canvas.offsetHeight;
+  canvas.width  = W;
+  canvas.height = H;
   buildMilestones();
 }
+window.addEventListener('resize', resize);
 
-// ============================================================
+// =============================================================
+// BGM
+// =============================================================
+const bgmAudio = new Audio();
+bgmAudio.loop  = false;
+bgmAudio.volume = 0.35;
+let bgmIndex   = -1;
+
+function playNextBGM() {
+  if (!BGM_TRACKS.length) return;
+  bgmIndex = (bgmIndex + 1) % BGM_TRACKS.length;
+  bgmAudio.src = BGM_TRACKS[bgmIndex];
+  bgmAudio.play().catch(() => {}); // silently fail if file missing
+}
+bgmAudio.addEventListener('ended', playNextBGM);
+
+function stopBGM() {
+  bgmAudio.pause();
+  bgmAudio.currentTime = 0;
+}
+
+// =============================================================
+// GAME CONSTANTS
+// =============================================================
+const PW   = 26, PH   = 26;   // player size
+const PLATW = 90, PLATH = 10;  // platform size
+const GRAV  = 0.42;
+const JUMP  = -14;             // jump velocity (negative = up)
+const SPEED = 4.0;
+const KNOCK_VX = 5;
+const KNOCK_VY = -8;
+
+// =============================================================
+// GAME STATE
+// =============================================================
+let running = false, frame = 0, animId = null;
+let score = 0, unlockedCount = 0, showUnlock = false;
+let platforms = [], collectibles = [], toasters = [];
+let toasterTimer = 0, toasterInterval = 280;
+let genFrontier = 0; // smallest Y generated so far (platforms go upward = smaller Y)
+
+// Player state
+let px, py, pvx, pvy, onGround, pinv, pknock, pknockT, jumpBuffer;
+
+// Input
+const keys = { left:false, right:false, jump:false };
+let jumpPressed = false; // single-press detection
+
+// =============================================================
+// INPUT
+// =============================================================
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') keys.left  = true;
+  if (e.key==='ArrowRight' || e.key==='d' || e.key==='D') keys.right = true;
+  if (e.key===' ' || e.key==='ArrowUp' || e.key==='w' || e.key==='W') {
+    if (!keys.jump) jumpPressed = true;
+    keys.jump = true;
+    e.preventDefault();
+  }
+});
+document.addEventListener('keyup', e => {
+  if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') keys.left  = false;
+  if (e.key==='ArrowRight' || e.key==='d' || e.key==='D') keys.right = false;
+  if (e.key===' ' || e.key==='ArrowUp' || e.key==='w' || e.key==='W') keys.jump = false;
+});
+
+// Mobile tap zones
+const tapL = document.getElementById('tap-left');
+const tapR = document.getElementById('tap-right');
+const tapJ = document.getElementById('tap-jump');
+tapL.addEventListener('touchstart', e => { e.preventDefault(); keys.left  = true;  }, {passive:false});
+tapL.addEventListener('touchend',   e => { e.preventDefault(); keys.left  = false; }, {passive:false});
+tapR.addEventListener('touchstart', e => { e.preventDefault(); keys.right = true;  }, {passive:false});
+tapR.addEventListener('touchend',   e => { e.preventDefault(); keys.right = false; }, {passive:false});
+tapJ.addEventListener('touchstart', e => { e.preventDefault(); jumpPressed = true; keys.jump = true;  }, {passive:false});
+tapJ.addEventListener('touchend',   e => { e.preventDefault(); keys.jump = false; }, {passive:false});
+
+// Buttons
+document.getElementById('btn-start').addEventListener('click', startGame);
+document.getElementById('btn-retry').addEventListener('click', startGame);
+document.getElementById('btn-winretry').addEventListener('click', startGame);
+
+// =============================================================
 // PLATFORM GENERATION
-// genFrontier tracks the smallest Y (highest on screen) we've generated to.
-// We always keep platforms generated at least 2 screens above camera top (y=0).
-function generateUp(){
-  // generate until we have platforms at least H*2 above top of screen
-  while(genFrontier > -H*2){
-    const x=20+Math.random()*(W-PLATW-40);
-    const y=genFrontier - (55+Math.random()*35);
-    platforms.push({x,y,w:PLATW,h:PLATH,flash:0});
-    // collectible above platform
-    if(Math.random()<0.65){
-      const bread=Math.random()<0.2;
+// All coords: Y increases downward (standard screen coords).
+// We generate platforms UPWARD (lower Y values).
+// genFrontier = the smallest Y we've placed a platform at.
+// We keep generating until genFrontier is well above the screen top.
+// =============================================================
+function generateUp() {
+  while (genFrontier > -H * 3) {
+    const x  = 20 + Math.random() * (W - PLATW - 40);
+    const gap = 55 + Math.random() * 30; // vertical gap between platforms
+    const y  = genFrontier - gap;
+    platforms.push({ x, y, w:PLATW, h:PLATH, flash:0 });
+
+    // Collectible floating above platform
+    if (Math.random() < 0.65) {
+      const bread = Math.random() < 0.2;
       collectibles.push({
-        x:x+PLATW/2+(Math.random()-0.5)*50,
-        y:y-22,
-        type:bread?'bread':'bone',
-        collected:false,
-        pop:0,
-        bob:Math.random()*Math.PI*2
+        x: x + PLATW/2 + (Math.random()-0.5)*50,
+        y: y - 24,
+        type: bread ? 'bread' : 'bone',
+        collected: false, popFrame: -1,
+        bob: Math.random() * Math.PI * 2
       });
     }
-    genFrontier=y;
+    genFrontier = y;
   }
 }
 
-// ============================================================
-function initGame(){
-  score=0; unlockedCount=0; showingUnlock=false; frame=0;
-  toasterTimer=0; toasterInterval=300;
-  platforms=[]; collectibles=[]; toasters=[]; camShift=0;
+// Scroll all objects down by dy (camera moves up)
+function scrollDown(dy) {
+  platforms.forEach(p => p.y += dy);
+  collectibles.forEach(c => c.y += dy);
+  toasters.forEach(t => t.y += dy);
+  genFrontier += dy;
+}
+
+// =============================================================
+// TOASTERS
+// =============================================================
+function spawnToaster() {
+  const fromLeft = Math.random() < 0.5;
+  const spd = (1.8 + score / 400) * (fromLeft ? 1 : -1);
+  toasters.push({
+    x: fromLeft ? -52 : W + 10,
+    y: H * 0.12 + Math.random() * H * 0.65,
+    w: 46, h: 36, vx: spd, hit: false
+  });
+}
+
+// =============================================================
+// GAME INIT
+// =============================================================
+function initGame() {
+  score = 0; unlockedCount = 0; showUnlock = false; frame = 0;
+  toasterTimer = 0; toasterInterval = 280;
+  platforms = []; collectibles = []; toasters = [];
+  jumpPressed = false;
+  keys.left = keys.right = keys.jump = false;
 
   resize();
 
-  // Starting platform — centered, near bottom
-  const startPlatY=H-80;
-  platforms.push({x:W/2-PLATW/2, y:startPlatY, w:PLATW, h:PLATH, flash:0});
-  genFrontier=startPlatY;
+  // Place starting platform near bottom-center
+  const startY = H - 100;
+  platforms.push({ x: W/2 - PLATW/2, y: startY, w:PLATW, h:PLATH, flash:0 });
+  genFrontier = startY;
   generateUp();
 
-  // Player sits on starting platform
-  px=W/2-PW/2;
-  py=startPlatY-PH;
-  pvx=0; pvy=0; pinv=0; pknock=false; pknockT=0;
+  // Player starts standing on starting platform
+  px = W/2 - PW/2;
+  py = startY - PH;
+  pvx = 0; pvy = 0;
+  onGround = true;
+  pinv = 0; pknock = false; pknockT = 0; jumpBuffer = 0;
 
   updateMilestones();
 }
 
-// ============================================================
-function startGame(){
-  document.getElementById('start-screen').classList.add('hidden');
-  document.getElementById('gameover-screen').classList.add('hidden');
-  document.getElementById('win-screen').classList.add('hidden');
+// =============================================================
+// START / STOP
+// =============================================================
+function startGame() {
+  document.getElementById('scr-start').classList.add('hidden');
+  document.getElementById('scr-gameover').classList.add('hidden');
+  document.getElementById('scr-win').classList.add('hidden');
   document.getElementById('unlock-flash').classList.remove('show');
-  document.getElementById('hud-warn').textContent='';
+  document.getElementById('hud-warn').textContent = '';
 
   initGame();
-  gameRunning=true;
-  if(animId) cancelAnimationFrame(animId);
+  running = true;
+  stopBGM();
+  playNextBGM();
+  if (animId) cancelAnimationFrame(animId);
   loop();
 }
 
-// ============================================================
-// INPUT
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') keys.left=true;
-  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') keys.right=true;
-});
-document.addEventListener('keyup',e=>{
-  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') keys.left=false;
-  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') keys.right=false;
-});
-['tap-left','tap-right'].forEach(id=>{
-  const el=document.getElementById(id);
-  const isLeft=id==='tap-left';
-  el.addEventListener('touchstart',e=>{e.preventDefault();if(isLeft)keys.left=true;else keys.right=true;},{passive:false});
-  el.addEventListener('touchend',e=>{e.preventDefault();if(isLeft)keys.left=false;else keys.right=false;},{passive:false});
-});
-
-// ============================================================
-// SCROLL: shift everything down by dy pixels
-function scroll(dy){
-  platforms.forEach(p=>p.y+=dy);
-  collectibles.forEach(c=>{c.y+=dy;});
-  toasters.forEach(t=>t.y+=dy);
-  genFrontier+=dy;
-  camShift+=dy;
+function endGame() {
+  running = false;
+  stopBGM();
+  const go = document.getElementById('scr-gameover');
+  go.classList.remove('hidden');
+  document.getElementById('go-score').textContent = score;
+  document.getElementById('go-sum').innerHTML =
+    unlockedCount === 0
+      ? "No albums unlocked. I'm not surprised, just disappointed."
+      : `${unlockedCount} / 24 albums unlocked:<br>` +
+        ALBUMS.slice(0, unlockedCount).map(a => a.name).join(' · ');
+  const t = score >= TOTAL_PTS ? '🔥 LEGENDARY'
+    : unlockedCount >= 18 ? 'IMPRESSIVE RUN'
+    : unlockedCount >= 10 ? 'NOT BAD'
+    : 'GAME OVER';
+  document.getElementById('go-title').textContent = t;
 }
 
-// ============================================================
-// MAIN LOOP
-function loop(){
-  if(!gameRunning){return;}
-  animId=requestAnimationFrame(loop);
-  frame++;
+function winGame() {
+  running = false;
+  stopBGM();
+  document.getElementById('scr-win').classList.remove('hidden');
+  document.getElementById('win-score').textContent = score;
+}
 
-  if(!showingUnlock){
-    update();
+// =============================================================
+// UNLOCK
+// =============================================================
+function checkUnlocks() {
+  if (unlockedCount >= ALBUMS.length) return;
+  if (score >= ALBUMS[unlockedCount].pts) {
+    const album = ALBUMS[unlockedCount];
+    unlockedCount++;
+    updateMilestones();
+    document.getElementById('u-art').src   = album.img;
+    document.getElementById('u-name').textContent = album.name;
+    document.getElementById('unlock-flash').classList.add('show');
+    showUnlock = true;
+    setTimeout(() => {
+      document.getElementById('unlock-flash').classList.remove('show');
+      showUnlock = false;
+      if (unlockedCount >= ALBUMS.length) winGame();
+    }, 1700);
   }
-  draw();
 }
 
-function update(){
-  // ---- MOVEMENT ----
-  if(!pknock){
-    if(keys.left)       pvx=-SPEED;
-    else if(keys.right) pvx= SPEED;
-    else                pvx*=0.75;
+// =============================================================
+// MILESTONE PANEL
+// =============================================================
+function buildMilestones() {
+  const track = document.getElementById('progress-track');
+  track.querySelectorAll('.album-milestone').forEach(e => e.remove());
+  ALBUMS.forEach((a, i) => {
+    const el  = document.createElement('div');
+    el.className = 'album-milestone';
+    el.id = 'ms' + i;
+    el.style.bottom    = (a.pts / TOTAL_PTS * 100) + '%';
+    el.style.transform = 'translateY(50%)';
+    const img = document.createElement('img');
+    img.src = a.img; img.alt = a.name; img.title = a.name;
+    el.appendChild(img);
+    track.appendChild(el);
+  });
+}
+
+function updateMilestones() {
+  document.getElementById('progress-fill').style.height =
+    (Math.min(score / TOTAL_PTS, 1) * 100) + '%';
+  document.getElementById('panel-score').innerHTML = score + '<br>pts';
+  document.getElementById('hud-pts').textContent = score;
+  ALBUMS.forEach((_, i) => {
+    const el = document.getElementById('ms' + i);
+    if (!el) return;
+    el.classList.toggle('unlocked', i < unlockedCount);
+    el.classList.toggle('current',  i === unlockedCount);
+  });
+}
+
+// =============================================================
+// MAIN LOOP
+// =============================================================
+function loop() {
+  if (!running) return;
+  animId = requestAnimationFrame(loop);
+  frame++;
+  if (!showUnlock) update();
+  draw();
+  jumpPressed = false; // consume press each frame
+}
+
+// =============================================================
+// UPDATE
+// =============================================================
+function update() {
+  // ---- HORIZONTAL ----
+  if (!pknock) {
+    if      (keys.left)  pvx = -SPEED;
+    else if (keys.right) pvx =  SPEED;
+    else                 pvx *= 0.72;
   } else {
-    pknockT--;
-    if(pknockT<=0) pknock=false;
-    pvx*=0.82;
+    pvx *= 0.80;
+    if (--pknockT <= 0) pknock = false;
+  }
+
+  // ---- JUMP (only when on ground, single press) ----
+  if (jumpPressed && onGround) {
+    pvy = JUMP;
+    onGround = false;
   }
 
   // ---- GRAVITY ----
-  pvy+=GRAV;
+  pvy += GRAV;
 
   // ---- MOVE ----
-  px+=pvx;
-  py+=pvy;
+  px += pvx;
+  py += pvy;
 
   // ---- WRAP X ----
-  if(px+PW<0) px=W;
-  if(px>W)    px=-PW;
+  if (px + PW < 0) px = W;
+  if (px > W)      px = -PW;
 
-  // ---- PLATFORM COLLISION (only when falling down, pvy > 0) ----
-  if(pvy>0){
-    for(let p of platforms){
-      // Player bottom edge
-      const playerBottom=py+PH;
-      const playerPrevBottom=playerBottom-pvy; // where bottom was last frame
+  // ---- PLATFORM LANDING (only when falling: pvy > 0) ----
+  onGround = false;
+  if (pvy > 0) {
+    for (const p of platforms) {
+      const feet     = py + PH;          // player bottom this frame
+      const prevFeet = feet - pvy;       // player bottom last frame
 
-      if(px+PW>p.x && px<p.x+p.w &&         // X overlap
-         playerBottom>=p.y &&                  // bottom reached platform top
-         playerPrevBottom<=p.y+4){             // wasn't already below it
-        py=p.y-PH;                             // snap on top
-        pvy=JUMP;                              // auto jump!
-        p.flash=6;
+      const xOverlap = px + PW > p.x && px < p.x + p.w;
+      const landed   = prevFeet <= p.y + 2 && feet >= p.y;
+
+      if (xOverlap && landed) {
+        py      = p.y - PH;  // snap feet to top of platform
+        pvy     = 0;
+        onGround = true;
+        p.flash  = 6;
         break;
       }
     }
   }
 
-  // ---- CAMERA: scroll up when player reaches upper 40% ----
-  if(py < H*0.4){
-    const dy=H*0.4-py;
-    scroll(dy);
-    py=H*0.4;
+  // ---- CAMERA SCROLL: keep player in upper 38% ----
+  if (py < H * 0.38) {
+    const dy = H * 0.38 - py;
+    scrollDown(dy);
+    py = H * 0.38;
   }
 
-  // ---- GENERATE MORE PLATFORMS ----
   generateUp();
 
-  // ---- CULL off-screen below ----
-  platforms=platforms.filter(p=>p.y<H+60);
-  collectibles=collectibles.filter(c=>c.y<H+60 || c.pop>0);
+  // ---- CULL off-screen objects ----
+  platforms    = platforms.filter(p => p.y < H + 80);
+  collectibles = collectibles.filter(c => c.y < H + 80 || c.popFrame >= 0);
+  toasters     = toasters.filter(t => t.x > -80 && t.x < W + 80);
 
   // ---- INVINCIBILITY ----
-  if(pinv>0) pinv--;
+  if (pinv > 0) pinv--;
 
   // ---- COLLECTIBLES ----
-  collectibles.forEach(c=>{
-    if(c.collected) return;
-    const cy=c.y+Math.sin(frame*0.07+c.bob)*4;
-    if(px+PW>c.x-10 && px<c.x+10 && py+PH>cy-10 && py<cy+10){
-      c.collected=true;
-      c.pop=frame;
-      const gain=c.type==='bread'?5:1;
-      score=Math.max(0,score+gain);
+  collectibles.forEach(c => {
+    if (c.collected) return;
+    const cy = c.y + Math.sin(frame * 0.07 + c.bob) * 4;
+    if (px + PW > c.x - 10 && px < c.x + 10 &&
+        py + PH > cy - 10  && py  < cy + 10) {
+      c.collected = true;
+      c.popFrame  = frame;
+      score = Math.max(0, score + (c.type === 'bread' ? 5 : 1));
       checkUnlocks();
       updateMilestones();
     }
@@ -375,303 +553,248 @@ function update(){
 
   // ---- TOASTERS ----
   toasterTimer++;
-  if(toasterTimer>=toasterInterval){
-    toasterTimer=0;
-    toasterInterval=Math.max(100,300-score*0.07);
+  if (toasterTimer >= toasterInterval) {
+    toasterTimer = 0;
+    toasterInterval = Math.max(90, 280 - score * 0.06);
     spawnToaster();
   }
-  toasters.forEach(t=>{
-    t.x+=t.vx;
-    if(!t.hit && pinv<=0){
-      if(px+PW-4>t.x && px+4<t.x+t.w && py+PH-4>t.y && py+4<t.y+t.h){
-        t.hit=true;
-        score=Math.max(0,score-5);
-        pvy=KNOCK_VY;
-        pvx=t.vx>0?KNOCK_VX:-KNOCK_VX;
-        pknock=true; pknockT=22;
-        pinv=70;
+  toasters.forEach(t => {
+    t.x += t.vx;
+    if (!t.hit && pinv <= 0) {
+      if (px+PW-4 > t.x && px+4 < t.x+t.w &&
+          py+PH-4 > t.y && py+4 < t.y+t.h) {
+        t.hit = true;
+        score = Math.max(0, score - 5);
+        pvy   = KNOCK_VY;
+        pvx   = t.vx > 0 ? KNOCK_VX : -KNOCK_VX;
+        pknock = true; pknockT = 22;
+        pinv   = 65;
         updateMilestones();
-        document.getElementById('hud-warn').innerHTML='<span class="danger">⚠ TOASTER HIT! -5</span>';
-        setTimeout(()=>{document.getElementById('hud-warn').textContent='';},1200);
+        document.getElementById('hud-warn').innerHTML =
+          '<span class="hwarn">TOASTER HIT! -5</span>';
+        setTimeout(() => { document.getElementById('hud-warn').textContent = ''; }, 1200);
       }
     }
   });
-  toasters=toasters.filter(t=>t.x>-80&&t.x<W+80);
 
-  // ---- FELL OFF BOTTOM ----
-  if(py>H+60){
-    endGame();
-  }
+  // ---- DEATH: fell off bottom ----
+  if (py > H + 80) endGame();
 }
 
-function spawnToaster(){
-  const fromLeft=Math.random()<0.5;
-  const spd=(2+score/350)*(fromLeft?1:-1);
-  const ty=H*0.15+Math.random()*H*0.6;
-  toasters.push({x:fromLeft?-50:W+10,y:ty,w:44,h:34,vx:spd,hit:false});
-}
-
-// ============================================================
-// UNLOCK
-function checkUnlocks(){
-  while(unlockedCount<ALBUMS.length && score>=ALBUMS[unlockedCount].pts){
-    const album=ALBUMS[unlockedCount];
-    unlockedCount++;
-    updateMilestones();
-    triggerUnlock(album);
-    if(unlockedCount===ALBUMS.length) setTimeout(showWin,1800);
-    break;
-  }
-}
-
-function triggerUnlock(album){
-  showingUnlock=true;
-  document.getElementById('unlock-art').src=album.img;
-  document.getElementById('unlock-name').textContent=album.name;
-  document.getElementById('unlock-flash').classList.add('show');
-  setTimeout(()=>{
-    document.getElementById('unlock-flash').classList.remove('show');
-    showingUnlock=false;
-  },1600);
-}
-
-// ============================================================
-// GAME OVER / WIN
-function endGame(){
-  gameRunning=false;
-  document.getElementById('gameover-screen').classList.remove('hidden');
-  document.getElementById('go-score').textContent=score;
-  const unlocked=ALBUMS.slice(0,unlockedCount);
-  document.getElementById('go-summary').innerHTML=
-    unlockedCount===0
-      ? "No albums unlocked. I'm not surprised, just disappointed."
-      : `${unlockedCount} / 24 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
-  const title=score>=TOTAL_PTS?'🔥 LEGENDARY':unlockedCount>=18?'IMPRESSIVE RUN':unlockedCount>=10?'NOT BAD':'GAME OVER';
-  document.getElementById('go-title').textContent=title;
-}
-
-function showWin(){
-  gameRunning=false;
-  document.getElementById('win-screen').classList.remove('hidden');
-  document.getElementById('win-score').textContent=score;
-}
-
-// ============================================================
-// MILESTONE PANEL
-function buildMilestones(){
-  const track=document.getElementById('progress-track');
-  track.querySelectorAll('.album-milestone').forEach(e=>e.remove());
-  ALBUMS.forEach((album,i)=>{
-    const el=document.createElement('div');
-    el.className='album-milestone';
-    el.id='ms-'+i;
-    el.style.bottom=(album.pts/TOTAL_PTS*100)+'%';
-    el.style.transform='translateY(50%)';
-    const img=document.createElement('img');
-    img.src=album.img; img.alt=album.name; img.title=album.name;
-    el.appendChild(img);
-    track.appendChild(el);
-  });
-}
-
-function updateMilestones(){
-  document.getElementById('progress-fill').style.height=(Math.min(score/TOTAL_PTS,1)*100)+'%';
-  document.getElementById('panel-score').innerHTML=score+'<br>pts';
-  document.getElementById('hud-pts').textContent=score;
-  ALBUMS.forEach((_,i)=>{
-    const el=document.getElementById('ms-'+i);
-    if(!el) return;
-    el.classList.remove('unlocked','current');
-    if(i<unlockedCount) el.classList.add('unlocked');
-    else if(i===unlockedCount) el.classList.add('current');
-  });
-}
-
-// ============================================================
-// DRAWING
-function draw(){
+// =============================================================
+// DRAW
+// =============================================================
+function draw() {
   // Background
-  ctx.fillStyle='#0a0a0a';
-  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#080810';
+  ctx.fillRect(0, 0, W, H);
 
-  // Faint grid lines for depth
-  ctx.strokeStyle='rgba(0,255,65,0.03)';
-  ctx.lineWidth=1;
-  for(let y=(frame*0.3)%40;y<H;y+=40){
-    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  // Subtle scanline shimmer
+  ctx.strokeStyle = 'rgba(0,255,65,0.025)';
+  ctx.lineWidth = 1;
+  const lineY = ((frame * 0.4) % 44);
+  for (let y = lineY; y < H; y += 44) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
   }
 
-  // Platforms
-  platforms.forEach(p=>{
-    if(p.y<-20||p.y>H+20) return;
-    const col=p.flash>0?'#00ff41':'#00aa2a';
-    if(p.flash>0) p.flash--;
-    ctx.fillStyle='#0d1a0d';
-    ctx.fillRect(p.x,p.y,p.w,p.h);
-    ctx.fillStyle=col;
-    ctx.fillRect(p.x,p.y,p.w,3);
-    ctx.shadowBlur=p.flash>0?12:5;
-    ctx.shadowColor=col;
-    ctx.fillRect(p.x,p.y,p.w,3);
-    ctx.shadowBlur=0;
+  // ---- PLATFORMS ----
+  platforms.forEach(p => {
+    if (p.y < -20 || p.y > H + 20) return;
+    const lit = p.flash > 0;
+    if (lit) p.flash--;
+    ctx.fillStyle = lit ? '#0d2a0d' : '#0a180a';
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.fillStyle = lit ? '#00ff41' : '#00aa2a';
+    ctx.shadowBlur = lit ? 14 : 4;
+    ctx.shadowColor = lit ? '#00ff41' : '#006620';
+    ctx.fillRect(p.x, p.y, p.w, 3);
+    ctx.shadowBlur = 0;
   });
 
-  // Collectibles
-  collectibles.forEach(c=>{
-    if(c.pop>0 && c.collected){
-      const age=frame-c.pop;
-      if(age<22){
-        ctx.globalAlpha=1-age/22;
-        ctx.fillStyle=c.type==='bread'?'#ffb700':'#d4cfa8';
-        ctx.font='bold 13px VT323';
-        ctx.textAlign='center';
-        ctx.fillText(c.type==='bread'?'+5':'+1',c.x,c.y-age*1.8);
-        ctx.globalAlpha=1; ctx.textAlign='left';
+  // ---- COLLECTIBLES ----
+  collectibles.forEach(c => {
+    // Pop float-up animation
+    if (c.collected && c.popFrame >= 0) {
+      const age = frame - c.popFrame;
+      if (age < 24) {
+        ctx.globalAlpha = 1 - age / 24;
+        ctx.fillStyle   = c.type === 'bread' ? '#ffb700' : '#d4cfa8';
+        ctx.font        = 'bold 14px VT323';
+        ctx.textAlign   = 'center';
+        ctx.fillText(c.type === 'bread' ? '+5' : '+1', c.x, c.y - age * 1.6);
+        ctx.globalAlpha = 1;
+        ctx.textAlign   = 'left';
       }
       return;
     }
-    if(c.collected) return;
-    const cy=c.y+Math.sin(frame*0.07+c.bob)*4;
-    if(cy<-20||cy>H+20) return;
-    if(c.type==='bone') drawBone(c.x,cy);
-    else drawBread(c.x,cy);
+    if (c.collected) return;
+    const cy = c.y + Math.sin(frame * 0.07 + c.bob) * 4;
+    if (cy < -20 || cy > H + 20) return;
+    c.type === 'bone' ? drawBone(c.x, cy) : drawBread(c.x, cy);
   });
 
-  // Toasters
-  toasters.forEach(t=>{
-    if(t.y<-50||t.y>H+50) return;
-    drawToaster(t.x,t.y,t.w,t.h,t.vx);
+  // ---- TOASTERS ----
+  toasters.forEach(t => {
+    if (t.y < -60 || t.y > H + 60) return;
+    drawToaster(t.x, t.y, t.w, t.h, t.vx);
   });
 
-  // Player
-  drawSkull(px,py,pinv);
+  // ---- PLAYER ----
+  drawSkull(px, py, pinv);
 
-  // Next album hint
-  if(unlockedCount<ALBUMS.length){
-    const next=ALBUMS[unlockedCount];
-    const pct=score/next.pts;
-    if(pct>0.8){
-      const a=(pct-0.8)/0.2;
-      ctx.globalAlpha=a*0.85;
-      ctx.font='15px VT323';
-      ctx.fillStyle='#ffb700';
-      ctx.textAlign='center';
-      ctx.fillText('▲ NEXT: '+next.name,W/2,28);
-      ctx.textAlign='left';
-      ctx.globalAlpha=1;
+  // ---- NEXT ALBUM HINT ----
+  if (unlockedCount < ALBUMS.length) {
+    const next = ALBUMS[unlockedCount];
+    const pct  = score / next.pts;
+    if (pct > 0.75) {
+      ctx.globalAlpha = Math.min(1, (pct - 0.75) / 0.15);
+      ctx.font        = '14px VT323';
+      ctx.fillStyle   = '#ffb700';
+      ctx.textAlign   = 'center';
+      ctx.fillText('▲ NEXT UNLOCK: ' + next.name, W / 2, 26);
+      ctx.textAlign   = 'left';
+      ctx.globalAlpha = 1;
     }
   }
 }
 
-// ============================================================
-// SPRITE DRAWING
-function drawSkull(sx,sy,inv){
-  if(inv>0 && Math.floor(inv/4)%2===0) return;
+// =============================================================
+// SPRITES
+// =============================================================
+function drawSkull(sx, sy, inv) {
+  if (inv > 0 && Math.floor(inv / 4) % 2 === 0) return;
   ctx.save();
-  ctx.translate(sx+PW/2,sy+PH/2);
-  // Shadow
-  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.translate(sx + PW/2, sy + PH/2);
+  // shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
   ctx.beginPath();
-  ctx.ellipse(0,PH/2+2,PW/2,4,0,0,Math.PI*2);
+  ctx.ellipse(0, PH/2+2, PW/2, 4, 0, 0, Math.PI*2);
   ctx.fill();
-  // Skull
-  ctx.fillStyle='#e8e8e8';
+  // cranium
+  ctx.fillStyle = '#e6e6e6';
+  ctx.beginPath(); ctx.arc(0, -2, 11, 0, Math.PI*2); ctx.fill();
+  // jaw
+  ctx.fillStyle = '#d8d8d8';
+  ctx.beginPath(); ctx.roundRect(-7, 5, 14, 8, 2); ctx.fill();
+  // eyes
+  ctx.fillStyle = '#111';
   ctx.beginPath();
-  ctx.arc(0,-2,11,0,Math.PI*2);
+  ctx.ellipse(-3.5, -2.5, 3, 3.5, 0, 0, Math.PI*2);
+  ctx.ellipse( 3.5, -2.5, 3, 3.5, 0, 0, Math.PI*2);
   ctx.fill();
-  // Jaw
-  ctx.fillStyle='#ddd';
+  // pupils
+  ctx.fillStyle = 'rgba(0,255,65,0.7)';
   ctx.beginPath();
-  ctx.roundRect(-7,5,14,8,2);
+  ctx.ellipse(-3.5, -2.5, 1.3, 1.3, 0, 0, Math.PI*2);
+  ctx.ellipse( 3.5, -2.5, 1.3, 1.3, 0, 0, Math.PI*2);
   ctx.fill();
-  // Eyes
-  ctx.fillStyle='#111';
+  // nose
+  ctx.fillStyle = '#111';
   ctx.beginPath();
-  ctx.ellipse(-3.5,-3,3,3.5,0,0,Math.PI*2);
-  ctx.ellipse(3.5,-3,3,3.5,0,0,Math.PI*2);
+  ctx.ellipse(-1.5, 2, 1.2, 1.2, 0, 0, Math.PI*2);
+  ctx.ellipse( 1.5, 2, 1.2, 1.2, 0, 0, Math.PI*2);
   ctx.fill();
-  // Pupils (green glow)
-  ctx.fillStyle='rgba(0,255,65,0.6)';
-  ctx.beginPath();
-  ctx.ellipse(-3.5,-3,1.5,1.5,0,0,Math.PI*2);
-  ctx.ellipse(3.5,-3,1.5,1.5,0,0,Math.PI*2);
-  ctx.fill();
-  // Nose
-  ctx.fillStyle='#111';
-  ctx.beginPath();
-  ctx.ellipse(-1.5,2,1.2,1.2,0,0,Math.PI*2);
-  ctx.ellipse(1.5,2,1.2,1.2,0,0,Math.PI*2);
-  ctx.fill();
-  // Teeth
-  ctx.fillStyle='#bbb';
-  [-5,-1.5,2].forEach(tx=>{ctx.fillRect(tx,6,3,4);});
+  // teeth
+  ctx.fillStyle = '#bbb';
+  [-5, -1.5, 2].forEach(tx => ctx.fillRect(tx, 5.5, 3, 4));
   ctx.restore();
 }
 
-function drawBone(bx,by){
+function drawBone(bx, by) {
   ctx.save();
-  ctx.translate(bx,by);
-  ctx.fillStyle='#d4cfa8';
-  ctx.fillRect(-6,-2,12,4);
-  [[-8,-4],[-8,0],[8,-4],[8,0]].forEach(([ex,ey])=>{
-    ctx.beginPath(); ctx.arc(ex,ey+2,3.5,0,Math.PI*2); ctx.fill();
+  ctx.translate(bx, by);
+  ctx.fillStyle = '#d4cfa8';
+  ctx.fillRect(-6, -2, 12, 4);
+  [[-8,-2],[8,-2],[-8,2],[8,2]].forEach(([ex,ey]) => {
+    ctx.beginPath(); ctx.arc(ex, ey, 3.5, 0, Math.PI*2); ctx.fill();
   });
   ctx.restore();
 }
 
-function drawBread(bx,by){
+function drawBread(bx, by) {
   ctx.save();
-  ctx.translate(bx,by);
-  ctx.fillStyle='#c87941';
-  ctx.beginPath(); ctx.roundRect(-10,-8,20,16,4); ctx.fill();
-  ctx.fillStyle='#8a4f1e';
-  ctx.beginPath(); ctx.roundRect(-10,-8,20,5,[4,4,0,0]); ctx.fill();
-  ctx.strokeStyle='#8a4f1e'; ctx.lineWidth=1;
+  ctx.translate(bx, by);
+  // body
+  ctx.fillStyle = '#c87941';
+  ctx.beginPath(); ctx.roundRect(-10, -8, 20, 16, 4); ctx.fill();
+  // crust
+  ctx.fillStyle = '#8a4f1e';
+  ctx.beginPath(); ctx.roundRect(-10, -8, 20, 5, [4,4,0,0]); ctx.fill();
+  // score lines
+  ctx.strokeStyle = '#8a4f1e'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(-5,-1); ctx.lineTo(5,-1); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-5,3); ctx.lineTo(5,3); ctx.stroke();
-  ctx.fillStyle='rgba(255,210,130,0.3)';
+  ctx.beginPath(); ctx.moveTo(-5, 3); ctx.lineTo(5, 3); ctx.stroke();
+  // shine
+  ctx.fillStyle = 'rgba(255,210,130,0.3)';
   ctx.beginPath(); ctx.ellipse(-2,-3,4,2,-0.4,0,Math.PI*2); ctx.fill();
   ctx.restore();
 }
 
-function drawToaster(tx,ty,tw,th,vx){
+function drawToaster(tx, ty, tw, th, vx) {
   ctx.save();
-  ctx.translate(tx+tw/2,ty+th/2);
-  if(vx<0) ctx.scale(-1,1);
-  // Body
-  ctx.fillStyle='#2a2a2a';
-  ctx.beginPath(); ctx.roundRect(-tw/2,-th/2,tw,th,4); ctx.fill();
-  ctx.strokeStyle='#ff3355'; ctx.lineWidth=1.5; ctx.stroke();
-  // Slots
-  ctx.fillStyle='#111';
-  ctx.fillRect(-10,-th/2+3,7,3);
-  ctx.fillRect(3,-th/2+3,7,3);
-  // Toast
-  ctx.fillStyle='#c87941';
-  ctx.fillRect(-8,-th/2-8,5,10);
-  ctx.fillRect(3,-th/2-6,5,8);
-  // Flame glow
-  ctx.fillStyle='#ff6600';
-  ctx.shadowBlur=8; ctx.shadowColor='#ff4400';
-  ctx.fillRect(-8,-th/2-9,5,3);
-  ctx.fillRect(3,-th/2-7,5,3);
-  ctx.shadowBlur=0;
-  // Angry eyes
-  ctx.fillStyle='#ff3355';
-  ctx.shadowBlur=5; ctx.shadowColor='#ff3355';
+  ctx.translate(tx + tw/2, ty + th/2);
+  if (vx < 0) ctx.scale(-1, 1);
+
+  // Body — metallic silver box
+  const grad = ctx.createLinearGradient(-tw/2, -th/2, tw/2, th/2);
+  grad.addColorStop(0, '#4a4a4a');
+  grad.addColorStop(0.5, '#2a2a2a');
+  grad.addColorStop(1, '#1a1a1a');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.roundRect(-tw/2, -th/2, tw, th, 5); ctx.fill();
+
+  // Red warning border
+  ctx.strokeStyle = '#ff3355'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.roundRect(-tw/2, -th/2, tw, th, 5); ctx.stroke();
+
+  // Slots on top
+  ctx.fillStyle = '#111';
+  ctx.fillRect(-12, -th/2+3, 8, 3);
+  ctx.fillRect(4,   -th/2+3, 8, 3);
+
+  // Toast sticking up (two slices)
+  ctx.fillStyle = '#c87941';
+  ctx.fillRect(-10, -th/2-10, 6, 12);
+  ctx.fillRect(4,   -th/2-8,  6, 10);
+  // Burnt crust on toast
+  ctx.fillStyle = '#5a2a00';
+  ctx.fillRect(-10, -th/2-11, 6, 3);
+  ctx.fillRect(4,   -th/2-9,  6, 3);
+  // Glow from toast heating
+  ctx.shadowBlur = 10; ctx.shadowColor = '#ff6600';
+  ctx.fillStyle = '#ff8800';
+  ctx.fillRect(-10, -th/2-11, 6, 2);
+  ctx.fillRect(4,   -th/2-9,  6, 2);
+  ctx.shadowBlur = 0;
+
+  // Angry eyes (glowing red dots)
+  ctx.shadowBlur = 8; ctx.shadowColor = '#ff3355';
+  ctx.fillStyle  = '#ff3355';
   ctx.beginPath();
-  ctx.arc(-7,2,2.5,0,Math.PI*2);
-  ctx.arc(7,2,2.5,0,Math.PI*2);
+  ctx.arc(-8, 2, 3, 0, Math.PI*2);
+  ctx.arc( 8, 2, 3, 0, Math.PI*2);
   ctx.fill();
-  ctx.shadowBlur=0;
-  // Lever
-  ctx.fillStyle='#555'; ctx.fillRect(tw/2-8,-3,4,12);
-  ctx.fillStyle='#ff3355'; ctx.fillRect(tw/2-9,5,6,3);
+  ctx.shadowBlur = 0;
+
+  // Dial / knob on side
+  ctx.fillStyle = '#555';
+  ctx.beginPath(); ctx.arc(tw/2-6, 0, 5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#ff3355';
+  ctx.fillRect(tw/2-7, -1, 4, 2);
+
+  // Cord dangling below
+  ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-tw/2+8, th/2);
+  ctx.bezierCurveTo(-tw/2+8, th/2+8, -tw/2+4, th/2+12, -tw/2+2, th/2+16);
+  ctx.stroke();
+
   ctx.restore();
 }
 
-// ============================================================
-window.addEventListener('resize',()=>{ resize(); });
+// =============================================================
+// BOOT
+// =============================================================
 resize();
 buildMilestones();
 </script>
