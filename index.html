@@ -72,10 +72,6 @@
 
     body { padding-top: 10vh; }
 
-    @media (min-width: 640px) {
-      body { padding-top: 10vh; }
-    }
-
     /* ============ CRT OVERLAY ============ */
     #crt-overlay {
       pointer-events: none;
@@ -731,14 +727,34 @@
       🎰 Toasty Gamble
     </a>
 
+    <!-- Sound Trivia Button -->
+    <a href="sounds.html"
+       class="block w-full px-5 py-4 font-orbitron rounded-xl shadow-2xl text-center transition duration-300"
+       style="font-size:1rem; line-height:1.3; background:#111; color:#00ff41; border: 2px solid #00ff41; box-shadow: 0 0 18px rgba(0,255,65,0.3), 0 4px 0 #006620;"
+       onmouseover="this.style.background='#00ff41';this.style.color='#000';this.style.boxShadow='0 0 30px rgba(0,255,65,0.8), 0 4px 0 #006620';"
+       onmouseout="this.style.background='#111';this.style.color='#00ff41';this.style.boxShadow='0 0 18px rgba(0,255,65,0.3), 0 4px 0 #006620';">
+      🔊 Sound Trivia
+    </a>
+
   </div>
 </div>
 
-<!-- Mobile Bottom Merch Banner -->
-<div class="fixed bottom-0 left-0 w-full sm:hidden z-50">
+<!-- Mobile Bottom Bar -->
+<div class="fixed bottom-0 left-0 w-full sm:hidden z-50 flex">
   <a href="https://toastybonesmerch.printful.me/" target="_blank"
-     class="block w-full px-6 py-4 text-center text-base font-orbitron text-yellow-300 bg-pink-600 shadow-inner">
-    🛒 Check out the new merch!
+     class="flex-1 px-2 py-3 text-center text-sm font-orbitron text-yellow-300 bg-pink-700"
+     style="border-right:1px solid rgba(255,255,255,0.1);">
+    🛒 Merch
+  </a>
+  <a href="wheel.html"
+     class="flex-1 px-2 py-3 text-center text-sm font-orbitron"
+     style="background:#111; color:#fffb00; border-right:1px solid rgba(255,255,255,0.1);">
+    🎰 Gamble
+  </a>
+  <a href="sounds.html"
+     class="flex-1 px-2 py-3 text-center text-sm font-orbitron"
+     style="background:#111; color:#00ff41;">
+    🔊 Trivia
   </a>
 </div>
 
@@ -972,7 +988,7 @@
 
     <!-- Sharing Socks with Strangers -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.50s">
-    <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
+    <a href="https://open.spotify.com/album/5ClgUJD0UT3d6meQ3RwpZk" target="_blank"
        data-spotify="0Hln1Bc6ametJ7lZumtjxZ"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-pink-300 shadow-xl group-hover:border-yellow-300 flex flex-col justify-between">
@@ -990,8 +1006,7 @@
 
     <!-- Man's Breath -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.55s">
-    <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ?si=l-5ju3bIQwW4eAxgYCAqJg" target="_blank"
-       data-spotify="0Hln1Bc6ametJ7lZumtjxZ"
+    <a href="https://open.spotify.com/album/0Hln1Bc6ametJ7lZumtjxZ" target="_blank"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
         <div class="flex-1 flex items-center justify-center p-1 sm:p-2">
@@ -1003,10 +1018,7 @@
         </div>
       </div>
     </a>
-    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0Hln1Bc6ametJ7lZumtjxZ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
-    </div>
-
-    <!-- The Legend of Duke -->
+    <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/artist/2VyZ4NBBwy9UIs8AcoMlH2?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     <div class="album-card-wrap card-pop" style="animation-delay:0.60s">
     <a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
        data-spotify="2r1UbSHTPFJrIH6KVF4Jb4"
