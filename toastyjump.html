@@ -48,13 +48,31 @@
     .score-big{font-size:clamp(2.5rem,10vw,4.5rem);color:var(--green);text-shadow:0 0 24px rgba(0,255,65,0.5);line-height:1;margin-bottom:4px;}
     .score-lbl{font-size:0.75rem;color:#333;letter-spacing:3px;margin-bottom:14px;}
     .go-sum{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#444;margin-bottom:20px;line-height:1.6;max-width:300px;}
-    /* UNLOCK FLASH */
-    #unlock-flash{position:absolute;inset:0;z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0.87);}
-    #unlock-flash.show{display:flex;animation:ufin 0.18s ease-out;}
-    @keyframes ufin{from{opacity:0;transform:scale(1.04);}to{opacity:1;transform:scale(1);}}
-    .u-art{width:150px;height:150px;border-radius:10px;border:3px solid var(--green);box-shadow:0 0 36px rgba(0,255,65,0.35);object-fit:cover;margin-bottom:14px;}
-    .u-lbl{font-family:'VT323',monospace;font-size:1.3rem;color:var(--green);letter-spacing:2px;margin-bottom:4px;}
-    .u-name{font-family:'VT323',monospace;font-size:1.7rem;color:#fff;}
+    /* UNLOCK TOAST — corner popup, game never pauses */
+    #unlock-toast {
+      position: absolute;
+      bottom: 20px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.88);
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      padding: 8px 12px 8px 8px;
+      z-index: 600;
+      pointer-events: none;
+      transform: translateX(-140%);
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+      max-width: 220px;
+      box-shadow: 0 0 16px rgba(0,255,65,0.2);
+    }
+    #unlock-toast.show { transform: translateX(0); }
+    #unlock-toast.hide { transform: translateX(-140%); transition: transform 0.25s ease-in; }
+    .t-art { width: 44px; height: 44px; border-radius: 4px; object-fit: cover; border: 1px solid var(--gdim); flex-shrink: 0; }
+    .t-text { display: flex; flex-direction: column; gap: 1px; }
+    .t-lbl { font-family: 'VT323', monospace; font-size: 0.72rem; color: var(--green); letter-spacing: 2px; }
+    .t-name { font-family: 'VT323', monospace; font-size: 1rem; color: #fff; line-height: 1.2; }
     /* HUD */
     #hud{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.05rem;pointer-events:none;z-index:200;line-height:1.6;}
     .hh{color:var(--green);}
@@ -143,11 +161,13 @@
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
 
-  <!-- UNLOCK FLASH -->
-  <div id="unlock-flash">
-    <div class="u-lbl">🔓 ALBUM UNLOCKED</div>
-    <img class="u-art" id="u-art" src="" alt="">
-    <div class="u-name" id="u-name"></div>
+  <!-- UNLOCK TOAST — corner popup -->
+  <div id="unlock-toast">
+    <img class="t-art" id="t-art" src="" alt="">
+    <div class="t-text">
+      <div class="t-lbl">🔓 UNLOCKED</div>
+      <div class="t-name" id="t-name"></div>
+    </div>
   </div>
 </div>
 
@@ -306,12 +326,19 @@ function generateUp() {
     // Platform width narrows with height
     const platW = Math.round(115 - t * 35);
 
-    // X position: stay within max horizontal jump distance from last platform
-    // Max horizontal reach = SPEED * (2 * |JUMP| / GRAV_UP) ≈ 2.7 * 94 ≈ 254px — cap at 200
-    const maxHop = Math.min(200, 80 + t * 120);
-    const minX   = Math.max(20, lastPlatX - maxHop);
-    const maxX   = Math.min(W - platW - 20, lastPlatX + lastPlatW + maxHop);
-    const x      = minX + Math.random() * Math.max(0, maxX - minX);
+    // Horizontal placement: neighbor-aware but with wide range
+    // Max hop grows with height but is always generous enough to reach
+    const maxHop = Math.min(W * 0.55, 140 + t * 160);
+    const rawMin = lastPlatX - maxHop;
+    const rawMax = lastPlatX + lastPlatW + maxHop;
+    const minX   = Math.max(20, rawMin);
+    const maxX   = Math.min(W - platW - 20, rawMax);
+    // Slightly bias toward center of screen so platforms spread naturally
+    const center = W / 2 - platW / 2;
+    const r1 = minX + Math.random() * Math.max(0, maxX - minX);
+    const r2 = minX + Math.random() * Math.max(0, maxX - minX);
+    // Average two rolls = mild center pull without being predictable
+    const x = Math.round((r1 + r2) / 2);
     const y      = genFrontier - gap;
 
     platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
@@ -419,7 +446,7 @@ function initGame() {
 function startGame() {
   ['scr-start','scr-gameover','scr-win'].forEach(id =>
     document.getElementById(id).classList.add('hidden'));
-  document.getElementById('unlock-flash').classList.remove('show');
+  document.getElementById('unlock-toast').classList.remove('show','hide');
   initGame();
   running=true;
   stopBGM(); playNextBGM();
@@ -458,15 +485,17 @@ function checkUnlocks() {
     const album = ALBUMS[unlockedCount];
     unlockedCount++;
     updateMilestones();
-    document.getElementById('u-art').src = album.img;
-    document.getElementById('u-name').textContent = album.name;
-    document.getElementById('unlock-flash').classList.add('show');
-    showUnlock = true;
+    // Corner toast — no game pause
+    const toast = document.getElementById('unlock-toast');
+    document.getElementById('t-art').src = album.img;
+    document.getElementById('t-name').textContent = album.name;
+    toast.classList.remove('hide');
+    toast.classList.add('show');
     setTimeout(() => {
-      document.getElementById('unlock-flash').classList.remove('show');
-      showUnlock = false;
-      if (unlockedCount >= ALBUMS.length) winGame();
-    }, 1700);
+      toast.classList.remove('show');
+      toast.classList.add('hide');
+      if (unlockedCount >= ALBUMS.length) setTimeout(winGame, 300);
+    }, 2200);
   }
 }
 
@@ -505,7 +534,7 @@ function loop() {
   if (!running) return;
   animId = requestAnimationFrame(loop);
   frame++;
-  if (!showUnlock) update();
+  update();
   draw();
   jumpPressed = false;
 }
