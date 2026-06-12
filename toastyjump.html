@@ -289,16 +289,24 @@ document.getElementById('btn-winretry').addEventListener('click', startGame);
 // =============================================================
 function generateUp() {
   while (genFrontier > -H * 3) {
-    const x  = 20 + Math.random() * (W - PLATW - 40);
-    const gap = 90 + Math.random() * 50; // vertical gap — reachable with big jump
+    // Gap scales with how high we've gone — tight at start, opens up gradually
+    // startY is H-100, so genFrontier starts near H. Higher up = more negative genFrontier.
+    // distFromStart = how far above start we are
+    const distFromStart = Math.max(0, (H - 100) - genFrontier);
+    const t = Math.min(1, distFromStart / (H * 4)); // ramp over ~4 screen heights
+    const minGap = 52 + t * 40;  // 52px early → 92px late
+    const maxGap = 70 + t * 50;  // 70px early → 120px late
+    const gap = minGap + Math.random() * (maxGap - minGap);
+    const platW = Math.round(110 - t * 30); // 110px wide early → 80px later
+    const x  = 20 + Math.random() * (W - platW - 40);
     const y  = genFrontier - gap;
-    platforms.push({ x, y, w:PLATW, h:PLATH, flash:0 });
+    platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
 
     // Collectible floating above platform
     if (Math.random() < 0.65) {
       const bread = Math.random() < 0.2;
       collectibles.push({
-        x: x + PLATW/2 + (Math.random()-0.5)*50,
+        x: x + platW/2 + (Math.random()-0.5)*40,
         y: y - 24,
         type: bread ? 'bread' : 'bone',
         collected: false, popFrame: -1,
@@ -730,7 +738,7 @@ function drawBread(bx, by) {
 
 function drawEmojiBean(tx, ty, tw, th) {
   ctx.save();
-  ctx.font = '28px serif';
+  ctx.font = '40px serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   // Slight wobble as it flies
