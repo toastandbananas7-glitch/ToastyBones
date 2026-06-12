@@ -51,28 +51,28 @@
     /* UNLOCK TOAST — corner popup, game never pauses */
     #unlock-toast {
       position: absolute;
-      bottom: 20px;
-      left: 12px;
+      bottom: 24px;
+      left: 14px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(0,0,0,0.88);
-      border: 1px solid var(--green);
-      border-radius: 8px;
-      padding: 8px 12px 8px 8px;
+      gap: 12px;
+      background: rgba(0,0,0,0.92);
+      border: 2px solid var(--green);
+      border-radius: 10px;
+      padding: 10px 16px 10px 10px;
       z-index: 600;
       pointer-events: none;
       transform: translateX(-140%);
-      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-      max-width: 220px;
-      box-shadow: 0 0 16px rgba(0,255,65,0.2);
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      max-width: 280px;
+      box-shadow: 0 0 24px rgba(0,255,65,0.3), 0 0 8px rgba(0,255,65,0.15);
     }
     #unlock-toast.show { transform: translateX(0); }
-    #unlock-toast.hide { transform: translateX(-140%); transition: transform 0.25s ease-in; }
-    .t-art { width: 44px; height: 44px; border-radius: 4px; object-fit: cover; border: 1px solid var(--gdim); flex-shrink: 0; }
-    .t-text { display: flex; flex-direction: column; gap: 1px; }
-    .t-lbl { font-family: 'VT323', monospace; font-size: 0.72rem; color: var(--green); letter-spacing: 2px; }
-    .t-name { font-family: 'VT323', monospace; font-size: 1rem; color: #fff; line-height: 1.2; }
+    #unlock-toast.hide { transform: translateX(-140%); transition: transform 0.3s ease-in; }
+    .t-art { width: 64px; height: 64px; border-radius: 6px; object-fit: cover; border: 2px solid var(--gdim); flex-shrink: 0; box-shadow: 0 0 10px rgba(0,255,65,0.2); }
+    .t-text { display: flex; flex-direction: column; gap: 3px; }
+    .t-lbl { font-family: 'VT323', monospace; font-size: 0.8rem; color: var(--green); letter-spacing: 3px; }
+    .t-name { font-family: 'VT323', monospace; font-size: 1.2rem; color: #fff; line-height: 1.2; }
     /* HUD */
     #hud{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.05rem;pointer-events:none;z-index:200;line-height:1.6;}
     .hh{color:var(--green);}
@@ -202,11 +202,36 @@ const BGM_TRACKS = [
   'sounds/toastyjumpBGM1.mp3',
   'sounds/toastyjumpBGM2.mp3',
   'sounds/toastyjumpBGM3.mp3',
+  'sounds/toastyjumpBGM4.mp3',
 ];
 
 // ================================================================
-// CANVAS
+// SOUND EFFECTS (Web Audio API)
 // ================================================================
+let sfxCtx = null;
+function getSFXCtx() {
+  if (!sfxCtx) sfxCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return sfxCtx;
+}
+
+function playUnlockChime() {
+  try {
+    const ac = getSFXCtx();
+    // Three rising tones — classic unlock fanfare
+    [[0, 440, 0.18], [0.12, 554, 0.18], [0.24, 660, 0.28]].forEach(([t, freq, dur]) => {
+      const osc  = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ac.currentTime + t);
+      gain.gain.linearRampToValueAtTime(0.22, ac.currentTime + t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + t + dur);
+      osc.start(ac.currentTime + t);
+      osc.stop(ac.currentTime + t + dur + 0.05);
+    });
+  } catch(e) {}
+}
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
@@ -221,16 +246,34 @@ window.addEventListener('resize', resize);
 // BGM
 // ================================================================
 const bgmAudio = new Audio();
-bgmAudio.loop = false; bgmAudio.volume = 0.35;
+bgmAudio.loop = false;
+bgmAudio.volume = 0.4;
 let bgmIndex = -1;
+let bgmShuffled = [];
+
+function shuffleBGM() {
+  bgmShuffled = [...BGM_TRACKS].sort(() => Math.random() - 0.5);
+  bgmIndex = -1;
+}
+
 function playNextBGM() {
-  if (!BGM_TRACKS.length) return;
-  bgmIndex = (bgmIndex + 1) % BGM_TRACKS.length;
-  bgmAudio.src = BGM_TRACKS[bgmIndex];
-  bgmAudio.play().catch(() => {});
+  if (!bgmShuffled.length) shuffleBGM();
+  bgmIndex = (bgmIndex + 1) % bgmShuffled.length;
+  bgmAudio.src = bgmShuffled[bgmIndex];
+  bgmAudio.load();
+  const p = bgmAudio.play();
+  if (p) p.catch(() => {});
 }
 bgmAudio.addEventListener('ended', playNextBGM);
-function stopBGM() { bgmAudio.pause(); bgmAudio.currentTime = 0; }
+bgmAudio.addEventListener('error', () => {
+  // Skip broken track and try next
+  setTimeout(playNextBGM, 200);
+});
+
+function stopBGM() {
+  bgmAudio.pause();
+  bgmAudio.src = '';
+}
 
 // ================================================================
 // CONSTANTS
@@ -449,6 +492,7 @@ function startGame() {
   document.getElementById('unlock-toast').classList.remove('show','hide');
   initGame();
   running=true;
+  shuffleBGM();
   stopBGM(); playNextBGM();
   if (animId) cancelAnimationFrame(animId);
   loop();
@@ -485,6 +529,7 @@ function checkUnlocks() {
     const album = ALBUMS[unlockedCount];
     unlockedCount++;
     updateMilestones();
+    playUnlockChime();
     // Corner toast — no game pause
     const toast = document.getElementById('unlock-toast');
     document.getElementById('t-art').src = album.img;
@@ -700,19 +745,80 @@ function update() {
 }
 
 // ================================================================
-// DRAW
+// BACKGROUND STARS (init once, reuse)
 // ================================================================
-function draw() {
+let bgStars = [];
+function initBgStars() {
+  bgStars = [];
+  for (let i = 0; i < 80; i++) {
+    bgStars.push({
+      x: Math.random() * 2000,
+      y: Math.random() * 6000,
+      r: 0.5 + Math.random() * 1.5,
+      speed: 0.1 + Math.random() * 0.3,  // parallax layer speed
+      brightness: 0.15 + Math.random() * 0.45,
+    });
+  }
+}
+initBgStars();
+
+function drawBackground() {
+  // Base fill
   ctx.fillStyle = '#080810';
   ctx.fillRect(0, 0, W, H);
 
-  // Scanlines
-  ctx.strokeStyle = 'rgba(0,255,65,0.022)';
+  // Subtle radial vignette glow in center
+  const vg = ctx.createRadialGradient(W/2, H/2, H*0.1, W/2, H/2, H*0.85);
+  vg.addColorStop(0, 'rgba(0,20,40,0.35)');
+  vg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = vg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Parallax stars — shift based on height (slower layers = further away)
+  bgStars.forEach(s => {
+    const parallaxY = (s.y - height * s.speed * 12) % (H * 4);
+    const sy = ((parallaxY % (H * 4)) + H * 4) % (H * 4) - H;
+    const sx = (s.x % W);
+    if (sy < -4 || sy > H + 4) return;
+    const twinkle = 0.7 + Math.sin(frame * 0.04 + s.x) * 0.3;
+    ctx.fillStyle = `rgba(180,220,255,${s.brightness * twinkle})`;
+    ctx.beginPath();
+    ctx.arc(sx, sy, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Subtle vertical grid lines (city-skyline feel)
+  ctx.strokeStyle = 'rgba(0,255,65,0.018)';
   ctx.lineWidth = 1;
-  const lineY = (frame * 0.4) % 44;
-  for (let y=lineY; y<H; y+=44) {
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  const gridSpacing = 80;
+  for (let x = (W % gridSpacing) / 2; x < W; x += gridSpacing) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
   }
+
+  // Horizontal scanline drift
+  ctx.strokeStyle = 'rgba(0,255,65,0.022)';
+  const lineY = (frame * 0.4) % 44;
+  for (let y = lineY; y < H; y += 44) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Distant drifting music notes (very faint, slow)
+  ctx.globalAlpha = 0.06;
+  ctx.font = '18px serif';
+  ctx.textAlign = 'center';
+  const notes = ['♪','♫','♩','♬'];
+  for (let i = 0; i < 8; i++) {
+    const nx = ((i * 137 + 40) % (W - 40)) + 20;
+    const ny = ((i * 211 + height * 0.4 + frame * 0.15) % (H + 40)) - 20;
+    ctx.fillStyle = '#00cfff';
+    ctx.fillText(notes[i % notes.length], nx, ny);
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'left';
+}
+
+function draw() {
+  drawBackground();
 
   // Rocket particle trail
   if (rocketActive) {
