@@ -7,341 +7,72 @@
   <link rel="icon" href="favicon.ico">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
-
     :root {
-      --green: #00ff41; --green-dim: #00aa2a; --red: #ff3355;
-      --amber: #ffb700; --blue: #00cfff; --bg: #0a0a0a;
-      --panel: #111; --text: #d0d0d0;
+      --green:#00ff41;--green-dim:#00aa2a;--red:#ff3355;
+      --amber:#ffb700;--blue:#00cfff;--bg:#0a0a0a;--text:#d0d0d0;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* CRT scanlines */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px);
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    .topbar {
-      background: #080808;
-      border-bottom: 1px solid #1a1a1a;
-      padding: 6px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: 'VT323', monospace;
-      font-size: 1rem;
-      color: #444;
-      flex-shrink: 0;
-      z-index: 100;
-    }
-    .topbar a { color: var(--green); text-decoration: none; border: 1px solid var(--green-dim); padding: 2px 10px; transition: all 0.2s; }
-    .topbar a:hover { background: var(--green); color: #000; }
-    .on-air { display: flex; align-items: center; gap: 6px; }
-    .on-air-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: blink 1s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    /* Main game layout */
-    .game-wrapper {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Game canvas area */
-    #game-canvas {
-      flex: 1;
-      display: block;
-      image-rendering: pixelated;
-      cursor: none;
-    }
-
-    /* Right panel — album progress */
-    .progress-panel {
-      width: 100px;
-      background: #080808;
-      border-left: 1px solid #1a1a1a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px 4px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .panel-title {
-      font-family: 'VT323', monospace;
-      font-size: 0.7rem;
-      color: #333;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-
-    .progress-track {
-      flex: 1;
-      width: 20px;
-      background: #111;
-      border: 1px solid #1a1a1a;
-      border-radius: 10px;
-      position: relative;
-      overflow: visible;
-      margin: 0 auto;
-    }
-
-    .progress-fill {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, var(--green-dim), var(--green));
-      border-radius: 10px;
-      transition: height 0.3s ease;
-      box-shadow: 0 0 8px var(--green);
-    }
-
-    .album-milestone {
-      position: absolute;
-      right: 26px;
-      width: 28px;
-      height: 28px;
-      border-radius: 4px;
-      border: 1px solid #222;
-      overflow: hidden;
-      transition: all 0.3s;
-      cursor: default;
-    }
-
-    .album-milestone img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.25;
-      transition: opacity 0.4s;
-      filter: grayscale(100%);
-    }
-
-    .album-milestone.unlocked img {
-      opacity: 1;
-      filter: none;
-    }
-
-    .album-milestone.unlocked {
-      border-color: var(--green);
-      box-shadow: 0 0 8px rgba(0,255,65,0.4);
-    }
-
-    .album-milestone.current {
-      border-color: var(--amber);
-      box-shadow: 0 0 10px rgba(255,183,0,0.5);
-      animation: milestone-pulse 1s ease-in-out infinite;
-    }
-
-    @keyframes milestone-pulse {
-      0%,100% { box-shadow: 0 0 6px rgba(255,183,0,0.4); }
-      50% { box-shadow: 0 0 16px rgba(255,183,0,0.8); }
-    }
-
-    .score-display {
-      font-family: 'VT323', monospace;
-      font-size: 0.85rem;
-      color: var(--green);
-      text-align: center;
-      margin-top: 8px;
-      letter-spacing: 1px;
-    }
-
-    /* Overlay screens */
-    .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.88);
-      z-index: 200;
-      font-family: 'VT323', monospace;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .overlay.hidden { display: none; }
-
-    .overlay-title {
-      font-size: clamp(2rem, 8vw, 3.5rem);
-      color: var(--amber);
-      text-shadow: 0 0 20px rgba(255,183,0,0.5);
-      margin-bottom: 8px;
-      letter-spacing: 2px;
-    }
-
-    .overlay-sub {
-      font-size: 1rem;
-      color: #555;
-      letter-spacing: 3px;
-      margin-bottom: 24px;
-    }
-
-    .overlay-desc {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem;
-      color: #666;
-      line-height: 1.7;
-      max-width: 340px;
-      margin-bottom: 28px;
-    }
-
-    .overlay-btn {
-      background: transparent;
-      border: 2px solid var(--amber);
-      color: var(--amber);
-      font-family: 'VT323', monospace;
-      font-size: 1.8rem;
-      padding: 10px 40px;
-      cursor: pointer;
-      letter-spacing: 3px;
-      transition: all 0.15s;
-      border-radius: 6px;
-    }
-    .overlay-btn:hover { background: rgba(255,183,0,0.1); box-shadow: 0 0 20px rgba(255,183,0,0.3); }
-
-    .overlay-btn.green {
-      border-color: var(--green);
-      color: var(--green);
-    }
-    .overlay-btn.green:hover { background: rgba(0,255,65,0.1); box-shadow: 0 0 20px rgba(0,255,65,0.3); }
-
-    .final-score-big {
-      font-size: clamp(3rem, 12vw, 5rem);
-      color: var(--green);
-      text-shadow: 0 0 30px rgba(0,255,65,0.5);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .final-label { font-size: 0.8rem; color: #444; letter-spacing: 3px; margin-bottom: 16px; }
-
-    .unlocked-summary {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.75rem;
-      color: #555;
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-
-    /* Album unlock flash */
-    #unlock-flash {
-      position: absolute;
-      inset: 0;
-      z-index: 300;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      background: rgba(0,0,0,0.85);
-      animation: flash-in 0.2s ease-out;
-    }
-    #unlock-flash.show { display: flex; }
-    @keyframes flash-in {
-      from { opacity: 0; transform: scale(1.05); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    .unlock-album-art {
-      width: 160px;
-      height: 160px;
-      border-radius: 12px;
-      border: 3px solid var(--green);
-      box-shadow: 0 0 40px rgba(0,255,65,0.4);
-      object-fit: cover;
-      margin-bottom: 16px;
-    }
-
-    .unlock-title {
-      font-family: 'VT323', monospace;
-      font-size: 1.4rem;
-      color: var(--green);
-      letter-spacing: 2px;
-      margin-bottom: 4px;
-    }
-
-    .unlock-name {
-      font-family: 'VT323', monospace;
-      font-size: 1.8rem;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(255,255,255,0.3);
-    }
-
-    /* Mobile tap zones */
-    .tap-left, .tap-right {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 35%;
-      z-index: 50;
-      opacity: 0;
-    }
-    .tap-left { left: 0; }
-    .tap-right { right: 100px; width: calc(65% - 100px); }
-
-    /* HUD overlaid on canvas */
-    .hud-overlay {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
-      color: var(--green);
-      pointer-events: none;
-      z-index: 60;
-      text-shadow: 0 0 8px rgba(0,255,65,0.5);
-      line-height: 1.4;
-    }
-
-    .hud-overlay .pts { color: var(--amber); }
-    .hud-overlay .danger { color: var(--red); animation: danger-pulse 0.5s step-end infinite; }
-    @keyframes danger-pulse { 50% { opacity: 0.4; } }
+    *{box-sizing:border-box;margin:0;padding:0;touch-action:none;}
+    body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px);pointer-events:none;z-index:9999;}
+    .topbar{background:#080808;border-bottom:1px solid #1a1a1a;padding:6px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'VT323',monospace;font-size:1rem;color:#444;flex-shrink:0;z-index:100;}
+    .topbar a{color:var(--green);text-decoration:none;border:1px solid var(--green-dim);padding:2px 10px;transition:all 0.2s;}
+    .topbar a:hover{background:var(--green);color:#000;}
+    .on-air{display:flex;align-items:center;gap:6px;}
+    .on-air-dot{width:7px;height:7px;background:var(--red);border-radius:50%;animation:blink 1s step-end infinite;}
+    @keyframes blink{50%{opacity:0;}}
+    .game-wrapper{display:flex;flex:1;overflow:hidden;position:relative;}
+    #game-canvas{flex:1;display:block;}
+    .progress-panel{width:100px;background:#080808;border-left:1px solid #1a1a1a;display:flex;flex-direction:column;align-items:center;padding:8px 4px;overflow:hidden;flex-shrink:0;}
+    .panel-title{font-family:'VT323',monospace;font-size:0.7rem;color:#333;letter-spacing:2px;margin-bottom:8px;text-align:center;}
+    .progress-track{flex:1;width:20px;background:#111;border:1px solid #1a1a1a;border-radius:10px;position:relative;overflow:visible;margin:0 auto;}
+    .progress-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--green-dim),var(--green));border-radius:10px;transition:height 0.3s ease;box-shadow:0 0 8px var(--green);}
+    .album-milestone{position:absolute;right:26px;width:28px;height:28px;border-radius:4px;border:1px solid #222;overflow:hidden;transition:all 0.3s;}
+    .album-milestone img{width:100%;height:100%;object-fit:cover;opacity:0.25;transition:opacity 0.4s;filter:grayscale(100%);}
+    .album-milestone.unlocked img{opacity:1;filter:none;}
+    .album-milestone.unlocked{border-color:var(--green);box-shadow:0 0 8px rgba(0,255,65,0.4);}
+    .album-milestone.current{border-color:var(--amber);box-shadow:0 0 10px rgba(255,183,0,0.5);animation:mpulse 1s ease-in-out infinite;}
+    @keyframes mpulse{0%,100%{box-shadow:0 0 6px rgba(255,183,0,0.4);}50%{box-shadow:0 0 16px rgba(255,183,0,0.8);}}
+    .score-display{font-family:'VT323',monospace;font-size:0.85rem;color:var(--green);text-align:center;margin-top:8px;letter-spacing:1px;}
+    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.88);z-index:200;font-family:'VT323',monospace;text-align:center;padding:20px;}
+    .overlay.hidden{display:none;}
+    .ov-title{font-size:clamp(2rem,8vw,3.5rem);color:var(--amber);text-shadow:0 0 20px rgba(255,183,0,0.5);margin-bottom:8px;letter-spacing:2px;}
+    .ov-sub{font-size:1rem;color:#555;letter-spacing:3px;margin-bottom:24px;}
+    .ov-desc{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:#666;line-height:1.7;max-width:340px;margin-bottom:28px;}
+    .ov-btn{background:transparent;border:2px solid var(--amber);color:var(--amber);font-family:'VT323',monospace;font-size:1.8rem;padding:10px 40px;cursor:pointer;letter-spacing:3px;transition:all 0.15s;border-radius:6px;}
+    .ov-btn:hover{background:rgba(255,183,0,0.1);box-shadow:0 0 20px rgba(255,183,0,0.3);}
+    .ov-btn.green{border-color:var(--green);color:var(--green);}
+    .ov-btn.green:hover{background:rgba(0,255,65,0.1);}
+    .score-big{font-size:clamp(3rem,12vw,5rem);color:var(--green);text-shadow:0 0 30px rgba(0,255,65,0.5);line-height:1;margin-bottom:4px;}
+    .score-lbl{font-size:0.8rem;color:#444;letter-spacing:3px;margin-bottom:16px;}
+    .go-summary{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#555;margin-bottom:24px;line-height:1.6;max-width:320px;}
+    #unlock-flash{position:absolute;inset:0;z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0.85);}
+    #unlock-flash.show{display:flex;animation:fin 0.2s ease-out;}
+    @keyframes fin{from{opacity:0;transform:scale(1.05);}to{opacity:1;transform:scale(1);}}
+    .unlock-art{width:160px;height:160px;border-radius:12px;border:3px solid var(--green);box-shadow:0 0 40px rgba(0,255,65,0.4);object-fit:cover;margin-bottom:16px;}
+    .unlock-lbl{font-family:'VT323',monospace;font-size:1.4rem;color:var(--green);letter-spacing:2px;margin-bottom:4px;}
+    .unlock-name{font-family:'VT323',monospace;font-size:1.8rem;color:#fff;text-shadow:0 0 20px rgba(255,255,255,0.3);}
+    .hud-overlay{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.1rem;color:var(--green);pointer-events:none;z-index:60;text-shadow:0 0 8px rgba(0,255,65,0.5);line-height:1.4;}
+    .pts{color:var(--amber);}
+    .danger{color:var(--red);animation:dp 0.5s step-end infinite;}
+    @keyframes dp{50%{opacity:0.4;}}
+    .tap-left,.tap-right{position:absolute;top:0;bottom:0;z-index:50;opacity:0;}
+    .tap-left{left:0;width:35%;}
+    .tap-right{left:35%;right:100px;}
   </style>
 </head>
 <body>
-
 <div class="topbar">
   <div class="on-air"><div class="on-air-dot"></div><span>ON AIR</span></div>
   <a href="https://toastybones.com">← BACK TO SITE</a>
 </div>
-
 <div class="game-wrapper">
-
-  <!-- Mobile tap zones -->
   <div class="tap-left" id="tap-left"></div>
   <div class="tap-right" id="tap-right"></div>
-
-  <!-- HUD -->
   <div class="hud-overlay" id="hud">
     <div>PTS: <span class="pts" id="hud-pts">0</span></div>
     <div id="hud-warn"></div>
   </div>
-
-  <!-- Game Canvas -->
   <canvas id="game-canvas"></canvas>
-
-  <!-- Album Progress Panel -->
   <div class="progress-panel">
     <div class="panel-title">ALBUMS</div>
     <div class="progress-track" id="progress-track">
@@ -350,724 +81,598 @@
     <div class="score-display" id="panel-score">0<br>pts</div>
   </div>
 
-  <!-- Start Screen -->
+  <!-- Start -->
   <div class="overlay" id="start-screen">
-    <div class="overlay-title">🍞 TOASTY JUMP</div>
-    <div class="overlay-sub">[ TOASTYBONES EDITION ]</div>
-    <div class="overlay-desc">
+    <div class="ov-title">🍞 TOASTY JUMP</div>
+    <div class="ov-sub">[ TOASTYBONES EDITION ]</div>
+    <div class="ov-desc">
       Jump up through the ToastyBones discography!<br><br>
-      🦴 Bones = +1 pt<br>
-      🍞 Bread = +5 pts<br>
-      🍞 Toasters = -5 pts + KNOCKBACK<br><br>
+      🦴 Bones = +1 pt &nbsp;&nbsp; 🍞 Bread = +5 pts<br>
+      🍞☠️ Toasters = -5 pts + KNOCKBACK<br><br>
       Unlock all 24 albums to win.<br>
       1,600 pts to complete the collection!
     </div>
-    <button class="overlay-btn" onclick="startGame()">▶ JUMP IN</button>
+    <button class="ov-btn" onclick="startGame()">▶ JUMP IN</button>
     <div style="margin-top:12px;font-size:0.7rem;color:#333;letter-spacing:2px;">← → KEYS OR TAP SIDES TO MOVE</div>
   </div>
 
-  <!-- Game Over Screen -->
+  <!-- Game Over -->
   <div class="overlay hidden" id="gameover-screen">
-    <div class="overlay-title" id="go-title">GAME OVER</div>
-    <div class="final-score-big" id="go-score">0</div>
-    <div class="final-label">POINTS</div>
-    <div class="unlocked-summary" id="go-summary"></div>
-    <button class="overlay-btn green" onclick="startGame()" style="margin-bottom:12px;">↺ TRY AGAIN</button>
+    <div class="ov-title" id="go-title">GAME OVER</div>
+    <div class="score-big" id="go-score">0</div>
+    <div class="score-lbl">POINTS</div>
+    <div class="go-summary" id="go-summary"></div>
+    <button class="ov-btn green" onclick="startGame()" style="margin-bottom:12px;">↺ TRY AGAIN</button>
     <a href="https://toastybones.com" style="color:#333;font-size:0.75rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
 
-  <!-- Win Screen -->
+  <!-- Win -->
   <div class="overlay hidden" id="win-screen">
-    <div class="overlay-title">🔥 COLLECTION COMPLETE! 🔥</div>
-    <div class="final-score-big" id="win-score">1600</div>
-    <div class="final-label">TOTAL POINTS</div>
-    <div class="unlocked-summary">All 24 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
-    <button class="overlay-btn" onclick="startGame()" style="margin-bottom:12px;">↺ PLAY AGAIN</button>
+    <div class="ov-title">🔥 COLLECTION COMPLETE! 🔥</div>
+    <div class="score-big" id="win-score">1600</div>
+    <div class="score-lbl">TOTAL POINTS</div>
+    <div class="go-summary">All 24 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
+    <button class="ov-btn" onclick="startGame()" style="margin-bottom:12px;">↺ PLAY AGAIN</button>
     <a href="https://toastybones.com" style="color:#333;font-size:0.75rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
 
-  <!-- Album Unlock Flash -->
+  <!-- Unlock flash -->
   <div id="unlock-flash">
-    <div class="unlock-title">🔓 ALBUM UNLOCKED</div>
-    <img class="unlock-album-art" id="unlock-art" src="" alt="">
+    <div class="unlock-lbl">🔓 ALBUM UNLOCKED</div>
+    <img class="unlock-art" id="unlock-art" src="" alt="">
     <div class="unlock-name" id="unlock-name"></div>
   </div>
-
 </div>
 
 <script>
-// ===== ALBUMS =====
-const ALBUMS = [
-  { name: 'Isle of Beans',                    img: 'IOB.png',          pts: 30  },
-  { name: 'Ear-aid',                          img: 'earaid.png',       pts: 60  },
-  { name: 'Fully Panted',                     img: 'fullypanted.png',  pts: 95  },
-  { name: 'Lovey Dovey',                      img: 'loveydovey.png',   pts: 130 },
-  { name: 'Big Dump',                         img: 'bigdump.png',      pts: 170 },
-  { name: 'Mystery Clown',                    img: 'mysteryclown.png', pts: 215 },
-  { name: 'The Legend of Duke',               img: 'LOD.png',          pts: 265 },
-  { name: "Man's Breath",                     img: 'MANSBREATH.png',   pts: 320 },
-  { name: 'Neon Banana',                      img: 'neonbanana.png',   pts: 380 },
-  { name: 'Sharing Socks with Strangers',     img: 'sharingsocks.png', pts: 445 },
-  { name: 'Boney Hollow',                     img: 'boneyhollow.png',  pts: 515 },
-  { name: 'Black and Blue and Punk All Over', img: 'blackandblue.png', pts: 590 },
-  { name: 'Covered in Myself',                img: 'coveredinmyself.png', pts: 670 },
-  { name: 'Midnight Suppository',             img: 'midnightsuppository.png', pts: 755 },
-  { name: 'Festive Flush',                    img: 'festivefush.png',  pts: 845 },
-  { name: 'The Great Indoors',                img: 'greatindoors.png', pts: 940 },
-  { name: 'Spobbly Not',                      img: 'spobblynot.png',   pts: 1000},
-  { name: 'Big Dump 2: Return of the Dump',   img: 'bigdump2.png',     pts: 1075},
-  { name: 'Hilariously Unfortunate',          img: 'hilariouslyunfortunate.png', pts: 1155 },
-  { name: 'Dewey Doofus and the Due Dues',    img: 'deweydoofus.png',  pts: 1235 },
-  { name: 'Try Again',                        img: 'tryagain.png',     pts: 1315 },
-  { name: 'Almost Live',                      img: 'almostlive.png',   pts: 1400 },
-  { name: 'Efforts and Errors',               img: 'EE.png',           pts: 1490 },
-  { name: 'Unscheduled Programming',          img: 'unscheduled.png',  pts: 1600 },
+// ============================================================
+// ALL COORDINATES ARE PURE SCREEN COORDS (Y increases downward)
+// Camera scrolls by shifting everything down each frame
+// ============================================================
+
+const ALBUMS=[
+  {name:'Isle of Beans',              img:'IOB.png',                    pts:30},
+  {name:'Ear-aid',                    img:'earaid.png',                 pts:60},
+  {name:'Fully Panted',               img:'fullypanted.png',            pts:95},
+  {name:'Lovey Dovey',                img:'loveydovey.png',             pts:130},
+  {name:'Big Dump',                   img:'bigdump.png',                pts:170},
+  {name:'Mystery Clown',              img:'mysteryclown.png',           pts:215},
+  {name:'The Legend of Duke',         img:'LOD.png',                    pts:265},
+  {name:"Man's Breath",               img:'MANSBREATH.png',             pts:320},
+  {name:'Neon Banana',                img:'neonbanana.png',             pts:380},
+  {name:'Sharing Socks with Strangers',img:'sharingsocks.png',          pts:445},
+  {name:'Boney Hollow',               img:'boneyhollow.png',            pts:515},
+  {name:'Black and Blue and Punk All Over',img:'blackandblue.png',      pts:590},
+  {name:'Covered in Myself',          img:'coveredinmyself.png',        pts:670},
+  {name:'Midnight Suppository',       img:'midnightsuppository.png',    pts:755},
+  {name:'Festive Flush',              img:'festivefush.png',            pts:845},
+  {name:'The Great Indoors',          img:'greatindoors.png',           pts:940},
+  {name:'Spobbly Not',                img:'spobblynot.png',             pts:1000},
+  {name:'Big Dump 2: Return of the Dump',img:'bigdump2.png',           pts:1075},
+  {name:'Hilariously Unfortunate',    img:'hilariouslyunfortunate.png', pts:1155},
+  {name:'Dewey Doofus and the Due Dues',img:'deweydoofus.png',         pts:1235},
+  {name:'Try Again',                  img:'tryagain.png',               pts:1315},
+  {name:'Almost Live',                img:'almostlive.png',             pts:1400},
+  {name:'Efforts and Errors',         img:'EE.png',                     pts:1490},
+  {name:'Unscheduled Programming',    img:'unscheduled.png',            pts:1600},
 ];
+const TOTAL_PTS=1600;
 
-const TOTAL_PTS = 1600;
+const canvas=document.getElementById('game-canvas');
+const ctx=canvas.getContext('2d');
+let W=0,H=0;
 
-// ===== CANVAS SETUP =====
-const canvas = document.getElementById('game-canvas');
-const ctx = canvas.getContext('2d');
-let W, H;
+// Game constants
+const PW=26,PH=26;       // player size
+const PLATW=82,PLATH=10; // platform size
+const GRAV=0.5;
+const JUMP=-12;
+const SPEED=4.2;
+const KNOCK_VX=5;
+const KNOCK_VY=-9;
 
-function resize() {
-  const panel = document.querySelector('.progress-panel');
-  W = canvas.offsetWidth;
-  H = canvas.offsetHeight;
-  canvas.width = W;
-  canvas.height = H;
+// Game state
+let gameRunning=false;
+let score=0,unlockedCount=0;
+let showingUnlock=false;
+let frame=0,animId=null;
+let keys={left:false,right:false};
+
+// Player (screen coords)
+let px,py,pvx,pvy,pinv,pknock,pknockT;
+
+// World objects — all in screen coords, scrolled each frame
+let platforms=[];
+let collectibles=[];
+let toasters=[];
+let toasterTimer=0,toasterInterval=300;
+
+// Camera scroll — how many px we've shifted upward total
+let camShift=0;
+// Lowest Y we've generated platforms up to (starts high, decreases as we go up)
+let genFrontier=0;
+
+// ============================================================
+function resize(){
+  W=canvas.offsetWidth; H=canvas.offsetHeight;
+  canvas.width=W; canvas.height=H;
   buildMilestones();
 }
 
-// ===== GAME STATE =====
-let gameRunning = false;
-let score = 0;
-let unlockedCount = 0;
-let keys = { left: false, right: false };
-let animId = null;
-let showingUnlock = false;
+// ============================================================
+// PLATFORM GENERATION
+// genFrontier tracks the smallest Y (highest on screen) we've generated to.
+// We always keep platforms generated at least 2 screens above camera top (y=0).
+function generateUp(){
+  // generate until we have platforms at least H*2 above top of screen
+  while(genFrontier > -H*2){
+    const x=20+Math.random()*(W-PLATW-40);
+    const y=genFrontier - (55+Math.random()*35);
+    platforms.push({x,y,w:PLATW,h:PLATH,flash:0});
+    // collectible above platform
+    if(Math.random()<0.65){
+      const bread=Math.random()<0.2;
+      collectibles.push({
+        x:x+PLATW/2+(Math.random()-0.5)*50,
+        y:y-22,
+        type:bread?'bread':'bone',
+        collected:false,
+        pop:0,
+        bob:Math.random()*Math.PI*2
+      });
+    }
+    genFrontier=y;
+  }
+}
 
-// Player
-let player = {};
-// Platforms
-let platforms = [];
-// Collectibles
-let collectibles = [];
-// Toasters
-let toasters = [];
-// Camera
-let cameraY = 0; // world Y of bottom of screen
-let highestY = 0;
-let worldHeight = 0; // how far up we've generated
+// ============================================================
+function initGame(){
+  score=0; unlockedCount=0; showingUnlock=false; frame=0;
+  toasterTimer=0; toasterInterval=300;
+  platforms=[]; collectibles=[]; toasters=[]; camShift=0;
 
-const PLAT_W = 80;
-const PLAT_H = 10;
-const PLAYER_W = 28;
-const PLAYER_H = 28;
-const GRAVITY = 0.45;
-const JUMP_FORCE = -11;
-const MOVE_SPEED = 4;
-const KNOCKBACK_FORCE = -8;
+  resize();
 
-// ===== MILESTONE DOTS =====
-function buildMilestones() {
-  const track = document.getElementById('progress-track');
-  track.querySelectorAll('.album-milestone').forEach(e => e.remove());
-  const trackH = track.offsetHeight;
-  ALBUMS.forEach((album, i) => {
-    const pct = album.pts / TOTAL_PTS;
-    const el = document.createElement('div');
-    el.className = 'album-milestone';
-    el.id = `milestone-${i}`;
-    el.style.bottom = (pct * 100) + '%';
-    el.style.transform = 'translateY(50%)';
-    const img = document.createElement('img');
-    img.src = album.img;
-    img.alt = album.name;
-    img.title = album.name;
+  // Starting platform — centered, near bottom
+  const startPlatY=H-80;
+  platforms.push({x:W/2-PLATW/2, y:startPlatY, w:PLATW, h:PLATH, flash:0});
+  genFrontier=startPlatY;
+  generateUp();
+
+  // Player sits on starting platform
+  px=W/2-PW/2;
+  py=startPlatY-PH;
+  pvx=0; pvy=0; pinv=0; pknock=false; pknockT=0;
+
+  updateMilestones();
+}
+
+// ============================================================
+function startGame(){
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('gameover-screen').classList.add('hidden');
+  document.getElementById('win-screen').classList.add('hidden');
+  document.getElementById('unlock-flash').classList.remove('show');
+  document.getElementById('hud-warn').textContent='';
+
+  initGame();
+  gameRunning=true;
+  if(animId) cancelAnimationFrame(animId);
+  loop();
+}
+
+// ============================================================
+// INPUT
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') keys.left=true;
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') keys.right=true;
+});
+document.addEventListener('keyup',e=>{
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') keys.left=false;
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') keys.right=false;
+});
+['tap-left','tap-right'].forEach(id=>{
+  const el=document.getElementById(id);
+  const isLeft=id==='tap-left';
+  el.addEventListener('touchstart',e=>{e.preventDefault();if(isLeft)keys.left=true;else keys.right=true;},{passive:false});
+  el.addEventListener('touchend',e=>{e.preventDefault();if(isLeft)keys.left=false;else keys.right=false;},{passive:false});
+});
+
+// ============================================================
+// SCROLL: shift everything down by dy pixels
+function scroll(dy){
+  platforms.forEach(p=>p.y+=dy);
+  collectibles.forEach(c=>{c.y+=dy;});
+  toasters.forEach(t=>t.y+=dy);
+  genFrontier+=dy;
+  camShift+=dy;
+}
+
+// ============================================================
+// MAIN LOOP
+function loop(){
+  if(!gameRunning){return;}
+  animId=requestAnimationFrame(loop);
+  frame++;
+
+  if(!showingUnlock){
+    update();
+  }
+  draw();
+}
+
+function update(){
+  // ---- MOVEMENT ----
+  if(!pknock){
+    if(keys.left)       pvx=-SPEED;
+    else if(keys.right) pvx= SPEED;
+    else                pvx*=0.75;
+  } else {
+    pknockT--;
+    if(pknockT<=0) pknock=false;
+    pvx*=0.82;
+  }
+
+  // ---- GRAVITY ----
+  pvy+=GRAV;
+
+  // ---- MOVE ----
+  px+=pvx;
+  py+=pvy;
+
+  // ---- WRAP X ----
+  if(px+PW<0) px=W;
+  if(px>W)    px=-PW;
+
+  // ---- PLATFORM COLLISION (only when falling down, pvy > 0) ----
+  if(pvy>0){
+    for(let p of platforms){
+      // Player bottom edge
+      const playerBottom=py+PH;
+      const playerPrevBottom=playerBottom-pvy; // where bottom was last frame
+
+      if(px+PW>p.x && px<p.x+p.w &&         // X overlap
+         playerBottom>=p.y &&                  // bottom reached platform top
+         playerPrevBottom<=p.y+4){             // wasn't already below it
+        py=p.y-PH;                             // snap on top
+        pvy=JUMP;                              // auto jump!
+        p.flash=6;
+        break;
+      }
+    }
+  }
+
+  // ---- CAMERA: scroll up when player reaches upper 40% ----
+  if(py < H*0.4){
+    const dy=H*0.4-py;
+    scroll(dy);
+    py=H*0.4;
+  }
+
+  // ---- GENERATE MORE PLATFORMS ----
+  generateUp();
+
+  // ---- CULL off-screen below ----
+  platforms=platforms.filter(p=>p.y<H+60);
+  collectibles=collectibles.filter(c=>c.y<H+60 || c.pop>0);
+
+  // ---- INVINCIBILITY ----
+  if(pinv>0) pinv--;
+
+  // ---- COLLECTIBLES ----
+  collectibles.forEach(c=>{
+    if(c.collected) return;
+    const cy=c.y+Math.sin(frame*0.07+c.bob)*4;
+    if(px+PW>c.x-10 && px<c.x+10 && py+PH>cy-10 && py<cy+10){
+      c.collected=true;
+      c.pop=frame;
+      const gain=c.type==='bread'?5:1;
+      score=Math.max(0,score+gain);
+      checkUnlocks();
+      updateMilestones();
+    }
+  });
+
+  // ---- TOASTERS ----
+  toasterTimer++;
+  if(toasterTimer>=toasterInterval){
+    toasterTimer=0;
+    toasterInterval=Math.max(100,300-score*0.07);
+    spawnToaster();
+  }
+  toasters.forEach(t=>{
+    t.x+=t.vx;
+    if(!t.hit && pinv<=0){
+      if(px+PW-4>t.x && px+4<t.x+t.w && py+PH-4>t.y && py+4<t.y+t.h){
+        t.hit=true;
+        score=Math.max(0,score-5);
+        pvy=KNOCK_VY;
+        pvx=t.vx>0?KNOCK_VX:-KNOCK_VX;
+        pknock=true; pknockT=22;
+        pinv=70;
+        updateMilestones();
+        document.getElementById('hud-warn').innerHTML='<span class="danger">⚠ TOASTER HIT! -5</span>';
+        setTimeout(()=>{document.getElementById('hud-warn').textContent='';},1200);
+      }
+    }
+  });
+  toasters=toasters.filter(t=>t.x>-80&&t.x<W+80);
+
+  // ---- FELL OFF BOTTOM ----
+  if(py>H+60){
+    endGame();
+  }
+}
+
+function spawnToaster(){
+  const fromLeft=Math.random()<0.5;
+  const spd=(2+score/350)*(fromLeft?1:-1);
+  const ty=H*0.15+Math.random()*H*0.6;
+  toasters.push({x:fromLeft?-50:W+10,y:ty,w:44,h:34,vx:spd,hit:false});
+}
+
+// ============================================================
+// UNLOCK
+function checkUnlocks(){
+  while(unlockedCount<ALBUMS.length && score>=ALBUMS[unlockedCount].pts){
+    const album=ALBUMS[unlockedCount];
+    unlockedCount++;
+    updateMilestones();
+    triggerUnlock(album);
+    if(unlockedCount===ALBUMS.length) setTimeout(showWin,1800);
+    break;
+  }
+}
+
+function triggerUnlock(album){
+  showingUnlock=true;
+  document.getElementById('unlock-art').src=album.img;
+  document.getElementById('unlock-name').textContent=album.name;
+  document.getElementById('unlock-flash').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('unlock-flash').classList.remove('show');
+    showingUnlock=false;
+  },1600);
+}
+
+// ============================================================
+// GAME OVER / WIN
+function endGame(){
+  gameRunning=false;
+  document.getElementById('gameover-screen').classList.remove('hidden');
+  document.getElementById('go-score').textContent=score;
+  const unlocked=ALBUMS.slice(0,unlockedCount);
+  document.getElementById('go-summary').innerHTML=
+    unlockedCount===0
+      ? "No albums unlocked. I'm not surprised, just disappointed."
+      : `${unlockedCount} / 24 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
+  const title=score>=TOTAL_PTS?'🔥 LEGENDARY':unlockedCount>=18?'IMPRESSIVE RUN':unlockedCount>=10?'NOT BAD':'GAME OVER';
+  document.getElementById('go-title').textContent=title;
+}
+
+function showWin(){
+  gameRunning=false;
+  document.getElementById('win-screen').classList.remove('hidden');
+  document.getElementById('win-score').textContent=score;
+}
+
+// ============================================================
+// MILESTONE PANEL
+function buildMilestones(){
+  const track=document.getElementById('progress-track');
+  track.querySelectorAll('.album-milestone').forEach(e=>e.remove());
+  ALBUMS.forEach((album,i)=>{
+    const el=document.createElement('div');
+    el.className='album-milestone';
+    el.id='ms-'+i;
+    el.style.bottom=(album.pts/TOTAL_PTS*100)+'%';
+    el.style.transform='translateY(50%)';
+    const img=document.createElement('img');
+    img.src=album.img; img.alt=album.name; img.title=album.name;
     el.appendChild(img);
     track.appendChild(el);
   });
 }
 
-function updateMilestones() {
-  const pct = Math.min(score / TOTAL_PTS, 1);
-  document.getElementById('progress-fill').style.height = (pct * 100) + '%';
-  document.getElementById('panel-score').innerHTML = score + '<br>pts';
-  document.getElementById('hud-pts').textContent = score;
-
-  ALBUMS.forEach((album, i) => {
-    const el = document.getElementById(`milestone-${i}`);
-    if (!el) return;
-    el.classList.remove('unlocked', 'current');
-    if (score >= album.pts) {
-      el.classList.add('unlocked');
-    } else if (i === unlockedCount) {
-      el.classList.add('current');
-    }
+function updateMilestones(){
+  document.getElementById('progress-fill').style.height=(Math.min(score/TOTAL_PTS,1)*100)+'%';
+  document.getElementById('panel-score').innerHTML=score+'<br>pts';
+  document.getElementById('hud-pts').textContent=score;
+  ALBUMS.forEach((_,i)=>{
+    const el=document.getElementById('ms-'+i);
+    if(!el) return;
+    el.classList.remove('unlocked','current');
+    if(i<unlockedCount) el.classList.add('unlocked');
+    else if(i===unlockedCount) el.classList.add('current');
   });
 }
 
-// ===== PLATFORM GENERATION =====
-function generatePlatforms(upToY) {
-  // Generate platforms from worldHeight up to upToY
-  while (worldHeight < upToY) {
-    const x = Math.random() * (W - PLAT_W - 40) + 20;
-    const y = worldHeight + 60 + Math.random() * 40;
-    platforms.push({ x, y, w: PLAT_W, h: PLAT_H });
+// ============================================================
+// DRAWING
+function draw(){
+  // Background
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,W,H);
 
-    // Occasionally add collectible
-    if (Math.random() < 0.6) {
-      const isBread = Math.random() < 0.2;
-      collectibles.push({
-        x: x + PLAT_W / 2 + (Math.random() - 0.5) * 40,
-        y: y + 24,
-        type: isBread ? 'bread' : 'bone',
-        collected: false,
-        bobOffset: Math.random() * Math.PI * 2,
-      });
-    }
-    worldHeight = y;
+  // Faint grid lines for depth
+  ctx.strokeStyle='rgba(0,255,65,0.03)';
+  ctx.lineWidth=1;
+  for(let y=(frame*0.3)%40;y<H;y+=40){
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
   }
-}
-
-// ===== TOASTER SPAWNING =====
-let toasterTimer = 0;
-let toasterInterval = 320; // frames between spawns
-
-function spawnToaster() {
-  const fromLeft = Math.random() < 0.5;
-  const y = cameraY + H * 0.3 + Math.random() * H * 0.4;
-  const speed = (2.5 + score / 400) * (fromLeft ? 1 : -1);
-  toasters.push({
-    x: fromLeft ? -60 : W + 60,
-    y,
-    speed,
-    w: 44,
-    h: 36,
-    hit: false,
-  });
-}
-
-// ===== PLAYER INIT =====
-function initPlayer() {
-  player = {
-    x: W / 2 - PLAYER_W / 2,
-    y: 100,       // world Y (from bottom)
-    vx: 0,
-    vy: 0,
-    onGround: false,
-    knockback: false,
-    knockbackTimer: 0,
-    invincible: 0, // frames of invincibility after hit
-  };
-}
-
-// ===== GAME START =====
-function startGame() {
-  score = 0;
-  unlockedCount = 0;
-  platforms = [];
-  collectibles = [];
-  toasters = [];
-  cameraY = 0;
-  highestY = 0;
-  worldHeight = 0;
-  toasterTimer = 0;
-  toasterInterval = 320;
-  showingUnlock = false;
-
-  document.getElementById('start-screen').classList.add('hidden');
-  document.getElementById('gameover-screen').classList.add('hidden');
-  document.getElementById('win-screen').classList.add('hidden');
-  document.getElementById('unlock-flash').classList.remove('show');
-  document.getElementById('hud-warn').textContent = '';
-
-  resize();
-
-  // Starting platform
-  platforms.push({ x: W / 2 - PLAT_W / 2, y: 60, w: PLAT_W, h: PLAT_H });
-  worldHeight = 60;
-  generatePlatforms(H * 3);
-
-  initPlayer();
-
-  gameRunning = true;
-  updateMilestones();
-  if (animId) cancelAnimationFrame(animId);
-  gameLoop();
-}
-
-// ===== INPUT =====
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
-  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
-});
-document.addEventListener('keyup', e => {
-  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
-  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
-});
-
-// Mobile touch
-document.getElementById('tap-left').addEventListener('touchstart', e => { e.preventDefault(); keys.left = true; }, { passive: false });
-document.getElementById('tap-left').addEventListener('touchend', e => { e.preventDefault(); keys.left = false; }, { passive: false });
-document.getElementById('tap-right').addEventListener('touchstart', e => { e.preventDefault(); keys.right = true; }, { passive: false });
-document.getElementById('tap-right').addEventListener('touchend', e => { e.preventDefault(); keys.right = false; }, { passive: false });
-
-// ===== COLLISION HELPERS =====
-function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
-  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
-}
-
-// ===== DRAWING =====
-// Draw skull (player)
-function drawSkull(sx, sy, inv) {
-  if (inv > 0 && Math.floor(inv / 4) % 2 === 0) return; // flicker when invincible
-  ctx.save();
-  ctx.translate(sx + PLAYER_W / 2, sy + PLAYER_H / 2);
-
-  // Shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  ctx.beginPath();
-  ctx.ellipse(0, PLAYER_H / 2 + 2, PLAYER_W / 2, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Head circle
-  ctx.fillStyle = '#e8e8e8';
-  ctx.beginPath();
-  ctx.arc(0, -2, 12, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Jaw
-  ctx.fillStyle = '#e8e8e8';
-  ctx.beginPath();
-  ctx.roundRect(-8, 6, 16, 8, 2);
-  ctx.fill();
-
-  // Eyes
-  ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.ellipse(-4, -3, 3.5, 4, 0, 0, Math.PI * 2);
-  ctx.ellipse(4, -3, 3.5, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Teeth
-  ctx.fillStyle = '#ccc';
-  [-5, -1, 3].forEach(tx => {
-    ctx.fillRect(tx, 7, 3, 4);
-  });
-
-  // Nose holes
-  ctx.fillStyle = '#111';
-  ctx.beginPath();
-  ctx.ellipse(-1.5, 2, 1.5, 1.5, 0, 0, Math.PI * 2);
-  ctx.ellipse(1.5, 2, 1.5, 1.5, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.restore();
-}
-
-// Draw platform
-function drawPlatform(px, py, pw, ph) {
-  ctx.fillStyle = '#1a2a1a';
-  ctx.fillRect(px, py, pw, ph);
-  ctx.fillStyle = var_green_dim();
-  ctx.fillRect(px, py, pw, 2);
-  // Glow
-  ctx.shadowBlur = 6;
-  ctx.shadowColor = '#00aa2a';
-  ctx.fillRect(px, py, pw, 2);
-  ctx.shadowBlur = 0;
-}
-
-function var_green_dim() { return '#00aa2a'; }
-
-// Draw bone
-function drawBone(bx, by) {
-  ctx.save();
-  ctx.translate(bx, by);
-  ctx.fillStyle = '#d4cfa8';
-  // Shaft
-  ctx.fillRect(-6, -2, 12, 4);
-  // End balls
-  [[-8,-4],[-8,0],[8,-4],[8,0]].forEach(([ex,ey]) => {
-    ctx.beginPath();
-    ctx.arc(ex, ey+2, 4, 0, Math.PI*2);
-    ctx.fill();
-  });
-  ctx.restore();
-}
-
-// Draw bread
-function drawBread(bx, by) {
-  ctx.save();
-  ctx.translate(bx, by);
-  // Bread slice body
-  ctx.fillStyle = '#c87941';
-  ctx.beginPath();
-  ctx.roundRect(-10, -8, 20, 16, 4);
-  ctx.fill();
-  // Crust top
-  ctx.fillStyle = '#a0602a';
-  ctx.beginPath();
-  ctx.roundRect(-10, -8, 20, 5, [4,4,0,0]);
-  ctx.fill();
-  // Lines
-  ctx.strokeStyle = '#a0602a';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(-5, -2); ctx.lineTo(5, -2);
-  ctx.moveTo(-5, 2); ctx.lineTo(5, 2);
-  ctx.stroke();
-  // Shine
-  ctx.fillStyle = 'rgba(255,220,150,0.25)';
-  ctx.beginPath();
-  ctx.ellipse(-2, -3, 4, 2, -0.5, 0, Math.PI*2);
-  ctx.fill();
-  ctx.restore();
-}
-
-// Draw toaster
-function drawToaster(tx, ty, tw, th, speed) {
-  ctx.save();
-  ctx.translate(tx + tw/2, ty + th/2);
-  if (speed < 0) ctx.scale(-1, 1); // flip if going left
-
-  // Body
-  ctx.fillStyle = '#2a2a2a';
-  ctx.beginPath();
-  ctx.roundRect(-tw/2, -th/2, tw, th, 4);
-  ctx.fill();
-  ctx.strokeStyle = '#ff3355';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  // Slot
-  ctx.fillStyle = '#111';
-  ctx.fillRect(-10, -th/2+3, 8, 3);
-  ctx.fillRect(2, -th/2+3, 8, 3);
-
-  // Toast sticking up (orange glow)
-  ctx.fillStyle = '#c87941';
-  ctx.fillRect(-8, -th/2-8, 6, 10);
-  ctx.fillRect(2, -th/2-6, 6, 8);
-  ctx.fillStyle = '#ff8800';
-  ctx.shadowBlur = 8;
-  ctx.shadowColor = '#ff4400';
-  ctx.fillRect(-8, -th/2-8, 6, 2);
-  ctx.fillRect(2, -th/2-6, 6, 2);
-  ctx.shadowBlur = 0;
-
-  // Lever
-  ctx.fillStyle = '#555';
-  ctx.fillRect(tw/2-8, -4, 5, 12);
-  ctx.fillStyle = '#ff3355';
-  ctx.fillRect(tw/2-9, 4, 7, 3);
-
-  // Eyes (angry)
-  ctx.fillStyle = '#ff3355';
-  ctx.shadowBlur = 6;
-  ctx.shadowColor = '#ff3355';
-  ctx.beginPath();
-  ctx.arc(-7, 2, 3, 0, Math.PI*2);
-  ctx.arc(7, 2, 3, 0, Math.PI*2);
-  ctx.fill();
-  ctx.shadowBlur = 0;
-
-  ctx.restore();
-}
-
-// Draw background stars/static
-let bgStars = [];
-function initBgStars() {
-  bgStars = [];
-  for (let i = 0; i < 60; i++) {
-    bgStars.push({ x: Math.random() * W, y: Math.random() * H * 10, brightness: Math.random() });
-  }
-}
-
-function drawBackground() {
-  ctx.fillStyle = '#0a0a0a';
-  ctx.fillRect(0, 0, W, H);
-
-  // Scrolling stars
-  bgStars.forEach(s => {
-    const screenY = H - (s.y - cameraY);
-    if (screenY < -5 || screenY > H + 5) return;
-    const alpha = 0.1 + s.brightness * 0.25;
-    ctx.fillStyle = `rgba(0,255,65,${alpha})`;
-    ctx.fillRect(s.x, screenY, 1, 1);
-  });
-}
-
-// ===== UNLOCK CHECK =====
-function checkUnlocks() {
-  while (unlockedCount < ALBUMS.length && score >= ALBUMS[unlockedCount].pts) {
-    const album = ALBUMS[unlockedCount];
-    unlockedCount++;
-    updateMilestones();
-    triggerUnlock(album);
-    if (unlockedCount === ALBUMS.length) {
-      setTimeout(showWin, 1800);
-    }
-    break; // one unlock at a time
-  }
-}
-
-function triggerUnlock(album) {
-  showingUnlock = true;
-  document.getElementById('unlock-art').src = album.img;
-  document.getElementById('unlock-name').textContent = album.name;
-  const flash = document.getElementById('unlock-flash');
-  flash.classList.add('show');
-  setTimeout(() => {
-    flash.classList.remove('show');
-    showingUnlock = false;
-  }, 1600);
-}
-
-// ===== GAME OVER =====
-function gameOver() {
-  gameRunning = false;
-  const go = document.getElementById('gameover-screen');
-  go.classList.remove('hidden');
-  document.getElementById('go-score').textContent = score;
-  const unlocked = ALBUMS.filter((_, i) => i < unlockedCount);
-  document.getElementById('go-summary').innerHTML =
-    unlockedCount === 0
-      ? 'No albums unlocked. I'm not surprised, just disappointed.'
-      : `${unlockedCount} / 24 albums unlocked:\n` + unlocked.map(a => a.name).join(', ');
-
-  if (score >= TOTAL_PTS) {
-    document.getElementById('go-title').textContent = '🔥 LEGENDARY';
-  } else if (unlockedCount >= 18) {
-    document.getElementById('go-title').textContent = 'IMPRESSIVE RUN';
-  } else if (unlockedCount >= 10) {
-    document.getElementById('go-title').textContent = 'NOT BAD';
-  } else {
-    document.getElementById('go-title').textContent = 'GAME OVER';
-  }
-}
-
-function showWin() {
-  gameRunning = false;
-  document.getElementById('win-screen').classList.remove('hidden');
-  document.getElementById('win-score').textContent = score;
-}
-
-// ===== GAME LOOP =====
-let frame = 0;
-
-function gameLoop() {
-  if (!gameRunning) return;
-  animId = requestAnimationFrame(gameLoop);
-  frame++;
-
-  // --- UPDATE ---
-  if (!showingUnlock) {
-    // Movement
-    if (!player.knockback) {
-      if (keys.left)  player.vx = -MOVE_SPEED;
-      else if (keys.right) player.vx = MOVE_SPEED;
-      else player.vx *= 0.8;
-    } else {
-      player.knockbackTimer--;
-      if (player.knockbackTimer <= 0) player.knockback = false;
-      player.vx *= 0.85;
-    }
-
-    // Gravity
-    player.vy += GRAVITY;
-    player.y -= player.vy; // world Y increases upward
-    player.x += player.vx;
-
-    // Wrap horizontally
-    if (player.x + PLAYER_W < 0) player.x = W;
-    if (player.x > W) player.x = -PLAYER_W;
-
-    // Platform collision (only when falling)
-    player.onGround = false;
-    if (player.vy < 0) { // falling (vy negative = going down in world coords... wait)
-      // In our system: world Y increases upward, screen Y = H - (worldY - cameraY)
-      // player.vy > 0 means moving up, < 0 means falling
-    }
-
-    // Check platforms
-    if (player.vy <= 0) { // only when falling down
-      platforms.forEach(plat => {
-        const screenPY = H - (plat.y - cameraY);
-        const screenPX = plat.x;
-        const screenPlayerY = H - (player.y - cameraY);
-        const playerBottom = screenPlayerY + PLAYER_H;
-        const playerTop = screenPlayerY;
-        const prevBottom = H - ((player.y + player.vy * 2) - cameraY) + PLAYER_H;
-
-        if (
-          player.x + PLAYER_W > screenPX &&
-          player.x < screenPX + plat.w &&
-          playerBottom >= screenPY &&
-          playerBottom <= screenPY + plat.h + 8 &&
-          prevBottom <= screenPY + 8
-        ) {
-          player.vy = JUMP_FORCE;
-          player.onGround = true;
-          // bounce sound visual (flash platform green briefly)
-          plat.flash = 4;
-        }
-      });
-    }
-
-    // Camera follows player up
-    const screenPlayerY = H - (player.y - cameraY);
-    if (screenPlayerY < H * 0.4) {
-      cameraY += H * 0.4 - screenPlayerY;
-    }
-
-    // Track highest point
-    if (player.y > highestY) highestY = player.y;
-
-    // Generate more world above
-    generatePlatforms(cameraY + H * 3);
-
-    // Remove off-screen platforms below
-    platforms = platforms.filter(p => H - (p.y - cameraY) < H + 100);
-
-    // Player fell off bottom
-    if (screenPlayerY > H + 60) {
-      gameOver();
-      return;
-    }
-
-    // Invincibility countdown
-    if (player.invincible > 0) player.invincible--;
-
-    // --- COLLECTIBLES ---
-    collectibles.forEach(c => {
-      if (c.collected) return;
-      const screenCX = c.x;
-      const screenCY = H - (c.y - cameraY) + Math.sin(frame * 0.06 + c.bobOffset) * 4;
-      const screenPX = player.x;
-      const screenPY = H - (player.y - cameraY);
-      if (rectsOverlap(screenPX, screenPY, PLAYER_W, PLAYER_H, screenCX - 10, screenCY - 10, 20, 20)) {
-        c.collected = true;
-        const gain = c.type === 'bread' ? 5 : 1;
-        score = Math.max(0, score + gain);
-        checkUnlocks();
-        updateMilestones();
-        // Pop effect
-        c.popFrame = frame;
-      }
-    });
-    collectibles = collectibles.filter(c => !c.collected || (c.popFrame && frame - c.popFrame < 20));
-    collectibles = collectibles.filter(c => H - (c.y - cameraY) < H + 80);
-
-    // --- TOASTERS ---
-    toasterTimer++;
-    if (toasterTimer >= toasterInterval) {
-      toasterTimer = 0;
-      toasterInterval = Math.max(120, 320 - score * 0.08);
-      spawnToaster();
-    }
-
-    toasters.forEach(t => {
-      t.x += t.speed;
-      const screenPX = player.x;
-      const screenPY = H - (player.y - cameraY);
-      const screenTX = t.x;
-      const screenTY = H - (t.y - cameraY);
-
-      if (!t.hit && player.invincible <= 0 && rectsOverlap(screenPX+4, screenPY+4, PLAYER_W-8, PLAYER_H-8, screenTX, screenTY, t.w, t.h)) {
-        t.hit = true;
-        score = Math.max(0, score - 5);
-        player.vy = KNOCKBACK_FORCE;
-        player.vx = t.speed > 0 ? 4 : -4;
-        player.knockback = true;
-        player.knockbackTimer = 20;
-        player.invincible = 60;
-        updateMilestones();
-        // Warn text
-        document.getElementById('hud-warn').innerHTML = '<span class="danger">⚠ TOASTER HIT! -5</span>';
-        setTimeout(() => { document.getElementById('hud-warn').textContent = ''; }, 1000);
-      }
-    });
-
-    toasters = toasters.filter(t => t.x > -100 && t.x < W + 100);
-    toasters = toasters.filter(t => Math.abs(H - (t.y - cameraY)) < H + 100);
-  }
-
-  // --- DRAW ---
-  drawBackground();
 
   // Platforms
-  platforms.forEach(plat => {
-    const screenY = H - (plat.y - cameraY);
-    if (screenY < -10 || screenY > H + 10) return;
-    if (plat.flash > 0) {
-      plat.flash--;
-      ctx.fillStyle = '#00ff41';
-      ctx.fillRect(plat.x, screenY, plat.w, plat.h);
-      ctx.shadowBlur = 10; ctx.shadowColor = '#00ff41';
-      ctx.fillRect(plat.x, screenY, plat.w, 2);
-      ctx.shadowBlur = 0;
-    } else {
-      drawPlatform(plat.x, screenY, plat.w, plat.h);
-    }
+  platforms.forEach(p=>{
+    if(p.y<-20||p.y>H+20) return;
+    const col=p.flash>0?'#00ff41':'#00aa2a';
+    if(p.flash>0) p.flash--;
+    ctx.fillStyle='#0d1a0d';
+    ctx.fillRect(p.x,p.y,p.w,p.h);
+    ctx.fillStyle=col;
+    ctx.fillRect(p.x,p.y,p.w,3);
+    ctx.shadowBlur=p.flash>0?12:5;
+    ctx.shadowColor=col;
+    ctx.fillRect(p.x,p.y,p.w,3);
+    ctx.shadowBlur=0;
   });
 
   // Collectibles
-  collectibles.forEach(c => {
-    if (c.collected && c.popFrame) {
-      // Pop animation
-      const age = frame - c.popFrame;
-      if (age < 20) {
-        ctx.globalAlpha = 1 - age / 20;
-        ctx.fillStyle = c.type === 'bread' ? '#ffb700' : '#d4cfa8';
-        ctx.font = `${10 + age}px VT323`;
-        ctx.textAlign = 'center';
-        ctx.fillText(c.type === 'bread' ? '+5' : '+1', c.x, H - (c.y - cameraY) - age * 1.5);
-        ctx.globalAlpha = 1;
-        ctx.textAlign = 'left';
+  collectibles.forEach(c=>{
+    if(c.pop>0 && c.collected){
+      const age=frame-c.pop;
+      if(age<22){
+        ctx.globalAlpha=1-age/22;
+        ctx.fillStyle=c.type==='bread'?'#ffb700':'#d4cfa8';
+        ctx.font='bold 13px VT323';
+        ctx.textAlign='center';
+        ctx.fillText(c.type==='bread'?'+5':'+1',c.x,c.y-age*1.8);
+        ctx.globalAlpha=1; ctx.textAlign='left';
       }
       return;
     }
-    const screenY = H - (c.y - cameraY) + Math.sin(frame * 0.06 + c.bobOffset) * 4;
-    if (screenY < -20 || screenY > H + 20) return;
-    if (c.type === 'bone') drawBone(c.x, screenY);
-    else drawBread(c.x, screenY);
+    if(c.collected) return;
+    const cy=c.y+Math.sin(frame*0.07+c.bob)*4;
+    if(cy<-20||cy>H+20) return;
+    if(c.type==='bone') drawBone(c.x,cy);
+    else drawBread(c.x,cy);
   });
 
   // Toasters
-  toasters.forEach(t => {
-    const screenY = H - (t.y - cameraY);
-    if (screenY < -50 || screenY > H + 50) return;
-    drawToaster(t.x, screenY, t.w, t.h, t.speed);
+  toasters.forEach(t=>{
+    if(t.y<-50||t.y>H+50) return;
+    drawToaster(t.x,t.y,t.w,t.h,t.vx);
   });
 
   // Player
-  const screenPY = H - (player.y - cameraY);
-  drawSkull(player.x, screenPY, player.invincible);
+  drawSkull(px,py,pinv);
 
-  // Album name overlay when close to milestone
-  const nextAlbum = ALBUMS[unlockedCount];
-  if (nextAlbum) {
-    const pct = score / nextAlbum.pts;
-    if (pct > 0.85) {
-      ctx.globalAlpha = (pct - 0.85) / 0.15;
-      ctx.fillStyle = '#ffb700';
-      ctx.font = '14px VT323';
-      ctx.textAlign = 'center';
-      ctx.fillText(`ALMOST: ${nextAlbum.name}`, W / 2, 30);
-      ctx.textAlign = 'left';
-      ctx.globalAlpha = 1;
+  // Next album hint
+  if(unlockedCount<ALBUMS.length){
+    const next=ALBUMS[unlockedCount];
+    const pct=score/next.pts;
+    if(pct>0.8){
+      const a=(pct-0.8)/0.2;
+      ctx.globalAlpha=a*0.85;
+      ctx.font='15px VT323';
+      ctx.fillStyle='#ffb700';
+      ctx.textAlign='center';
+      ctx.fillText('▲ NEXT: '+next.name,W/2,28);
+      ctx.textAlign='left';
+      ctx.globalAlpha=1;
     }
   }
 }
 
-// ===== INIT =====
-window.addEventListener('resize', () => { if (gameRunning) resize(); else { resize(); } });
+// ============================================================
+// SPRITE DRAWING
+function drawSkull(sx,sy,inv){
+  if(inv>0 && Math.floor(inv/4)%2===0) return;
+  ctx.save();
+  ctx.translate(sx+PW/2,sy+PH/2);
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(0,PH/2+2,PW/2,4,0,0,Math.PI*2);
+  ctx.fill();
+  // Skull
+  ctx.fillStyle='#e8e8e8';
+  ctx.beginPath();
+  ctx.arc(0,-2,11,0,Math.PI*2);
+  ctx.fill();
+  // Jaw
+  ctx.fillStyle='#ddd';
+  ctx.beginPath();
+  ctx.roundRect(-7,5,14,8,2);
+  ctx.fill();
+  // Eyes
+  ctx.fillStyle='#111';
+  ctx.beginPath();
+  ctx.ellipse(-3.5,-3,3,3.5,0,0,Math.PI*2);
+  ctx.ellipse(3.5,-3,3,3.5,0,0,Math.PI*2);
+  ctx.fill();
+  // Pupils (green glow)
+  ctx.fillStyle='rgba(0,255,65,0.6)';
+  ctx.beginPath();
+  ctx.ellipse(-3.5,-3,1.5,1.5,0,0,Math.PI*2);
+  ctx.ellipse(3.5,-3,1.5,1.5,0,0,Math.PI*2);
+  ctx.fill();
+  // Nose
+  ctx.fillStyle='#111';
+  ctx.beginPath();
+  ctx.ellipse(-1.5,2,1.2,1.2,0,0,Math.PI*2);
+  ctx.ellipse(1.5,2,1.2,1.2,0,0,Math.PI*2);
+  ctx.fill();
+  // Teeth
+  ctx.fillStyle='#bbb';
+  [-5,-1.5,2].forEach(tx=>{ctx.fillRect(tx,6,3,4);});
+  ctx.restore();
+}
+
+function drawBone(bx,by){
+  ctx.save();
+  ctx.translate(bx,by);
+  ctx.fillStyle='#d4cfa8';
+  ctx.fillRect(-6,-2,12,4);
+  [[-8,-4],[-8,0],[8,-4],[8,0]].forEach(([ex,ey])=>{
+    ctx.beginPath(); ctx.arc(ex,ey+2,3.5,0,Math.PI*2); ctx.fill();
+  });
+  ctx.restore();
+}
+
+function drawBread(bx,by){
+  ctx.save();
+  ctx.translate(bx,by);
+  ctx.fillStyle='#c87941';
+  ctx.beginPath(); ctx.roundRect(-10,-8,20,16,4); ctx.fill();
+  ctx.fillStyle='#8a4f1e';
+  ctx.beginPath(); ctx.roundRect(-10,-8,20,5,[4,4,0,0]); ctx.fill();
+  ctx.strokeStyle='#8a4f1e'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-5,-1); ctx.lineTo(5,-1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-5,3); ctx.lineTo(5,3); ctx.stroke();
+  ctx.fillStyle='rgba(255,210,130,0.3)';
+  ctx.beginPath(); ctx.ellipse(-2,-3,4,2,-0.4,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawToaster(tx,ty,tw,th,vx){
+  ctx.save();
+  ctx.translate(tx+tw/2,ty+th/2);
+  if(vx<0) ctx.scale(-1,1);
+  // Body
+  ctx.fillStyle='#2a2a2a';
+  ctx.beginPath(); ctx.roundRect(-tw/2,-th/2,tw,th,4); ctx.fill();
+  ctx.strokeStyle='#ff3355'; ctx.lineWidth=1.5; ctx.stroke();
+  // Slots
+  ctx.fillStyle='#111';
+  ctx.fillRect(-10,-th/2+3,7,3);
+  ctx.fillRect(3,-th/2+3,7,3);
+  // Toast
+  ctx.fillStyle='#c87941';
+  ctx.fillRect(-8,-th/2-8,5,10);
+  ctx.fillRect(3,-th/2-6,5,8);
+  // Flame glow
+  ctx.fillStyle='#ff6600';
+  ctx.shadowBlur=8; ctx.shadowColor='#ff4400';
+  ctx.fillRect(-8,-th/2-9,5,3);
+  ctx.fillRect(3,-th/2-7,5,3);
+  ctx.shadowBlur=0;
+  // Angry eyes
+  ctx.fillStyle='#ff3355';
+  ctx.shadowBlur=5; ctx.shadowColor='#ff3355';
+  ctx.beginPath();
+  ctx.arc(-7,2,2.5,0,Math.PI*2);
+  ctx.arc(7,2,2.5,0,Math.PI*2);
+  ctx.fill();
+  ctx.shadowBlur=0;
+  // Lever
+  ctx.fillStyle='#555'; ctx.fillRect(tw/2-8,-3,4,12);
+  ctx.fillStyle='#ff3355'; ctx.fillRect(tw/2-9,5,6,3);
+  ctx.restore();
+}
+
+// ============================================================
+window.addEventListener('resize',()=>{ resize(); });
 resize();
-initBgStars();
 buildMilestones();
 </script>
 </body>
