@@ -696,7 +696,16 @@
   <div class="secret-text" style="font-size:clamp(0.8rem,3vw,1.4rem); margin-top:-0.5rem;">TOASTYBONES SEES YOU</div>
   <div class="secret-sub">The bones are always toasty. Always.</div>
   <div class="secret-sub" style="font-size:0.7rem; opacity:0.5;">↑↑↓↓←→←→BA — you know what you did</div>
-  <button class="close-secret" onclick="closeSecret()">[ DISMISS ]</button>
+  <div style="margin-top:1.2rem; padding-top:1rem; border-top:1px solid rgba(255,251,0,0.2);">
+    <div class="secret-sub" style="font-size:0.8rem; color:#ffb700; letter-spacing:3px; margin-bottom:0.8rem;">🍞 SECRET UNLOCKED 🍞</div>
+    <a href="toastyjump.html"
+       style="display:inline-block; font-family:'Share Tech Mono',monospace; font-size:1.1rem; color:#000; background:#ffb700; padding:10px 28px; border-radius:6px; text-decoration:none; letter-spacing:2px; box-shadow: 0 0 24px rgba(255,183,0,0.6); transition: all 0.2s;"
+       onmouseover="this.style.background='#fff700';this.style.boxShadow='0 0 36px rgba(255,251,0,0.9)';"
+       onmouseout="this.style.background='#ffb700';this.style.boxShadow='0 0 24px rgba(255,183,0,0.6)';">
+      ▶ PLAY TOASTY JUMP
+    </a>
+  </div>
+  <button class="close-secret" onclick="closeSecret()" style="margin-top:1rem;">[ DISMISS ]</button>
 </div>
 
 <!-- CRT Toggle Button -->
@@ -736,6 +745,15 @@
       🔊 Sound Trivia
     </a>
 
+    <!-- Toasty Jump Button -->
+    <a href="toastyjump.html"
+       class="block w-full px-5 py-4 font-orbitron rounded-xl shadow-2xl text-center transition duration-300"
+       style="font-size:1rem; line-height:1.3; background:#111; color:#ffb700; border: 2px solid #ffb700; box-shadow: 0 0 18px rgba(255,183,0,0.3), 0 4px 0 #7a5500;"
+       onmouseover="this.style.background='#ffb700';this.style.color='#000';this.style.boxShadow='0 0 30px rgba(255,183,0,0.8), 0 4px 0 #7a5500';"
+       onmouseout="this.style.background='#111';this.style.color='#ffb700';this.style.boxShadow='0 0 18px rgba(255,183,0,0.3), 0 4px 0 #7a5500';">
+      🍞 Toasty Jump
+    </a>
+
   </div>
 </div>
 
@@ -753,8 +771,13 @@
   </a>
   <a href="sounds.html"
      class="flex-1 px-2 py-3 text-center text-sm font-orbitron"
-     style="background:#111; color:#00ff41;">
+     style="background:#111; color:#00ff41; border-right:1px solid rgba(255,255,255,0.1);">
     🔊 Trivia
+  </a>
+  <a href="toastyjump.html"
+     class="flex-1 px-2 py-3 text-center text-sm font-orbitron"
+     style="background:#111; color:#ffb700;">
+    🍞 Jump
   </a>
 </div>
 
