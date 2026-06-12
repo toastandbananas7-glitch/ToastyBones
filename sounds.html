@@ -354,16 +354,16 @@
     <div class="start-title">🔊 WEIRD SOUND TRIVIA</div>
     <div class="start-sub">[ TOASTYBONES EDITION ]</div>
     <div class="start-desc">
-      22 bizarre sound clips ripped straight from the ToastyBones catalog.<br>
-      Listen. Pick the right song. Try not to embarrass yourself.
+      37 bizarre sound clips ripped straight from the ToastyBones catalog.<br>
+      You'll get 10 random ones. Listen. Pick the right song. Try not to embarrass yourself.
     </div>
-    <button class="start-btn" onclick="startGame()">▶ PLAY!</button>
-    <div class="start-meta">22 CLIPS · 4 CHOICES · 1 WINNER (hopefully)</div>
+    <button class="start-btn" onclick="startGame()">▶ PLAY NOW!</button>
+    <div class="start-meta">10 RANDOM CLIPS · 4 CHOICES · 1 WINNER (maybe)</div>
   </div>
 
   <div class="gameover-screen" id="gameover-screen">
     <div class="go-title" id="go-title">TRANSMISSION COMPLETE</div>
-    <div class="go-score" id="go-score">0 / 22</div>
+    <div class="go-score" id="go-score">0 / 10</div>
     <div class="go-label">CORRECT IDENTIFICATIONS</div>
     <div class="go-verdict" id="go-verdict"></div>
     <button class="go-restart" onclick="restartGame()">↺ PLAY AGAIN</button>
@@ -499,7 +499,7 @@
     <!-- TV -->
     <div class="tv-wrap" id="tv-wrap">
       <div class="tv">
-        <div class="tv-brand">TOASTY · VISION · PRO</div>
+        <div class="tv-brand">TOASTY-VISION · PRO</div>
         <div class="screen-bezel">
           <div class="screen" id="screen">
             <canvas id="static-canvas"></canvas>
@@ -552,11 +552,19 @@
 <script>
 const SONGS=[
   {file:'BackUpYourData.mp3',title:'Back Up Your Data'},
+  {file:'BoredGames.mp3',title:'Bored Games'},
+  {file:'CandyRose.mp3',title:'Candy Rose'},
   {file:'CantRelate.mp3',title:"Can't Relate"},
   {file:'CantStop.mp3',title:"Can't Stop"},
+  {file:'EndedUpOnAnotherPlanet.mp3',title:'Ended Up On Another Planet'},
   {file:'FartintheWind.mp3',title:'Fart in the Wind'},
+  {file:'Focus.mp3',title:'Focus'},
+  {file:'HeadacheAgain.mp3',title:'Headache Again'},
+  {file:'IFall.mp3',title:'I Fall'},
   {file:'ImJustStupid.mp3',title:"I'm Just Stupid"},
+  {file:'IntoTheVoid.mp3',title:'Into The Void'},
   {file:'IveNeverSeenStawWars.mp3',title:"I've Never Seen Star Wars"},
+  {file:'JustaGhost.mp3',title:'Just a Ghost'},
   {file:'JustOneBadDay.mp3',title:'Just One Bad Day'},
   {file:'KnotGnomes.mp3',title:'Knot Gnomes'},
   {file:'LevelUp.mp3',title:'Level Up'},
@@ -564,20 +572,26 @@ const SONGS=[
   {file:'MyKnifesBiggerThanYours.mp3',title:"My Knife's Bigger Than Yours"},
   {file:'MyOwnLittleAlien.mp3',title:'My Own Little Alien'},
   {file:'MySuperstar.mp3',title:'My Superstar!'},
+  {file:'NeverAgain.mp3',title:'Never Again'},
   {file:'OhSweetGus.mp3',title:'Oh Sweet Gus'},
+  {file:'Overstimulated!.mp3',title:'Overstimulated!'},
+  {file:'Pixelated!.mp3',title:'Pixelated!'},
   {file:'PoppyisaPokemon.mp3',title:'Poppy Is a Pokemon'},
   {file:'Qwensiwal.mp3',title:'Qwensiwal'},
+  {file:'SecretIngredient.mp3',title:'Secret Ingredient'},
   {file:'Sunglasses.mp3',title:'Sunglasses'},
+  {file:'TakeCareofYou!.mp3',title:'Take Care of You!'},
   {file:'TheJackofallHats.mp3',title:'The Jack of All Hats'},
   {file:'ThingsTasteBetterWhenTheyreTriangleShaped.mp3',title:"Things Taste Better When They're Triangle Shaped"},
+  {file:'TheySoldMyDataAgain.mp3',title:'They Sold My Data Again'},
   {file:'Trunk-or-Treat.mp3',title:'Trunk-or-Treat'},
   {file:'TwoRedAnts.mp3',title:'Two Red Ants'},
+  {file:'WaitingNow.mp3',title:'Waiting Now'},
   {file:'WizardofBeans.mp3',title:'Wizard of Beans'},
 ];
 
 // Red herrings — real ToastyBones songs not in the clip pool
 const DECOY_SONGS=[
-  // Absolute bangers for confusion
   'Frosty the Colon',
   'Candy Cane Catheter',
   'Gotta Poop!',
@@ -626,7 +640,6 @@ const DECOY_SONGS=[
   'My Own Downfall',
   'Sleep is Overrated',
   'A Day in the Life of Me',
-  'Pretty Sure I\'m a Zombie',
   'The Cat\'s in the Cabinet',
   'Soda Pop',
   'Less and Less',
@@ -649,7 +662,6 @@ const DECOY_SONGS=[
   'The Unoriginality Song',
   'You\'re Toxic!',
   'Already Over It',
-  'Ended Up On Another Planet',
   'Gaming With The Boys',
   'Makes Me Glitch',
   'The Squid',
@@ -670,7 +682,6 @@ const DECOY_SONGS=[
   'Bonga Tonga!',
   'Instagram Kinda Sucks',
   'Lost a Friend to AI',
-  'Overstimulated!',
   'Secondhand Embarrassment',
   'Sucker for a Sappy Love Song',
   'Urticaria',
@@ -679,16 +690,28 @@ const DECOY_SONGS=[
   'You\'re A Snake',
   'Another Bad Idea',
   'I Think It\'s ADHD',
+  'Dopamine Rush',
+  'I\'m Burning Out',
+  'Kick It!',
+  'Pop Punk Kid Again',
+  'Secret Pocket',
+  'Sober Up By Noon',
+  'Beach Trip in Our 30s',
+  'My Carhartt Heart',
+  'No One Cares',
+  'The Duke of Bryan',
 ];
 
 const BASE='https://toastybones.com/sounds/';
+const ROUNDS_PER_GAME=10;
+
 const VERDICTS=[
-  {min:22,max:22,text:"PERFECT SCORE. Either you made these songs or you have a serious problem. Possibly both."},
-  {min:18,max:21,text:"Extremely impressive. You have spent way too much time listening to ToastyBones. This is not a complaint."},
-  {min:14,max:17,text:"Solid. You know the catalog. The wizard made of beans would be proud."},
-  {min:10,max:13,text:"Not bad. You've heard enough to be dangerous but not enough to brag."},
-  {min:6,max:9,text:"You tried. The bones respect the effort even if they don't respect the score."},
-  {min:0,max:5,text:"You have clearly never listened to a single ToastyBones song. We have 22 clips RIGHT HERE."},
+  {min:10,max:10,text:"PERFECT SCORE. You either made these songs or you have a serious problem. Possibly both."},
+  {min:8, max:9, text:"Extremely impressive. You have spent way too much time listening to ToastyBones. This is not a complaint."},
+  {min:6, max:7, text:"Solid. You know the catalog. The wizard made of beans would be proud."},
+  {min:4, max:5, text:"Not bad. You've heard enough to be dangerous but not enough to brag."},
+  {min:2, max:3, text:"You tried. The bones respect the effort even if they don't respect the score."},
+  {min:0, max:1, text:"You have clearly never listened to a single ToastyBones song. We have 37 clips RIGHT HERE."},
 ];
 
 let queue=[],round=0,score=0,answered=false,hasPlayed=false,results=[];
@@ -833,7 +856,8 @@ function showStatic(dur){
 function flashIR(){const ir=document.getElementById('ir-emitter');ir.classList.remove('flash');void ir.offsetWidth;ir.classList.add('flash');setTimeout(()=>ir.classList.remove('flash'),250);}
 
 function startGame(){
-  queue=shuffle(SONGS);round=0;score=0;answered=false;hasPlayed=false;results=[];
+  queue=shuffle(SONGS).slice(0,ROUNDS_PER_GAME);
+  round=0;score=0;answered=false;hasPlayed=false;results=[];
   usedDecoys=new Set();
   usedClipDecoys=new Set();
   document.getElementById('start-screen').style.display='none';
@@ -963,7 +987,7 @@ function showGameOver(){
   document.getElementById('go-score').textContent=score+' / '+queue.length;
   const v=VERDICTS.find(v=>score>=v.min&&score<=v.max);
   document.getElementById('go-verdict').textContent=v?v.text:'';
-  const t=score===22?'🔥 PERFECT TRANSMISSION 🔥':score>=18?'SIGNAL RECEIVED':score>=10?'TRANSMISSION COMPLETE':'SIGNAL LOST';
+  const t=score===10?'🔥 PERFECT TRANSMISSION 🔥':score>=8?'SIGNAL RECEIVED':score>=5?'TRANSMISSION COMPLETE':'SIGNAL LOST';
   document.getElementById('go-title').textContent=t;
 }
 function restartGame(){document.getElementById('gameover-screen').classList.remove('show');startGame();}
