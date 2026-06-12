@@ -696,15 +696,40 @@ const audio=document.getElementById('audio');
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 
-// Build 3 decoys: random mix of real songs + fake songs, never the correct answer
+// Tracks which titles have already appeared as decoys this game
+let usedDecoys=new Set();
+let usedClipDecoys=new Set();
+
+// Build 3 decoys — never repeats a title already shown this game
 function getDecoys(correctTitle){
-  const realPool=SONGS.filter(s=>s.title!==correctTitle).map(s=>s.title);
-  const fakePool=shuffle([...DECOY_SONGS]);
-  // Randomly decide how many fakes (1-3), rest from real songs
-  const numFakes=Math.floor(Math.random()*3)+1; // 1, 2, or 3 fakes
-  const fakes=fakePool.slice(0,numFakes).map(t=>({title:t,fake:true}));
-  const reals=shuffle(realPool).slice(0,3-numFakes).map(t=>({title:t,fake:false}));
-  return shuffle([...fakes,...reals]);
+  // Available clip-songs (not the correct answer, not already used as a decoy)
+  const availableClips=SONGS
+    .filter(s=>s.title!==correctTitle && !usedClipDecoys.has(s.title))
+    .map(s=>s.title);
+
+  // Available decoy-songs (not already used)
+  const availableDecoys=DECOY_SONGS
+    .filter(t=>!usedDecoys.has(t));
+
+  // If pools are running low, reset them (shouldn't happen with 22 rounds + 100 decoys)
+  const clipPool=shuffle(availableClips.length>0 ? availableClips : SONGS.filter(s=>s.title!==correctTitle).map(s=>s.title));
+  const decoyPool=shuffle(availableDecoys.length>=3 ? availableDecoys : [...DECOY_SONGS]);
+
+  // Random mix: 1-3 decoys from DECOY_SONGS, rest from clip songs
+  const numDecoys=Math.floor(Math.random()*3)+1;
+  const numClips=3-numDecoys;
+
+  const chosenDecoys=decoyPool.slice(0,numDecoys);
+  const chosenClips=clipPool.slice(0,numClips);
+
+  // Mark as used
+  chosenDecoys.forEach(t=>usedDecoys.add(t));
+  chosenClips.forEach(t=>usedClipDecoys.add(t));
+
+  return shuffle([
+    ...chosenDecoys.map(t=>({title:t,fake:true})),
+    ...chosenClips.map(t=>({title:t,fake:false})),
+  ]);
 }
 
 // ===== WEB AUDIO VISUALIZER =====
@@ -809,6 +834,8 @@ function flashIR(){const ir=document.getElementById('ir-emitter');ir.classList.r
 
 function startGame(){
   queue=shuffle(SONGS);round=0;score=0;answered=false;hasPlayed=false;results=[];
+  usedDecoys=new Set();
+  usedClipDecoys=new Set();
   document.getElementById('start-screen').style.display='none';
   document.getElementById('gameover-screen').classList.remove('show');
   document.getElementById('tv-wrap').style.display='block';
