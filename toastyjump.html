@@ -836,7 +836,7 @@ function gameOver() {
   const unlocked = ALBUMS.filter((_, i) => i < unlockedCount);
   document.getElementById('go-summary').innerHTML =
     unlockedCount === 0
-      ? 'No albums unlocked. The bones are disappointed.'
+      ? 'No albums unlocked. I'm not surprised, just disappointed.'
       : `${unlockedCount} / 24 albums unlocked:\n` + unlocked.map(a => a.name).join(', ');
 
   if (score >= TOTAL_PTS) {
