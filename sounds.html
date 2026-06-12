@@ -357,7 +357,7 @@
       22 bizarre sound clips ripped straight from the ToastyBones catalog.<br>
       Listen. Pick the right song. Try not to embarrass yourself.
     </div>
-    <button class="start-btn" onclick="startGame()">▶ START TRANSMISSION</button>
+    <button class="start-btn" onclick="startGame()">▶ PLAY!</button>
     <div class="start-meta">22 CLIPS · 4 CHOICES · 1 WINNER (hopefully)</div>
   </div>
 
@@ -575,19 +575,110 @@ const SONGS=[
   {file:'WizardofBeans.mp3',title:'Wizard of Beans'},
 ];
 
-// Red herrings — real ToastyBones song titles that have no clip
-const FAKE_SONGS=[
-  'Midnight Suppository','Big Dump','Big Dump 2: Return of the Dump',
-  'Fully Panted','Ear-aid','Boney Hollow','Isle of Beans','Lovey Dovey',
-  'Mystery Clown','Spobbly Not','The Legend of Duke','Unscheduled Programming',
-  'Hilariously Unfortunate','The Great Indoors','Sharing Socks with Strangers',
-  'Man\'s Breath','Festive Flush','Black and Blue and Punk All Over',
-  'Efforts and Errors','Knives Out (Acoustic Goblin Version)',
-  'The Soup Was Hot and So Was She','Diagonal','Haunted Tupperware',
-  'Professional Napper','Skeleton Hands (Reprise)','Teeth Budget',
-  'Toast Emergency','Bone Disclosure','My Second Least Favorite Wednesday',
-  'Cursed Gym Bag','The Bean Whisperer','Legally a Hat',
-  'Absolutely No Beef','Ghost of a Snack','Aggressively Medium',
+// Red herrings — real ToastyBones songs not in the clip pool
+const DECOY_SONGS=[
+  // Absolute bangers for confusion
+  'Frosty the Colon',
+  'Candy Cane Catheter',
+  'Gotta Poop!',
+  'I Think I\'m an AI Bot!',
+  'I Wonder What\'s Under Diglett',
+  'My Pillow\'s Trying To Kill Me',
+  'The Ultimate Anime Showdown',
+  'Masters of the Banana Hands',
+  'Life is Like Journey to the Center of the Earth (The Movie)',
+  'Katie\'s Got Rabies!',
+  'Santa Demands a Sacrifice',
+  'Trap[ped] In an Elevator',
+  'Me vs. The State of Florida',
+  'Sausages in the Sand',
+  'Thunder Dump',
+  'The Government Wants Us Dead...',
+  'Lie on Your Resume',
+  'LeBear and the Bear',
+  'Otamatone',
+  'Everyone\'s A Sock!',
+  'Unfortunately I\'m a Millennial',
+  'MyNameIsToastyBones',
+  'Nobody Likes Pop Punk Anymore',
+  'Two Eggs and A Beer',
+  'I Caught A Pokemon!',
+  'Pretty Sure I\'m a Zombie',
+  'Guy with a Chainsaw',
+  'Icky Sticky!',
+  'What The Hex',
+  'The Dragon Has Awoken',
+  'The Jester of Beers',
+  'The Forty Beer Man',
+  'Sleep America',
+  'Cult of Bryan',
+  'I Know You Know',
+  'It\'s Time To Suffer Bro!',
+  'Misty, Oh Misty!',
+  'Stop Taking Photos',
+  'Spring Nights',
+  'Songs Like This',
+  'Play-Doh!',
+  'Off Centered',
+  'Nothing\'s Going My Way',
+  'Going Crazy',
+  'I Wanna Go Home',
+  'My Own Downfall',
+  'Sleep is Overrated',
+  'A Day in the Life of Me',
+  'Pretty Sure I\'m a Zombie',
+  'The Cat\'s in the Cabinet',
+  'Soda Pop',
+  'Less and Less',
+  'Glass Balloon',
+  'Boomerang',
+  'A Hug and A Kiss',
+  'Tie-dye Heart',
+  'Give Me A Minute',
+  'No Escape',
+  'Story Topper',
+  'Wildcat',
+  'You Hate My Songs',
+  'Back to The Future Again!',
+  'Bubble',
+  'My Pi',
+  'Banana (Na Na)',
+  'Get Loose!',
+  'Get Me Outta Here!',
+  'Mr. Beast Can Save The World',
+  'The Unoriginality Song',
+  'You\'re Toxic!',
+  'Already Over It',
+  'Ended Up On Another Planet',
+  'Gaming With The Boys',
+  'Makes Me Glitch',
+  'The Squid',
+  'Junk Mail',
+  'Anime Tears',
+  'Crazy Bazer',
+  'Super Duper',
+  'Wigwam!',
+  'Wishbone Tragedy',
+  'Winter Blows!',
+  'Zombie Rudolph',
+  'Santa\'s Got Beef',
+  'Dookie Dan',
+  'Holy Socks',
+  'Pirate Ship For Christmas',
+  'The Book of Gus',
+  'Ice in the Machine',
+  'Bonga Tonga!',
+  'Instagram Kinda Sucks',
+  'Lost a Friend to AI',
+  'Overstimulated!',
+  'Secondhand Embarrassment',
+  'Sucker for a Sappy Love Song',
+  'Urticaria',
+  'Clone Hero Pop Punk Star',
+  'Childhood Problems',
+  'You\'re A Snake',
+  'Another Bad Idea',
+  'I Think It\'s ADHD',
 ];
 
 const BASE='https://toastybones.com/sounds/';
@@ -608,7 +699,7 @@ function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.fl
 // Build 3 decoys: random mix of real songs + fake songs, never the correct answer
 function getDecoys(correctTitle){
   const realPool=SONGS.filter(s=>s.title!==correctTitle).map(s=>s.title);
-  const fakePool=shuffle([...FAKE_SONGS]);
+  const fakePool=shuffle([...DECOY_SONGS]);
   // Randomly decide how many fakes (1-3), rest from real songs
   const numFakes=Math.floor(Math.random()*3)+1; // 1, 2, or 3 fakes
   const fakes=fakePool.slice(0,numFakes).map(t=>({title:t,fake:true}));
