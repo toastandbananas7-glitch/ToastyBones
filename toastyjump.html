@@ -109,10 +109,10 @@
     <div class="ov-desc">
       Jump through the ToastyBones discography!<br><br>
       🦴 Bone = +1 pt &nbsp; 🍞 Bread = +5 pts<br>
-      ☠ Toasters = -5 pts + knockback!<br><br>
-      Unlock all 24 albums to win.<br>
+      🫘 Evil Beans = -5 pts + knockback!<br><br>
+      Unlock all 19 albums to win.<br>
       1,600 pts to complete the collection!<br><br>
-      <strong style="color:#888">SPACE / W / ↑ to jump<br>A / D / ← → to move</strong>
+      <strong style="color:#888">SPACE / W / ↑ to jump &nbsp; A / D / ← → to move<br>R to restart anytime</strong>
     </div>
     <button class="ov-btn" id="btn-start">▶ JUMP IN</button>
     <div style="margin-top:10px;font-size:0.65rem;color:#2a2a2a;letter-spacing:2px;">TAP LEFT / RIGHT SIDE TO MOVE · TAP BOTTOM-RIGHT TO JUMP</div>
@@ -133,7 +133,7 @@
     <div class="ov-title">🔥 COLLECTION COMPLETE! 🔥</div>
     <div class="score-big" id="win-score">1600</div>
     <div class="score-lbl">TOTAL POINTS</div>
-    <div class="go-sum">All 24 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
+    <div class="go-sum">All 19 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
     <button class="ov-btn" id="btn-winretry" style="margin-bottom:10px;">↺ PLAY AGAIN</button>
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
@@ -151,30 +151,25 @@
 // DATA
 // =============================================================
 const ALBUMS = [
-  {name:'Isle of Beans',                    img:'IOB.png',                    pts:30},
-  {name:'Ear-aid',                          img:'earaid.png',                 pts:60},
-  {name:'Fully Panted',                     img:'fullypanted.png',            pts:95},
-  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:130},
-  {name:'Big Dump',                         img:'bigdump.png',                pts:170},
-  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:215},
-  {name:'The Legend of Duke',               img:'LOD.png',                    pts:265},
-  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:320},
-  {name:'Neon Banana',                      img:'neonbanana.png',             pts:380},
-  {name:'Sharing Socks with Strangers',     img:'sharingsocks.png',           pts:445},
-  {name:'Boney Hollow',                     img:'boneyhollow.png',            pts:515},
-  {name:'Black and Blue and Punk All Over', img:'blackandblue.png',           pts:590},
-  {name:'Covered in Myself',               img:'coveredinmyself.png',         pts:670},
-  {name:'Midnight Suppository',             img:'midnightsuppository.png',    pts:755},
-  {name:'Festive Flush',                    img:'festivefush.png',            pts:845},
-  {name:'The Great Indoors',               img:'greatindoors.png',            pts:940},
-  {name:'Spobbly Not',                      img:'spobblynot.png',             pts:1000},
-  {name:'Big Dump 2: Return of the Dump',  img:'bigdump2.png',               pts:1075},
-  {name:'Hilariously Unfortunate',          img:'hilariouslyunfortunate.png', pts:1155},
-  {name:'Dewey Doofus and the Due Dues',   img:'deweydoofus.png',            pts:1235},
-  {name:'Try Again',                        img:'tryagain.png',               pts:1315},
-  {name:'Almost Live',                      img:'almostlive.png',             pts:1400},
-  {name:'Efforts and Errors',              img:'EE.png',                      pts:1490},
-  {name:'Unscheduled Programming',          img:'unscheduled.png',            pts:1600},
+  {name:'Isle of Beans',                    img:'IsleBeans.png',              pts:50},
+  {name:'Ear-aid',                          img:'ear-aid.png',                pts:105},
+  {name:'Fully Panted',                     img:'pant.png',                   pts:165},
+  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:230},
+  {name:'Big Dump',                         img:'BIGDUMP.png',                pts:300},
+  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:375},
+  {name:'The Legend of Duke',               img:'LOD.png',                    pts:455},
+  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:540},
+  {name:'Neon Banana',                      img:'neonbanana.png',             pts:630},
+  {name:'Sharing Socks with Strangers',     img:'ssws.png',                   pts:725},
+  {name:'Boney Hollow',                     img:'bh.png',                     pts:825},
+  {name:'Black and Blue and Punk All Over', img:'babapao.png',                pts:930},
+  {name:'Midnight Suppository',             img:'ms.png',                     pts:1040},
+  {name:'Festive Flush',                    img:'ffalbum.png',                pts:1155},
+  {name:'The Great Indoors',               img:'TGInew.png',                  pts:1275},
+  {name:'Spobbly Not',                      img:'spobbly not.png',            pts:1390},
+  {name:'Big Dump 2: Return of the Dump',  img:'bd2rotd.png',                pts:1480},
+  {name:'Hilariously Unfortunate',          img:'HilariouslyUnfortunate.png', pts:1550},
+  {name:'Efforts and Errors',              img:'EE.png',                      pts:1600},
 ];
 const TOTAL_PTS = 1600;
 
@@ -227,11 +222,12 @@ function stopBGM() {
 // =============================================================
 const PW   = 26, PH   = 26;   // player size
 const PLATW = 90, PLATH = 10;  // platform size
-const GRAV  = 0.42;
-const JUMP  = -14;             // jump velocity (negative = up)
-const SPEED = 4.0;
-const KNOCK_VX = 5;
-const KNOCK_VY = -8;
+const GRAV_UP   = 0.38;   // gravity while rising (snappy)
+const GRAV_DOWN = 0.13;   // gravity while falling (feather-float)
+const JUMP  = -18;             // jump velocity (negative = up)
+const SPEED = 2.7;
+const KNOCK_VX = 3.0;
+const KNOCK_VY = -6.5;
 
 // =============================================================
 // GAME STATE
@@ -260,6 +256,7 @@ document.addEventListener('keydown', e => {
     keys.jump = true;
     e.preventDefault();
   }
+  if (e.key==='r' || e.key==='R') startGame();
 });
 document.addEventListener('keyup', e => {
   if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') keys.left  = false;
@@ -293,7 +290,7 @@ document.getElementById('btn-winretry').addEventListener('click', startGame);
 function generateUp() {
   while (genFrontier > -H * 3) {
     const x  = 20 + Math.random() * (W - PLATW - 40);
-    const gap = 55 + Math.random() * 30; // vertical gap between platforms
+    const gap = 90 + Math.random() * 50; // vertical gap — reachable with big jump
     const y  = genFrontier - gap;
     platforms.push({ x, y, w:PLATW, h:PLATH, flash:0 });
 
@@ -325,11 +322,11 @@ function scrollDown(dy) {
 // =============================================================
 function spawnToaster() {
   const fromLeft = Math.random() < 0.5;
-  const spd = (1.8 + score / 400) * (fromLeft ? 1 : -1);
+  const spd = (1.25 + score / 600) * (fromLeft ? 1 : -1);
   toasters.push({
     x: fromLeft ? -52 : W + 10,
     y: H * 0.12 + Math.random() * H * 0.65,
-    w: 46, h: 36, vx: spd, hit: false
+    w: 38, h: 30, vx: spd, hit: false
   });
 }
 
@@ -388,11 +385,11 @@ function endGame() {
   document.getElementById('go-sum').innerHTML =
     unlockedCount === 0
       ? "No albums unlocked. I'm not surprised, just disappointed."
-      : `${unlockedCount} / 24 albums unlocked:<br>` +
+      : `${unlockedCount} / 19 albums unlocked:<br>` +
         ALBUMS.slice(0, unlockedCount).map(a => a.name).join(' · ');
   const t = score >= TOTAL_PTS ? '🔥 LEGENDARY'
-    : unlockedCount >= 18 ? 'IMPRESSIVE RUN'
-    : unlockedCount >= 10 ? 'NOT BAD'
+    : unlockedCount >= 15 ? 'IMPRESSIVE RUN'
+    : unlockedCount >= 8  ? 'NOT BAD'
     : 'GAME OVER';
   document.getElementById('go-title').textContent = t;
 }
@@ -489,8 +486,9 @@ function update() {
     onGround = false;
   }
 
-  // ---- GRAVITY ----
-  pvy += GRAV;
+  // ---- GRAVITY (snappy up, feather float down) ----
+  pvy += pvy < 0 ? GRAV_UP : GRAV_DOWN;
+  if (pvy > 3.2) pvy = 3.2; // terminal velocity — keep the feather feel
 
   // ---- MOVE ----
   px += pvx;
@@ -571,7 +569,7 @@ function update() {
         pinv   = 65;
         updateMilestones();
         document.getElementById('hud-warn').innerHTML =
-          '<span class="hwarn">TOASTER HIT! -5</span>';
+          '<span class="hwarn">BEAN ATTACK! -5</span>';
         setTimeout(() => { document.getElementById('hud-warn').textContent = ''; }, 1200);
       }
     }
@@ -636,7 +634,7 @@ function draw() {
   // ---- TOASTERS ----
   toasters.forEach(t => {
     if (t.y < -60 || t.y > H + 60) return;
-    drawToaster(t.x, t.y, t.w, t.h, t.vx);
+    drawEmojiBean(t.x, t.y, t.w, t.h);
   });
 
   // ---- PLAYER ----
@@ -730,65 +728,16 @@ function drawBread(bx, by) {
   ctx.restore();
 }
 
-function drawToaster(tx, ty, tw, th, vx) {
+function drawEmojiBean(tx, ty, tw, th) {
   ctx.save();
+  ctx.font = '28px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Slight wobble as it flies
+  const wobble = Math.sin(frame * 0.2) * 0.15;
   ctx.translate(tx + tw/2, ty + th/2);
-  if (vx < 0) ctx.scale(-1, 1);
-
-  // Body — metallic silver box
-  const grad = ctx.createLinearGradient(-tw/2, -th/2, tw/2, th/2);
-  grad.addColorStop(0, '#4a4a4a');
-  grad.addColorStop(0.5, '#2a2a2a');
-  grad.addColorStop(1, '#1a1a1a');
-  ctx.fillStyle = grad;
-  ctx.beginPath(); ctx.roundRect(-tw/2, -th/2, tw, th, 5); ctx.fill();
-
-  // Red warning border
-  ctx.strokeStyle = '#ff3355'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.roundRect(-tw/2, -th/2, tw, th, 5); ctx.stroke();
-
-  // Slots on top
-  ctx.fillStyle = '#111';
-  ctx.fillRect(-12, -th/2+3, 8, 3);
-  ctx.fillRect(4,   -th/2+3, 8, 3);
-
-  // Toast sticking up (two slices)
-  ctx.fillStyle = '#c87941';
-  ctx.fillRect(-10, -th/2-10, 6, 12);
-  ctx.fillRect(4,   -th/2-8,  6, 10);
-  // Burnt crust on toast
-  ctx.fillStyle = '#5a2a00';
-  ctx.fillRect(-10, -th/2-11, 6, 3);
-  ctx.fillRect(4,   -th/2-9,  6, 3);
-  // Glow from toast heating
-  ctx.shadowBlur = 10; ctx.shadowColor = '#ff6600';
-  ctx.fillStyle = '#ff8800';
-  ctx.fillRect(-10, -th/2-11, 6, 2);
-  ctx.fillRect(4,   -th/2-9,  6, 2);
-  ctx.shadowBlur = 0;
-
-  // Angry eyes (glowing red dots)
-  ctx.shadowBlur = 8; ctx.shadowColor = '#ff3355';
-  ctx.fillStyle  = '#ff3355';
-  ctx.beginPath();
-  ctx.arc(-8, 2, 3, 0, Math.PI*2);
-  ctx.arc( 8, 2, 3, 0, Math.PI*2);
-  ctx.fill();
-  ctx.shadowBlur = 0;
-
-  // Dial / knob on side
-  ctx.fillStyle = '#555';
-  ctx.beginPath(); ctx.arc(tw/2-6, 0, 5, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#ff3355';
-  ctx.fillRect(tw/2-7, -1, 4, 2);
-
-  // Cord dangling below
-  ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(-tw/2+8, th/2);
-  ctx.bezierCurveTo(-tw/2+8, th/2+8, -tw/2+4, th/2+12, -tw/2+2, th/2+16);
-  ctx.stroke();
-
+  ctx.rotate(wobble);
+  ctx.fillText('🫘', 0, 0);
   ctx.restore();
 }
 
