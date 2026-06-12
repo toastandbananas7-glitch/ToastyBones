@@ -132,8 +132,8 @@
       Score = your <strong style="color:#00ff41">height in meters</strong>.<br><br>
       🦴 Collect <strong style="color:#d4cfa8">5 bones</strong> → bank a <span style="color:#00cfff">DOUBLE JUMP</span><br>
       &nbsp;&nbsp;&nbsp;&nbsp;Press jump again mid-air to use it!<br><br>
-      🦴 Collect <strong style="color:#d4cfa8">50 bones</strong> → bank a <span style="color:#ff3355">ROCKET BOOST</span><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;Hold jump mid-air for sustained blast!<br><br>
+      🦴 Collect <strong style="color:#d4cfa8">50 bones</strong> → <span style="color:#ff3355">ROCKET AUTO-FIRES!</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;Blasts you upward automatically!<br><br>
       🎵 Music Notes = +2m bonus height<br>
       🫘 Evil Beans = knockback!<br><br>
       <strong style="color:#888">SPACE/W/↑ jump &nbsp; A/D/← → move &nbsp; R restart</strong>
@@ -284,7 +284,7 @@ const GRAV_UP   = 0.38;
 const GRAV_DOWN = 0.13;
 const JUMP      = -18;
 const ROCKET_VY = -0.7;   // per-frame boost when holding jump mid-air
-const ROCKET_DUR = 55;    // frames rocket lasts
+const ROCKET_DUR = 220;   // frames rocket lasts (~3.6 seconds at 60fps)
 const SPEED     = 2.7;
 const KNOCK_VX  = 3.0;
 const KNOCK_VY  = -6.5;
@@ -369,23 +369,18 @@ function generateUp() {
     // Platform width narrows with height
     const platW = Math.round(115 - t * 35);
 
-    // Horizontal placement: neighbor-aware but with wide range
-    // Max hop grows with height but is always generous enough to reach
-    const maxHop = Math.min(W * 0.55, 140 + t * 160);
-    const rawMin = lastPlatX - maxHop;
-    const rawMax = lastPlatX + lastPlatW + maxHop;
-    const minX   = Math.max(20, rawMin);
-    const maxX   = Math.min(W - platW - 20, rawMax);
-    // Slightly bias toward center of screen so platforms spread naturally
-    const center = W / 2 - platW / 2;
-    const r1 = minX + Math.random() * Math.max(0, maxX - minX);
-    const r2 = minX + Math.random() * Math.max(0, maxX - minX);
-    // Average two rolls = mild center pull without being predictable
-    const x = Math.round((r1 + r2) / 2);
-    const y      = genFrontier - gap;
+    // Horizontal: pure random across full width, but nudge toward center over time
+    // so platforms never cluster on one side
+    const margin = 20;
+    // Bias: pull toward center with one roll averaged against a center-biased roll
+    const fullRand = margin + Math.random() * (W - platW - margin * 2);
+    const centBias = (W / 2 - platW / 2) + (Math.random() - 0.5) * (W * 0.5);
+    const centClamped = Math.max(margin, Math.min(W - platW - margin, centBias));
+    // 50/50 blend — completely random half the time, center-biased half the time
+    const x = Math.round(Math.random() < 0.5 ? fullRand : centClamped);
+    const y = genFrontier - gap;
 
     platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
-    lastPlatX = x; lastPlatW = platW;
 
     // Collectible above platform
     if (Math.random() < 0.68) {
@@ -436,12 +431,34 @@ function updatePowerupHUD() {
     el.textContent = '2x';
     row.appendChild(el);
   }
-  for (let i = 0; i < rockets; i++) {
-    const el = document.createElement('span');
-    el.className = 'pu-icon rk';
-    el.textContent = '🚀';
-    row.appendChild(el);
+}
+
+function showBigRocketFlash() {
+  // Big centered message
+  const el = document.createElement('div');
+  el.style.cssText = `
+    position:absolute; inset:0; z-index:400; pointer-events:none;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:8px;
+    animation: rktflash 0.6s ease-out forwards;
+  `;
+  el.innerHTML = `
+    <div style="font-family:'VT323',monospace;font-size:clamp(2.5rem,8vw,4rem);color:#ff3355;
+      text-shadow:0 0 30px #ff3355,0 0 60px rgba(255,51,85,0.4);letter-spacing:3px;">
+      🚀 ROCKET BOOST! 🚀
+    </div>
+    <div style="font-family:'VT323',monospace;font-size:1rem;color:#ffb700;letter-spacing:2px;">
+      🦴×50 COLLECTED
+    </div>
+  `;
+  if (!document.getElementById('rkt-style')) {
+    const s = document.createElement('style');
+    s.id = 'rkt-style';
+    s.textContent = '@keyframes rktflash{0%{opacity:0;transform:scale(0.8)}20%{opacity:1;transform:scale(1.05)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}';
+    document.head.appendChild(s);
   }
+  document.querySelector('.game-wrapper').appendChild(el);
+  setTimeout(() => el.remove(), 1800);
 }
 
 function showWarn(msg, ms=1400) {
@@ -608,22 +625,15 @@ function update() {
       pvy = JUMP * 0.85;
       updatePowerupHUD();
       showWarn('💨 DOUBLE JUMP!', 800);
-    } else if (rockets > 0 && !rocketActive) {
-      // Activate rocket on press if we have one
-      rocketActive = true;
-      rocketTimer  = ROCKET_DUR;
-      rockets--;
-      updatePowerupHUD();
-      showWarn('🚀 ROCKET BOOST!', 900);
     }
   }
 
-  // ---- ROCKET BOOST (hold jump to sustain) ----
+  // ---- ROCKET BOOST (auto-runs full duration once activated) ----
   if (rocketActive) {
-    pvy += ROCKET_VY;   // push upward each frame
-    if (pvy < -14) pvy = -14; // cap speed
+    pvy += ROCKET_VY;
+    if (pvy < -14) pvy = -14;
     rocketTimer--;
-    if (rocketTimer <= 0 || !keys.jump) {
+    if (rocketTimer <= 0) {
       rocketActive = false;
       document.getElementById('boost-overlay').classList.remove('active');
     } else {
@@ -706,10 +716,13 @@ function update() {
         }
         // Check rocket threshold
         if (boneBank >= nextRK) {
-          rockets++;
           nextRK += 50;
           updatePowerupHUD();
-          showWarn('🦴×50 → 🚀 ROCKET BANKED!', 1400);
+          // AUTO-FIRE rocket immediately!
+          rocketActive = true;
+          rocketTimer  = ROCKET_DUR;
+          pvy = Math.min(pvy, -4); // give initial kick upward
+          showBigRocketFlash();
         }
       } else {
         breadBank++;
