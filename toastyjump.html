@@ -9,7 +9,7 @@
     @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
     :root {
       --green:#00ff41;--gdim:#00aa2a;--red:#ff3355;
-      --amber:#ffb700;--bg:#0a0a0a;--text:#d0d0d0;
+      --amber:#ffb700;--blue:#00cfff;--bg:#0a0a0a;--text:#d0d0d0;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     html,body{width:100%;height:100%;overflow:hidden;touch-action:none;}
@@ -21,10 +21,8 @@
     .on-air{display:flex;align-items:center;gap:6px;}
     .on-air-dot{width:7px;height:7px;background:var(--red);border-radius:50%;animation:blink 1s step-end infinite;}
     @keyframes blink{50%{opacity:0;}}
-
     .game-wrapper{display:flex;flex:1;min-height:0;position:relative;}
     #game-canvas{flex:1;display:block;min-width:0;}
-
     /* RIGHT PANEL */
     .progress-panel{width:88px;background:#060606;border-left:1px solid #181818;display:flex;flex-direction:column;align-items:center;padding:8px 4px 8px;flex-shrink:0;}
     .panel-title{font-family:'VT323',monospace;font-size:0.65rem;color:#2a2a2a;letter-spacing:2px;margin-bottom:6px;text-align:center;}
@@ -37,13 +35,12 @@
     .album-milestone.current{border-color:var(--amber);animation:mpulse 1.2s ease-in-out infinite;}
     @keyframes mpulse{0%,100%{box-shadow:0 0 4px rgba(255,183,0,0.3);}50%{box-shadow:0 0 12px rgba(255,183,0,0.7);}}
     .panel-score{font-family:'VT323',monospace;font-size:0.8rem;color:var(--green);text-align:center;margin-top:6px;letter-spacing:1px;line-height:1.3;}
-
     /* OVERLAYS */
     .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:500;font-family:'VT323',monospace;text-align:center;padding:20px;}
     .overlay.hidden{display:none;}
     .ov-title{font-size:clamp(1.8rem,6vw,3rem);color:var(--amber);text-shadow:0 0 20px rgba(255,183,0,0.4);margin-bottom:6px;letter-spacing:2px;}
     .ov-sub{font-size:0.9rem;color:#444;letter-spacing:3px;margin-bottom:20px;}
-    .ov-desc{font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:#555;line-height:1.75;max-width:320px;margin-bottom:24px;}
+    .ov-desc{font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:#555;line-height:1.75;max-width:380px;margin-bottom:24px;}
     .ov-btn{background:transparent;border:2px solid var(--amber);color:var(--amber);font-family:'VT323',monospace;font-size:1.6rem;padding:9px 36px;cursor:pointer;letter-spacing:3px;border-radius:5px;transition:all 0.15s;display:inline-block;}
     .ov-btn:hover{background:rgba(255,183,0,0.12);}
     .ov-btn.g{border-color:var(--green);color:var(--green);}
@@ -51,7 +48,6 @@
     .score-big{font-size:clamp(2.5rem,10vw,4.5rem);color:var(--green);text-shadow:0 0 24px rgba(0,255,65,0.5);line-height:1;margin-bottom:4px;}
     .score-lbl{font-size:0.75rem;color:#333;letter-spacing:3px;margin-bottom:14px;}
     .go-sum{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#444;margin-bottom:20px;line-height:1.6;max-width:300px;}
-
     /* UNLOCK FLASH */
     #unlock-flash{position:absolute;inset:0;z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0.87);}
     #unlock-flash.show{display:flex;animation:ufin 0.18s ease-out;}
@@ -59,18 +55,25 @@
     .u-art{width:150px;height:150px;border-radius:10px;border:3px solid var(--green);box-shadow:0 0 36px rgba(0,255,65,0.35);object-fit:cover;margin-bottom:14px;}
     .u-lbl{font-family:'VT323',monospace;font-size:1.3rem;color:var(--green);letter-spacing:2px;margin-bottom:4px;}
     .u-name{font-family:'VT323',monospace;font-size:1.7rem;color:#fff;}
-
     /* HUD */
-    #hud{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.05rem;color:var(--green);pointer-events:none;z-index:200;line-height:1.45;}
-    .hpts{color:var(--amber);}
+    #hud{position:absolute;top:8px;left:8px;font-family:'VT323',monospace;font-size:1.05rem;pointer-events:none;z-index:200;line-height:1.6;}
+    .hh{color:var(--green);}
+    .hb{color:#d4cfa8;}
     .hwarn{color:var(--red);animation:dp 0.5s step-end infinite;}
     @keyframes dp{50%{opacity:0.3;}}
-
-    /* MOBILE TAP ZONES */
+    /* POWERUP ICONS in HUD */
+    .pu-row{display:flex;gap:4px;margin-top:2px;flex-wrap:wrap;max-width:160px;}
+    .pu-icon{font-size:0.9rem;background:rgba(0,0,0,0.5);border:1px solid #2a2a2a;border-radius:3px;padding:1px 4px;font-family:'VT323',monospace;line-height:1.2;}
+    .pu-icon.dj{border-color:#00cfff;color:#00cfff;}
+    .pu-icon.rk{border-color:#ff3355;color:#ff3355;}
+    /* MOBILE ZONES */
     #tap-left,#tap-right,#tap-jump{position:absolute;bottom:0;z-index:300;opacity:0;cursor:pointer;}
     #tap-left{left:0;width:30%;height:100%;}
-    #tap-right{left:30%;width:calc(40% - 0px);right:88px;height:100%;}
+    #tap-right{left:30%;right:88px;height:100%;}
     #tap-jump{right:88px;width:30%;height:50%;bottom:0;}
+    /* Rocket boost screen tint */
+    #boost-overlay{position:absolute;inset:0;pointer-events:none;z-index:100;background:rgba(255,51,85,0);transition:background 0.1s;}
+    #boost-overlay.active{background:rgba(255,51,85,0.08);}
   </style>
 </head>
 <body>
@@ -78,51 +81,53 @@
   <div class="on-air"><div class="on-air-dot"></div><span>ON AIR</span></div>
   <a href="https://toastybones.com">← BACK TO SITE</a>
 </div>
-
 <div class="game-wrapper">
-  <!-- Mobile tap zones -->
   <div id="tap-left"></div>
   <div id="tap-right"></div>
   <div id="tap-jump"></div>
+  <div id="boost-overlay"></div>
 
   <!-- HUD -->
   <div id="hud">
-    <div>PTS: <span class="hpts" id="hud-pts">0</span></div>
+    <div>HEIGHT: <span class="hh" id="hud-height">0</span>m</div>
+    <div>🦴 <span class="hb" id="hud-bones">0</span> &nbsp; 🍞 <span style="color:#c87941" id="hud-bread">0</span></div>
+    <div id="hud-pu" class="pu-row"></div>
     <div id="hud-warn"></div>
   </div>
 
   <canvas id="game-canvas"></canvas>
 
-  <!-- Progress panel -->
   <div class="progress-panel">
     <div class="panel-title">ALBUMS</div>
     <div class="progress-track" id="progress-track">
       <div class="progress-fill" id="progress-fill" style="height:0%"></div>
     </div>
-    <div class="panel-score" id="panel-score">0<br>pts</div>
+    <div class="panel-score" id="panel-score">0m<br>high</div>
   </div>
 
-  <!-- START SCREEN -->
+  <!-- START -->
   <div class="overlay" id="scr-start">
     <div class="ov-title">🍞 TOASTY JUMP</div>
     <div class="ov-sub">[ TOASTYBONES EDITION ]</div>
     <div class="ov-desc">
-      Jump through the ToastyBones discography!<br><br>
-      🦴 Bone = +1 pt &nbsp; 🍞 Bread = +5 pts<br>
-      🫘 Evil Beans = -5 pts + knockback!<br><br>
-      Unlock all 19 albums to win.<br>
-      1,600 pts to complete the collection!<br><br>
-      <strong style="color:#888">SPACE / W / ↑ to jump &nbsp; A / D / ← → to move<br>R to restart anytime</strong>
+      Climb through the ToastyBones discography!<br>
+      Score = your <strong style="color:#00ff41">height in meters</strong>.<br><br>
+      🦴 Collect <strong style="color:#d4cfa8">5 bones</strong> → bank a <span style="color:#00cfff">DOUBLE JUMP</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;Press jump again mid-air to use it!<br><br>
+      🦴 Collect <strong style="color:#d4cfa8">50 bones</strong> → bank a <span style="color:#ff3355">ROCKET BOOST</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;Hold jump mid-air for sustained blast!<br><br>
+      🍞 Bread = bonus height points<br>
+      🫘 Evil Beans = knockback!<br><br>
+      <strong style="color:#888">SPACE/W/↑ jump &nbsp; A/D/← → move &nbsp; R restart</strong>
     </div>
     <button class="ov-btn" id="btn-start">▶ JUMP IN</button>
-    <div style="margin-top:10px;font-size:0.65rem;color:#2a2a2a;letter-spacing:2px;">TAP LEFT / RIGHT SIDE TO MOVE · TAP BOTTOM-RIGHT TO JUMP</div>
   </div>
 
   <!-- GAME OVER -->
   <div class="overlay hidden" id="scr-gameover">
     <div class="ov-title" id="go-title">GAME OVER</div>
     <div class="score-big" id="go-score">0</div>
-    <div class="score-lbl">POINTS</div>
+    <div class="score-lbl">METERS CLIMBED</div>
     <div class="go-sum" id="go-sum"></div>
     <button class="ov-btn g" id="btn-retry" style="margin-bottom:10px;">↺ TRY AGAIN</button>
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
@@ -131,8 +136,8 @@
   <!-- WIN -->
   <div class="overlay hidden" id="scr-win">
     <div class="ov-title">🔥 COLLECTION COMPLETE! 🔥</div>
-    <div class="score-big" id="win-score">1600</div>
-    <div class="score-lbl">TOTAL POINTS</div>
+    <div class="score-big" id="win-score">0</div>
+    <div class="score-lbl">METERS CLIMBED</div>
     <div class="go-sum">All 19 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
     <button class="ov-btn" id="btn-winretry" style="margin-bottom:10px;">↺ PLAY AGAIN</button>
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
@@ -147,107 +152,114 @@
 </div>
 
 <script>
-// =============================================================
-// DATA
-// =============================================================
+// ================================================================
+// ALBUMS — thresholds now in METERS
+// ================================================================
 const ALBUMS = [
-  {name:'Isle of Beans',                    img:'IsleBeans.png',              pts:50},
-  {name:'Ear-aid',                          img:'ear-aid.png',                pts:105},
-  {name:'Fully Panted',                     img:'pant.png',                   pts:165},
-  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:230},
-  {name:'Big Dump',                         img:'BIGDUMP.png',                pts:300},
-  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:375},
-  {name:'The Legend of Duke',               img:'LOD.png',                    pts:455},
-  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:540},
-  {name:'Neon Banana',                      img:'Nbanana.png',                pts:630},
-  {name:'Sharing Socks with Strangers',     img:'ssws.png',                   pts:725},
-  {name:'Boney Hollow',                     img:'bh.png',                     pts:825},
-  {name:'Black and Blue and Punk All Over', img:'babapao.png',                pts:930},
-  {name:'Midnight Suppository',             img:'ms.png',                     pts:1040},
-  {name:'Festive Flush',                    img:'ffalbum.png',                pts:1155},
-  {name:'The Great Indoors',               img:'TGInew.png',                  pts:1275},
-  {name:'Spobbly Not',                      img:'spobbly not.png',            pts:1390},
-  {name:'Big Dump 2: Return of the Dump',  img:'bd2rotd.png',                pts:1480},
-  {name:'Hilariously Unfortunate',          img:'HilariouslyUnfortunate.png', pts:1550},
-  {name:'Efforts and Errors',              img:'EE.png',                      pts:1600},
+  {name:'Isle of Beans',                    img:'IsleBeans.png',              pts:40},
+  {name:'Ear-aid',                          img:'ear-aid.png',                pts:85},
+  {name:'Fully Panted',                     img:'pant.png',                   pts:135},
+  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:190},
+  {name:'Big Dump',                         img:'BIGDUMP.png',                pts:250},
+  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:315},
+  {name:'The Legend of Duke',               img:'LOD.png',                    pts:385},
+  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:460},
+  {name:'Neon Banana',                      img:'Nbanana.png',                pts:540},
+  {name:'Sharing Socks with Strangers',     img:'ssws.png',                   pts:625},
+  {name:'Boney Hollow',                     img:'bh.png',                     pts:715},
+  {name:'Black and Blue and Punk All Over', img:'babapao.png',                pts:810},
+  {name:'Midnight Suppository',             img:'ms.png',                     pts:910},
+  {name:'Festive Flush',                    img:'ffalbum.png',                pts:1015},
+  {name:'The Great Indoors',                img:'TGInew.png',                 pts:1125},
+  {name:'Spobbly Not',                      img:'spobbly not.png',            pts:1240},
+  {name:'Big Dump 2: Return of the Dump',   img:'bd2rotd.png',               pts:1360},
+  {name:'Hilariously Unfortunate',          img:'HilariouslyUnfortunate.png', pts:1480},
+  {name:'Efforts and Errors',               img:'EE.png',                     pts:1600},
 ];
 const TOTAL_PTS = 1600;
 
-// BGM tracks (in /sounds/ folder) — add as many as you upload
 const BGM_TRACKS = [
   'sounds/toastyjumpBGM1.mp3',
   'sounds/toastyjumpBGM2.mp3',
   'sounds/toastyjumpBGM3.mp3',
 ];
 
-// =============================================================
-// CANVAS + RESIZE
-// =============================================================
+// ================================================================
+// CANVAS
+// ================================================================
 const canvas = document.getElementById('game-canvas');
-const ctx    = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
-
 function resize() {
-  W = canvas.offsetWidth;
-  H = canvas.offsetHeight;
-  canvas.width  = W;
-  canvas.height = H;
+  W = canvas.offsetWidth; H = canvas.offsetHeight;
+  canvas.width = W; canvas.height = H;
   buildMilestones();
 }
 window.addEventListener('resize', resize);
 
-// =============================================================
+// ================================================================
 // BGM
-// =============================================================
+// ================================================================
 const bgmAudio = new Audio();
-bgmAudio.loop  = false;
-bgmAudio.volume = 0.35;
-let bgmIndex   = -1;
-
+bgmAudio.loop = false; bgmAudio.volume = 0.35;
+let bgmIndex = -1;
 function playNextBGM() {
   if (!BGM_TRACKS.length) return;
   bgmIndex = (bgmIndex + 1) % BGM_TRACKS.length;
   bgmAudio.src = BGM_TRACKS[bgmIndex];
-  bgmAudio.play().catch(() => {}); // silently fail if file missing
+  bgmAudio.play().catch(() => {});
 }
 bgmAudio.addEventListener('ended', playNextBGM);
+function stopBGM() { bgmAudio.pause(); bgmAudio.currentTime = 0; }
 
-function stopBGM() {
-  bgmAudio.pause();
-  bgmAudio.currentTime = 0;
-}
+// ================================================================
+// CONSTANTS
+// ================================================================
+const PW = 26, PH = 26;
+const PLATH = 10;
+const GRAV_UP   = 0.38;
+const GRAV_DOWN = 0.13;
+const JUMP      = -18;
+const ROCKET_VY = -0.7;   // per-frame boost when holding jump mid-air
+const ROCKET_DUR = 55;    // frames rocket lasts
+const SPEED     = 2.7;
+const KNOCK_VX  = 3.0;
+const KNOCK_VY  = -6.5;
+// 1 meter = how many pixels of climb (affects score feel)
+const PX_PER_METER = 8;
 
-// =============================================================
-// GAME CONSTANTS
-// =============================================================
-const PW   = 26, PH   = 26;   // player size
-const PLATW = 90, PLATH = 10;  // platform size
-const GRAV_UP   = 0.38;   // gravity while rising (snappy)
-const GRAV_DOWN = 0.13;   // gravity while falling (feather-float)
-const JUMP  = -18;             // jump velocity (negative = up)
-const SPEED = 2.7;
-const KNOCK_VX = 3.0;
-const KNOCK_VY = -6.5;
-
-// =============================================================
+// ================================================================
 // GAME STATE
-// =============================================================
+// ================================================================
 let running = false, frame = 0, animId = null;
-let score = 0, unlockedCount = 0, showUnlock = false;
-let platforms = [], collectibles = [], toasters = [];
-let toasterTimer = 0, toasterInterval = 280;
-let genFrontier = 0; // smallest Y generated so far (platforms go upward = smaller Y)
+let height = 0;        // meters climbed (score)
+let peakY  = 0;        // lowest screen Y the player has reached (= highest point)
+let startY = 0;        // initial player Y for height calc
+let unlockedCount = 0, showUnlock = false;
+let platforms = [], collectibles = [], beans = [];
+let beanTimer = 0, beanInterval = 320;
+let genFrontier = 0;
+let lastPlatX = 0, lastPlatW = 90; // for neighbor-aware generation
 
-// Player state
-let px, py, pvx, pvy, onGround, pinv, pknock, pknockT, jumpBuffer;
+// Player
+let px, py, pvx, pvy, onGround, pinv, pknock, pknockT;
+let airJumps = 0;       // banked double jumps
+let rockets  = 0;       // banked rocket boosts
+let rocketActive = false, rocketTimer = 0;
+let jumpPressed = false, jumpHeld = false;
 
-// Input
+// Bone/bread bank
+let boneBank  = 0;  // raw bones collected this run
+let breadBank = 0;  // raw bread collected this run
+// Thresholds: every 5 bones = 1 double jump, every 50 bones = 1 rocket
+let nextDJ = 5;
+let nextRK = 50;
+
 const keys = { left:false, right:false, jump:false };
-let jumpPressed = false; // single-press detection
 
-// =============================================================
+// ================================================================
 // INPUT
-// =============================================================
+// ================================================================
 document.addEventListener('keydown', e => {
   if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') keys.left  = true;
   if (e.key==='ArrowRight' || e.key==='d' || e.key==='D') keys.right = true;
@@ -256,7 +268,7 @@ document.addEventListener('keydown', e => {
     keys.jump = true;
     e.preventDefault();
   }
-  if (e.key==='r' || e.key==='R') startGame();
+  if ((e.key==='r' || e.key==='R') && running) startGame();
 });
 document.addEventListener('keyup', e => {
   if (e.key==='ArrowLeft'  || e.key==='a' || e.key==='A') keys.left  = false;
@@ -264,50 +276,53 @@ document.addEventListener('keyup', e => {
   if (e.key===' ' || e.key==='ArrowUp' || e.key==='w' || e.key==='W') keys.jump = false;
 });
 
-// Mobile tap zones
 const tapL = document.getElementById('tap-left');
 const tapR = document.getElementById('tap-right');
 const tapJ = document.getElementById('tap-jump');
-tapL.addEventListener('touchstart', e => { e.preventDefault(); keys.left  = true;  }, {passive:false});
-tapL.addEventListener('touchend',   e => { e.preventDefault(); keys.left  = false; }, {passive:false});
-tapR.addEventListener('touchstart', e => { e.preventDefault(); keys.right = true;  }, {passive:false});
-tapR.addEventListener('touchend',   e => { e.preventDefault(); keys.right = false; }, {passive:false});
-tapJ.addEventListener('touchstart', e => { e.preventDefault(); jumpPressed = true; keys.jump = true;  }, {passive:false});
-tapJ.addEventListener('touchend',   e => { e.preventDefault(); keys.jump = false; }, {passive:false});
+tapL.addEventListener('touchstart', e=>{e.preventDefault();keys.left=true;},{passive:false});
+tapL.addEventListener('touchend',   e=>{e.preventDefault();keys.left=false;},{passive:false});
+tapR.addEventListener('touchstart', e=>{e.preventDefault();keys.right=true;},{passive:false});
+tapR.addEventListener('touchend',   e=>{e.preventDefault();keys.right=false;},{passive:false});
+tapJ.addEventListener('touchstart', e=>{e.preventDefault();jumpPressed=true;keys.jump=true;},{passive:false});
+tapJ.addEventListener('touchend',   e=>{e.preventDefault();keys.jump=false;},{passive:false});
 
-// Buttons
 document.getElementById('btn-start').addEventListener('click', startGame);
 document.getElementById('btn-retry').addEventListener('click', startGame);
 document.getElementById('btn-winretry').addEventListener('click', startGame);
 
-// =============================================================
-// PLATFORM GENERATION
-// All coords: Y increases downward (standard screen coords).
-// We generate platforms UPWARD (lower Y values).
-// genFrontier = the smallest Y we've placed a platform at.
-// We keep generating until genFrontier is well above the screen top.
-// =============================================================
+// ================================================================
+// PLATFORM GENERATION — neighbor-aware + difficulty ramp
+// ================================================================
 function generateUp() {
   while (genFrontier > -H * 3) {
-    // Gap scales with how high we've gone — tight at start, opens up gradually
-    // startY is H-100, so genFrontier starts near H. Higher up = more negative genFrontier.
-    // distFromStart = how far above start we are
-    const distFromStart = Math.max(0, (H - 100) - genFrontier);
-    const t = Math.min(1, distFromStart / (H * 4)); // ramp over ~4 screen heights
-    const minGap = 52 + t * 40;  // 52px early → 92px late
-    const maxGap = 70 + t * 50;  // 70px early → 120px late
-    const gap = minGap + Math.random() * (maxGap - minGap);
-    const platW = Math.round(110 - t * 30); // 110px wide early → 80px later
-    const x  = 20 + Math.random() * (W - platW - 40);
-    const y  = genFrontier - gap;
-    platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
+    const dist = Math.max(0, (H - 100) - genFrontier);
+    const t    = Math.min(1, dist / (H * 5));
 
-    // Collectible floating above platform
-    if (Math.random() < 0.65) {
-      const bread = Math.random() < 0.2;
+    // Vertical gap ramps up with height
+    const minGap = 50 + t * 40;
+    const maxGap = 68 + t * 52;
+    const gap    = minGap + Math.random() * (maxGap - minGap);
+
+    // Platform width narrows with height
+    const platW = Math.round(115 - t * 35);
+
+    // X position: stay within max horizontal jump distance from last platform
+    // Max horizontal reach = SPEED * (2 * |JUMP| / GRAV_UP) ≈ 2.7 * 94 ≈ 254px — cap at 200
+    const maxHop = Math.min(200, 80 + t * 120);
+    const minX   = Math.max(20, lastPlatX - maxHop);
+    const maxX   = Math.min(W - platW - 20, lastPlatX + lastPlatW + maxHop);
+    const x      = minX + Math.random() * Math.max(0, maxX - minX);
+    const y      = genFrontier - gap;
+
+    platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
+    lastPlatX = x; lastPlatW = platW;
+
+    // Collectible above platform
+    if (Math.random() < 0.68) {
+      const bread = Math.random() < 0.18;
       collectibles.push({
-        x: x + platW/2 + (Math.random()-0.5)*40,
-        y: y - 24,
+        x: x + platW/2 + (Math.random()-0.5)*36,
+        y: y - 26,
         type: bread ? 'bread' : 'bone',
         collected: false, popFrame: -1,
         bob: Math.random() * Math.PI * 2
@@ -317,108 +332,133 @@ function generateUp() {
   }
 }
 
-// Scroll all objects down by dy (camera moves up)
 function scrollDown(dy) {
-  platforms.forEach(p => p.y += dy);
+  platforms.forEach(p   => p.y += dy);
   collectibles.forEach(c => c.y += dy);
-  toasters.forEach(t => t.y += dy);
+  beans.forEach(b        => b.y += dy);
   genFrontier += dy;
+  peakY       += dy;
+  startY      += dy;
 }
 
-// =============================================================
-// TOASTERS
-// =============================================================
-function spawnToaster() {
+// ================================================================
+// BEANS (enemies)
+// ================================================================
+function spawnBean() {
   const fromLeft = Math.random() < 0.5;
-  const spd = (1.25 + score / 600) * (fromLeft ? 1 : -1);
-  toasters.push({
+  const spd = (1.25 + height / 800) * (fromLeft ? 1 : -1);
+  beans.push({
     x: fromLeft ? -52 : W + 10,
     y: H * 0.12 + Math.random() * H * 0.65,
-    w: 38, h: 30, vx: spd, hit: false
+    w: 40, h: 34, vx: spd, hit: false
   });
 }
 
-// =============================================================
-// GAME INIT
-// =============================================================
-function initGame() {
-  score = 0; unlockedCount = 0; showUnlock = false; frame = 0;
-  toasterTimer = 0; toasterInterval = 280;
-  platforms = []; collectibles = []; toasters = [];
-  jumpPressed = false;
-  keys.left = keys.right = keys.jump = false;
-
-  resize();
-
-  // Place starting platform near bottom-center
-  const startY = H - 100;
-  platforms.push({ x: W/2 - PLATW/2, y: startY, w:PLATW, h:PLATH, flash:0 });
-  genFrontier = startY;
-  generateUp();
-
-  // Player starts standing on starting platform
-  px = W/2 - PW/2;
-  py = startY - PH;
-  pvx = 0; pvy = 0;
-  onGround = true;
-  pinv = 0; pknock = false; pknockT = 0; jumpBuffer = 0;
-
-  updateMilestones();
+// ================================================================
+// POWERUP HUD
+// ================================================================
+function updatePowerupHUD() {
+  const row = document.getElementById('hud-pu');
+  row.innerHTML = '';
+  for (let i = 0; i < airJumps; i++) {
+    const el = document.createElement('span');
+    el.className = 'pu-icon dj';
+    el.textContent = '2x';
+    row.appendChild(el);
+  }
+  for (let i = 0; i < rockets; i++) {
+    const el = document.createElement('span');
+    el.className = 'pu-icon rk';
+    el.textContent = '🚀';
+    row.appendChild(el);
+  }
 }
 
-// =============================================================
-// START / STOP
-// =============================================================
-function startGame() {
-  document.getElementById('scr-start').classList.add('hidden');
-  document.getElementById('scr-gameover').classList.add('hidden');
-  document.getElementById('scr-win').classList.add('hidden');
-  document.getElementById('unlock-flash').classList.remove('show');
-  document.getElementById('hud-warn').textContent = '';
+function showWarn(msg, ms=1400) {
+  document.getElementById('hud-warn').innerHTML = `<span class="hwarn">${msg}</span>`;
+  setTimeout(() => { document.getElementById('hud-warn').textContent=''; }, ms);
+}
 
+// ================================================================
+// INIT
+// ================================================================
+function initGame() {
+  height=0; unlockedCount=0; showUnlock=false; frame=0;
+  beanTimer=0; beanInterval=320;
+  platforms=[]; collectibles=[]; beans=[];
+  boneBank=0; breadBank=0; airJumps=0; rockets=0;
+  nextDJ=5; nextRK=50;
+  rocketActive=false; rocketTimer=0;
+  jumpPressed=false;
+  keys.left=keys.right=keys.jump=false;
+  resize();
+
+  const sy = H - 100;
+  platforms.push({x:W/2-55, y:sy, w:110, h:PLATH, flash:0});
+  lastPlatX = W/2-55; lastPlatW = 110;
+  genFrontier = sy;
+  generateUp();
+
+  px=W/2-PW/2; py=sy-PH;
+  pvx=0; pvy=0; onGround=true;
+  pinv=0; pknock=false; pknockT=0;
+  startY=py; peakY=py;
+
+  updateMilestones();
+  updatePowerupHUD();
+  document.getElementById('hud-bones').textContent = '0';
+  document.getElementById('hud-bread').textContent = '0';
+  document.getElementById('hud-height').textContent = '0';
+  document.getElementById('hud-warn').textContent = '';
+  document.getElementById('boost-overlay').classList.remove('active');
+}
+
+// ================================================================
+// START / STOP
+// ================================================================
+function startGame() {
+  ['scr-start','scr-gameover','scr-win'].forEach(id =>
+    document.getElementById(id).classList.add('hidden'));
+  document.getElementById('unlock-flash').classList.remove('show');
   initGame();
-  running = true;
-  stopBGM();
-  playNextBGM();
+  running=true;
+  stopBGM(); playNextBGM();
   if (animId) cancelAnimationFrame(animId);
   loop();
 }
 
 function endGame() {
-  running = false;
-  stopBGM();
-  const go = document.getElementById('scr-gameover');
-  go.classList.remove('hidden');
-  document.getElementById('go-score').textContent = score;
+  running=false; stopBGM();
+  document.getElementById('scr-gameover').classList.remove('hidden');
+  document.getElementById('go-score').textContent = Math.floor(height);
+  const unlocked = ALBUMS.slice(0, unlockedCount);
   document.getElementById('go-sum').innerHTML =
-    unlockedCount === 0
+    unlockedCount===0
       ? "No albums unlocked. I'm not surprised, just disappointed."
-      : `${unlockedCount} / 19 albums unlocked:<br>` +
-        ALBUMS.slice(0, unlockedCount).map(a => a.name).join(' · ');
-  const t = score >= TOTAL_PTS ? '🔥 LEGENDARY'
-    : unlockedCount >= 15 ? 'IMPRESSIVE RUN'
-    : unlockedCount >= 8  ? 'NOT BAD'
-    : 'GAME OVER';
-  document.getElementById('go-title').textContent = t;
+      : `${unlockedCount} / 19 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
+  const t = unlockedCount>=19?'🔥 LEGENDARY'
+    :unlockedCount>=14?'IMPRESSIVE RUN'
+    :unlockedCount>=7 ?'NOT BAD'
+    :'GAME OVER';
+  document.getElementById('go-title').textContent=t;
 }
 
 function winGame() {
-  running = false;
-  stopBGM();
+  running=false; stopBGM();
   document.getElementById('scr-win').classList.remove('hidden');
-  document.getElementById('win-score').textContent = score;
+  document.getElementById('win-score').textContent = Math.floor(height);
 }
 
-// =============================================================
+// ================================================================
 // UNLOCK
-// =============================================================
+// ================================================================
 function checkUnlocks() {
   if (unlockedCount >= ALBUMS.length) return;
-  if (score >= ALBUMS[unlockedCount].pts) {
+  if (height >= ALBUMS[unlockedCount].pts) {
     const album = ALBUMS[unlockedCount];
     unlockedCount++;
     updateMilestones();
-    document.getElementById('u-art').src   = album.img;
+    document.getElementById('u-art').src = album.img;
     document.getElementById('u-name').textContent = album.name;
     document.getElementById('unlock-flash').classList.add('show');
     showUnlock = true;
@@ -430,53 +470,49 @@ function checkUnlocks() {
   }
 }
 
-// =============================================================
-// MILESTONE PANEL
-// =============================================================
+// ================================================================
+// MILESTONES
+// ================================================================
 function buildMilestones() {
   const track = document.getElementById('progress-track');
-  track.querySelectorAll('.album-milestone').forEach(e => e.remove());
-  ALBUMS.forEach((a, i) => {
-    const el  = document.createElement('div');
-    el.className = 'album-milestone';
-    el.id = 'ms' + i;
-    el.style.bottom    = (a.pts / TOTAL_PTS * 100) + '%';
-    el.style.transform = 'translateY(50%)';
-    const img = document.createElement('img');
-    img.src = a.img; img.alt = a.name; img.title = a.name;
-    el.appendChild(img);
-    track.appendChild(el);
+  track.querySelectorAll('.album-milestone').forEach(e=>e.remove());
+  ALBUMS.forEach((a,i) => {
+    const el = document.createElement('div');
+    el.className='album-milestone'; el.id='ms'+i;
+    el.style.bottom = (a.pts/TOTAL_PTS*100)+'%';
+    el.style.transform='translateY(50%)';
+    const img=document.createElement('img');
+    img.src=a.img; img.alt=a.name; img.title=a.name;
+    el.appendChild(img); track.appendChild(el);
   });
 }
 
 function updateMilestones() {
-  document.getElementById('progress-fill').style.height =
-    (Math.min(score / TOTAL_PTS, 1) * 100) + '%';
-  document.getElementById('panel-score').innerHTML = score + '<br>pts';
-  document.getElementById('hud-pts').textContent = score;
-  ALBUMS.forEach((_, i) => {
-    const el = document.getElementById('ms' + i);
-    if (!el) return;
-    el.classList.toggle('unlocked', i < unlockedCount);
-    el.classList.toggle('current',  i === unlockedCount);
+  document.getElementById('progress-fill').style.height = (Math.min(height/TOTAL_PTS,1)*100)+'%';
+  document.getElementById('panel-score').innerHTML = Math.floor(height)+'m<br>high';
+  document.getElementById('hud-height').textContent = Math.floor(height);
+  ALBUMS.forEach((_,i) => {
+    const el=document.getElementById('ms'+i); if(!el) return;
+    el.classList.toggle('unlocked', i<unlockedCount);
+    el.classList.toggle('current',  i===unlockedCount);
   });
 }
 
-// =============================================================
+// ================================================================
 // MAIN LOOP
-// =============================================================
+// ================================================================
 function loop() {
   if (!running) return;
   animId = requestAnimationFrame(loop);
   frame++;
   if (!showUnlock) update();
   draw();
-  jumpPressed = false; // consume press each frame
+  jumpPressed = false;
 }
 
-// =============================================================
+// ================================================================
 // UPDATE
-// =============================================================
+// ================================================================
 function update() {
   // ---- HORIZONTAL ----
   if (!pknock) {
@@ -488,124 +524,180 @@ function update() {
     if (--pknockT <= 0) pknock = false;
   }
 
-  // ---- JUMP (only when on ground, single press) ----
-  if (jumpPressed && onGround) {
-    pvy = JUMP;
-    onGround = false;
+  // ---- JUMP / DOUBLE JUMP / ROCKET ----
+  if (jumpPressed) {
+    if (onGround) {
+      pvy = JUMP; onGround = false;
+    } else if (airJumps > 0) {
+      // Use a double jump
+      airJumps--;
+      pvy = JUMP * 0.85;
+      updatePowerupHUD();
+      showWarn('💨 DOUBLE JUMP!', 800);
+    } else if (rockets > 0 && !rocketActive) {
+      // Activate rocket on press if we have one
+      rocketActive = true;
+      rocketTimer  = ROCKET_DUR;
+      rockets--;
+      updatePowerupHUD();
+      showWarn('🚀 ROCKET BOOST!', 900);
+    }
   }
 
-  // ---- GRAVITY (snappy up, feather float down) ----
-  pvy += pvy < 0 ? GRAV_UP : GRAV_DOWN;
-  if (pvy > 3.2) pvy = 3.2; // terminal velocity — keep the feather feel
+  // ---- ROCKET BOOST (hold jump to sustain) ----
+  if (rocketActive) {
+    pvy += ROCKET_VY;   // push upward each frame
+    if (pvy < -14) pvy = -14; // cap speed
+    rocketTimer--;
+    if (rocketTimer <= 0 || !keys.jump) {
+      rocketActive = false;
+      document.getElementById('boost-overlay').classList.remove('active');
+    } else {
+      document.getElementById('boost-overlay').classList.add('active');
+    }
+  } else {
+    document.getElementById('boost-overlay').classList.remove('active');
+  }
+
+  // ---- GRAVITY ----
+  if (!rocketActive) {
+    pvy += pvy < 0 ? GRAV_UP : GRAV_DOWN;
+    if (pvy > 3.2) pvy = 3.2;
+  }
 
   // ---- MOVE ----
-  px += pvx;
-  py += pvy;
+  px += pvx; py += pvy;
 
   // ---- WRAP X ----
-  if (px + PW < 0) px = W;
-  if (px > W)      px = -PW;
+  if (px+PW < 0) px = W;
+  if (px > W)    px = -PW;
 
-  // ---- PLATFORM LANDING (only when falling: pvy > 0) ----
+  // ---- PLATFORM LANDING ----
   onGround = false;
   if (pvy > 0) {
     for (const p of platforms) {
-      const feet     = py + PH;          // player bottom this frame
-      const prevFeet = feet - pvy;       // player bottom last frame
-
-      const xOverlap = px + PW > p.x && px < p.x + p.w;
-      const landed   = prevFeet <= p.y + 2 && feet >= p.y;
-
-      if (xOverlap && landed) {
-        py      = p.y - PH;  // snap feet to top of platform
-        pvy     = 0;
+      const feet     = py + PH;
+      const prevFeet = feet - pvy;
+      if (px+PW > p.x && px < p.x+p.w && feet >= p.y && prevFeet <= p.y+4) {
+        py = p.y - PH;
+        pvy = 0;
         onGround = true;
-        p.flash  = 6;
+        p.flash = 6;
+        rocketActive = false;
         break;
       }
     }
   }
 
-  // ---- CAMERA SCROLL: keep player in upper 38% ----
+  // ---- CAMERA ----
   if (py < H * 0.38) {
     const dy = H * 0.38 - py;
     scrollDown(dy);
     py = H * 0.38;
   }
 
+  // ---- HEIGHT SCORE ----
+  if (py < peakY) {
+    const gained = (peakY - py) / PX_PER_METER;
+    height += gained;
+    peakY   = py;
+    checkUnlocks();
+    updateMilestones();
+  }
+
   generateUp();
 
-  // ---- CULL off-screen objects ----
+  // ---- CULL ----
   platforms    = platforms.filter(p => p.y < H + 80);
   collectibles = collectibles.filter(c => c.y < H + 80 || c.popFrame >= 0);
-  toasters     = toasters.filter(t => t.x > -80 && t.x < W + 80);
+  beans        = beans.filter(b => b.x > -80 && b.x < W+80);
 
-  // ---- INVINCIBILITY ----
   if (pinv > 0) pinv--;
 
   // ---- COLLECTIBLES ----
   collectibles.forEach(c => {
     if (c.collected) return;
-    const cy = c.y + Math.sin(frame * 0.07 + c.bob) * 4;
-    if (px + PW > c.x - 10 && px < c.x + 10 &&
-        py + PH > cy - 10  && py  < cy + 10) {
-      c.collected = true;
-      c.popFrame  = frame;
-      score = Math.max(0, score + (c.type === 'bread' ? 5 : 1));
-      checkUnlocks();
-      updateMilestones();
-    }
-  });
-
-  // ---- TOASTERS ----
-  toasterTimer++;
-  if (toasterTimer >= toasterInterval) {
-    toasterTimer = 0;
-    toasterInterval = Math.max(90, 280 - score * 0.06);
-    spawnToaster();
-  }
-  toasters.forEach(t => {
-    t.x += t.vx;
-    if (!t.hit && pinv <= 0) {
-      if (px+PW-4 > t.x && px+4 < t.x+t.w &&
-          py+PH-4 > t.y && py+4 < t.y+t.h) {
-        t.hit = true;
-        score = Math.max(0, score - 5);
-        pvy   = KNOCK_VY;
-        pvx   = t.vx > 0 ? KNOCK_VX : -KNOCK_VX;
-        pknock = true; pknockT = 22;
-        pinv   = 65;
+    const cy = c.y + Math.sin(frame*0.07+c.bob)*4;
+    if (px+PW > c.x-10 && px < c.x+10 && py+PH > cy-10 && py < cy+10) {
+      c.collected = true; c.popFrame = frame;
+      if (c.type === 'bone') {
+        boneBank++;
+        document.getElementById('hud-bones').textContent = boneBank;
+        // Check double jump threshold
+        if (boneBank >= nextDJ) {
+          airJumps++;
+          nextDJ += 5;
+          updatePowerupHUD();
+          showWarn('🦴×5 → 💨 DOUBLE JUMP BANKED!', 1400);
+        }
+        // Check rocket threshold
+        if (boneBank >= nextRK) {
+          rockets++;
+          nextRK += 50;
+          updatePowerupHUD();
+          showWarn('🦴×50 → 🚀 ROCKET BANKED!', 1400);
+        }
+      } else {
+        breadBank++;
+        document.getElementById('hud-bread').textContent = breadBank;
+        // Bread gives bonus height
+        height += 5;
         updateMilestones();
-        document.getElementById('hud-warn').innerHTML =
-          '<span class="hwarn">BEAN ATTACK! -5</span>';
-        setTimeout(() => { document.getElementById('hud-warn').textContent = ''; }, 1200);
       }
     }
   });
 
-  // ---- DEATH: fell off bottom ----
+  // ---- BEANS ----
+  beanTimer++;
+  if (beanTimer >= beanInterval) {
+    beanTimer = 0;
+    beanInterval = Math.max(100, 320 - height * 0.08);
+    spawnBean();
+  }
+  beans.forEach(b => {
+    b.x += b.vx;
+    if (!b.hit && pinv <= 0) {
+      if (px+PW-4 > b.x && px+4 < b.x+b.w && py+PH-4 > b.y && py+4 < b.y+b.h) {
+        b.hit = true;
+        pvy   = KNOCK_VY;
+        pvx   = b.vx > 0 ? KNOCK_VX : -KNOCK_VX;
+        pknock=true; pknockT=22; pinv=65;
+        showWarn('🫘 BEAN ATTACK!', 1000);
+      }
+    }
+  });
+
   if (py > H + 80) endGame();
 }
 
-// =============================================================
+// ================================================================
 // DRAW
-// =============================================================
+// ================================================================
 function draw() {
-  // Background
   ctx.fillStyle = '#080810';
   ctx.fillRect(0, 0, W, H);
 
-  // Subtle scanline shimmer
-  ctx.strokeStyle = 'rgba(0,255,65,0.025)';
+  // Scanlines
+  ctx.strokeStyle = 'rgba(0,255,65,0.022)';
   ctx.lineWidth = 1;
-  const lineY = ((frame * 0.4) % 44);
-  for (let y = lineY; y < H; y += 44) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  const lineY = (frame * 0.4) % 44;
+  for (let y=lineY; y<H; y+=44) {
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
   }
 
-  // ---- PLATFORMS ----
+  // Rocket particle trail
+  if (rocketActive) {
+    for (let i=0;i<6;i++) {
+      ctx.fillStyle = `rgba(255,${80+Math.random()*100},0,${0.4+Math.random()*0.4})`;
+      ctx.beginPath();
+      ctx.arc(px+PW/2+(Math.random()-0.5)*10, py+PH+Math.random()*16, 2+Math.random()*4, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // Platforms
   platforms.forEach(p => {
-    if (p.y < -20 || p.y > H + 20) return;
+    if (p.y < -20 || p.y > H+20) return;
     const lit = p.flash > 0;
     if (lit) p.flash--;
     ctx.fillStyle = lit ? '#0d2a0d' : '#0a180a';
@@ -617,141 +709,124 @@ function draw() {
     ctx.shadowBlur = 0;
   });
 
-  // ---- COLLECTIBLES ----
+  // Collectibles
   collectibles.forEach(c => {
-    // Pop float-up animation
     if (c.collected && c.popFrame >= 0) {
       const age = frame - c.popFrame;
-      if (age < 24) {
-        ctx.globalAlpha = 1 - age / 24;
-        ctx.fillStyle   = c.type === 'bread' ? '#ffb700' : '#d4cfa8';
-        ctx.font        = 'bold 14px VT323';
-        ctx.textAlign   = 'center';
-        ctx.fillText(c.type === 'bread' ? '+5' : '+1', c.x, c.y - age * 1.6);
-        ctx.globalAlpha = 1;
-        ctx.textAlign   = 'left';
+      if (age < 26) {
+        ctx.globalAlpha = 1 - age/26;
+        ctx.fillStyle = c.type==='bread' ? '#ffb700' : '#d4cfa8';
+        ctx.font = 'bold 13px VT323';
+        ctx.textAlign = 'center';
+        const label = c.type==='bread' ? '+5m 🍞' : '+🦴';
+        ctx.fillText(label, c.x, c.y - age*1.8);
+        ctx.globalAlpha=1; ctx.textAlign='left';
       }
       return;
     }
     if (c.collected) return;
-    const cy = c.y + Math.sin(frame * 0.07 + c.bob) * 4;
-    if (cy < -20 || cy > H + 20) return;
-    c.type === 'bone' ? drawBone(c.x, cy) : drawBread(c.x, cy);
+    const cy = c.y + Math.sin(frame*0.07+c.bob)*4;
+    if (cy < -20 || cy > H+20) return;
+    c.type==='bone' ? drawBone(c.x, cy) : drawBread(c.x, cy);
   });
 
-  // ---- TOASTERS ----
-  toasters.forEach(t => {
-    if (t.y < -60 || t.y > H + 60) return;
-    drawEmojiBean(t.x, t.y, t.w, t.h);
+  // Beans
+  beans.forEach(b => {
+    if (b.y < -60 || b.y > H+60) return;
+    drawEmojiBean(b.x, b.y, b.w, b.h);
   });
 
-  // ---- PLAYER ----
+  // Player
   drawSkull(px, py, pinv);
 
-  // ---- NEXT ALBUM HINT ----
+  // Next album hint
   if (unlockedCount < ALBUMS.length) {
     const next = ALBUMS[unlockedCount];
-    const pct  = score / next.pts;
-    if (pct > 0.75) {
-      ctx.globalAlpha = Math.min(1, (pct - 0.75) / 0.15);
-      ctx.font        = '14px VT323';
-      ctx.fillStyle   = '#ffb700';
-      ctx.textAlign   = 'center';
-      ctx.fillText('▲ NEXT UNLOCK: ' + next.name, W / 2, 26);
-      ctx.textAlign   = 'left';
+    const pct  = height / next.pts;
+    if (pct > 0.78) {
+      ctx.globalAlpha = Math.min(1, (pct-0.78)/0.15);
+      ctx.font = '15px VT323';
+      ctx.fillStyle = '#ffb700';
+      ctx.textAlign = 'center';
+      ctx.fillText('▲ NEXT: '+next.name, W/2, 28);
+      ctx.textAlign = 'left';
       ctx.globalAlpha = 1;
     }
   }
 }
 
-// =============================================================
+// ================================================================
 // SPRITES
-// =============================================================
+// ================================================================
 function drawSkull(sx, sy, inv) {
-  if (inv > 0 && Math.floor(inv / 4) % 2 === 0) return;
+  if (inv > 0 && Math.floor(inv/4)%2===0) return;
   ctx.save();
-  ctx.translate(sx + PW/2, sy + PH/2);
-  // shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.translate(sx+PW/2, sy+PH/2);
+  ctx.fillStyle='rgba(0,0,0,0.2)';
+  ctx.beginPath(); ctx.ellipse(0,PH/2+2,PW/2,4,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#e6e6e6';
+  ctx.beginPath(); ctx.arc(0,-2,11,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#d8d8d8';
+  ctx.beginPath(); ctx.roundRect(-7,5,14,8,2); ctx.fill();
+  ctx.fillStyle='#111';
   ctx.beginPath();
-  ctx.ellipse(0, PH/2+2, PW/2, 4, 0, 0, Math.PI*2);
+  ctx.ellipse(-3.5,-2.5,3,3.5,0,0,Math.PI*2);
+  ctx.ellipse( 3.5,-2.5,3,3.5,0,0,Math.PI*2);
   ctx.fill();
-  // cranium
-  ctx.fillStyle = '#e6e6e6';
-  ctx.beginPath(); ctx.arc(0, -2, 11, 0, Math.PI*2); ctx.fill();
-  // jaw
-  ctx.fillStyle = '#d8d8d8';
-  ctx.beginPath(); ctx.roundRect(-7, 5, 14, 8, 2); ctx.fill();
-  // eyes
-  ctx.fillStyle = '#111';
+  // Eye glow changes when rocket active
+  ctx.fillStyle = rocketActive ? 'rgba(255,80,0,0.9)' : 'rgba(0,255,65,0.7)';
   ctx.beginPath();
-  ctx.ellipse(-3.5, -2.5, 3, 3.5, 0, 0, Math.PI*2);
-  ctx.ellipse( 3.5, -2.5, 3, 3.5, 0, 0, Math.PI*2);
+  ctx.ellipse(-3.5,-2.5,1.3,1.3,0,0,Math.PI*2);
+  ctx.ellipse( 3.5,-2.5,1.3,1.3,0,0,Math.PI*2);
   ctx.fill();
-  // pupils
-  ctx.fillStyle = 'rgba(0,255,65,0.7)';
+  ctx.fillStyle='#111';
   ctx.beginPath();
-  ctx.ellipse(-3.5, -2.5, 1.3, 1.3, 0, 0, Math.PI*2);
-  ctx.ellipse( 3.5, -2.5, 1.3, 1.3, 0, 0, Math.PI*2);
+  ctx.ellipse(-1.5,2,1.2,1.2,0,0,Math.PI*2);
+  ctx.ellipse( 1.5,2,1.2,1.2,0,0,Math.PI*2);
   ctx.fill();
-  // nose
-  ctx.fillStyle = '#111';
-  ctx.beginPath();
-  ctx.ellipse(-1.5, 2, 1.2, 1.2, 0, 0, Math.PI*2);
-  ctx.ellipse( 1.5, 2, 1.2, 1.2, 0, 0, Math.PI*2);
-  ctx.fill();
-  // teeth
-  ctx.fillStyle = '#bbb';
-  [-5, -1.5, 2].forEach(tx => ctx.fillRect(tx, 5.5, 3, 4));
+  ctx.fillStyle='#bbb';
+  [-5,-1.5,2].forEach(tx => ctx.fillRect(tx,5.5,3,4));
   ctx.restore();
 }
 
 function drawBone(bx, by) {
-  ctx.save();
-  ctx.translate(bx, by);
-  ctx.fillStyle = '#d4cfa8';
-  ctx.fillRect(-6, -2, 12, 4);
+  ctx.save(); ctx.translate(bx, by);
+  ctx.fillStyle='#d4cfa8';
+  ctx.fillRect(-6,-2,12,4);
   [[-8,-2],[8,-2],[-8,2],[8,2]].forEach(([ex,ey]) => {
-    ctx.beginPath(); ctx.arc(ex, ey, 3.5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(ex,ey,3.5,0,Math.PI*2); ctx.fill();
   });
   ctx.restore();
 }
 
 function drawBread(bx, by) {
-  ctx.save();
-  ctx.translate(bx, by);
-  // body
-  ctx.fillStyle = '#c87941';
-  ctx.beginPath(); ctx.roundRect(-10, -8, 20, 16, 4); ctx.fill();
-  // crust
-  ctx.fillStyle = '#8a4f1e';
-  ctx.beginPath(); ctx.roundRect(-10, -8, 20, 5, [4,4,0,0]); ctx.fill();
-  // score lines
-  ctx.strokeStyle = '#8a4f1e'; ctx.lineWidth = 1;
+  ctx.save(); ctx.translate(bx, by);
+  ctx.fillStyle='#c87941';
+  ctx.beginPath(); ctx.roundRect(-10,-8,20,16,4); ctx.fill();
+  ctx.fillStyle='#8a4f1e';
+  ctx.beginPath(); ctx.roundRect(-10,-8,20,5,[4,4,0,0]); ctx.fill();
+  ctx.strokeStyle='#8a4f1e'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(-5,-1); ctx.lineTo(5,-1); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-5, 3); ctx.lineTo(5, 3); ctx.stroke();
-  // shine
-  ctx.fillStyle = 'rgba(255,210,130,0.3)';
+  ctx.beginPath(); ctx.moveTo(-5,3);  ctx.lineTo(5,3);  ctx.stroke();
+  ctx.fillStyle='rgba(255,210,130,0.3)';
   ctx.beginPath(); ctx.ellipse(-2,-3,4,2,-0.4,0,Math.PI*2); ctx.fill();
   ctx.restore();
 }
 
 function drawEmojiBean(tx, ty, tw, th) {
   ctx.save();
-  ctx.font = '40px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  // Slight wobble as it flies
-  const wobble = Math.sin(frame * 0.2) * 0.15;
-  ctx.translate(tx + tw/2, ty + th/2);
+  ctx.font='40px serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  const wobble = Math.sin(frame*0.2)*0.15;
+  ctx.translate(tx+tw/2, ty+th/2);
   ctx.rotate(wobble);
   ctx.fillText('🫘', 0, 0);
   ctx.restore();
 }
 
-// =============================================================
+// ================================================================
 // BOOT
-// =============================================================
+// ================================================================
 resize();
 buildMilestones();
 </script>
