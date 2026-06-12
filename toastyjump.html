@@ -90,7 +90,7 @@
   <!-- HUD -->
   <div id="hud">
     <div>HEIGHT: <span class="hh" id="hud-height">0</span>m</div>
-    <div>🦴 <span class="hb" id="hud-bones">0</span> &nbsp; 🍞 <span style="color:#c87941" id="hud-bread">0</span></div>
+    <div>🦴 <span class="hb" id="hud-bones">0</span> &nbsp; 🎵 <span style="color:#00cfff" id="hud-bread">0</span></div>
     <div id="hud-pu" class="pu-row"></div>
     <div id="hud-warn"></div>
   </div>
@@ -116,7 +116,7 @@
       &nbsp;&nbsp;&nbsp;&nbsp;Press jump again mid-air to use it!<br><br>
       🦴 Collect <strong style="color:#d4cfa8">50 bones</strong> → bank a <span style="color:#ff3355">ROCKET BOOST</span><br>
       &nbsp;&nbsp;&nbsp;&nbsp;Hold jump mid-air for sustained blast!<br><br>
-      🍞 Bread = bonus height points<br>
+      🎵 Music Notes = +2m bonus height<br>
       🫘 Evil Beans = knockback!<br><br>
       <strong style="color:#888">SPACE/W/↑ jump &nbsp; A/D/← → move &nbsp; R restart</strong>
     </div>
@@ -156,27 +156,27 @@
 // ALBUMS — thresholds now in METERS
 // ================================================================
 const ALBUMS = [
-  {name:'Isle of Beans',                    img:'IsleBeans.png',              pts:40},
-  {name:'Ear-aid',                          img:'ear-aid.png',                pts:85},
-  {name:'Fully Panted',                     img:'pant.png',                   pts:135},
-  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:190},
+  {name:'Isle of Beans',                    img:'IsleBeans.png',              pts:30},
+  {name:'Ear-aid',                          img:'ear-aid.png',                pts:70},
+  {name:'Fully Panted',                     img:'pant.png',                   pts:120},
+  {name:'Lovey Dovey',                      img:'loveydovey.png',             pts:180},
   {name:'Big Dump',                         img:'BIGDUMP.png',                pts:250},
-  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:315},
-  {name:'The Legend of Duke',               img:'LOD.png',                    pts:385},
-  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:460},
-  {name:'Neon Banana',                      img:'Nbanana.png',                pts:540},
-  {name:'Sharing Socks with Strangers',     img:'ssws.png',                   pts:625},
-  {name:'Boney Hollow',                     img:'bh.png',                     pts:715},
-  {name:'Black and Blue and Punk All Over', img:'babapao.png',                pts:810},
-  {name:'Midnight Suppository',             img:'ms.png',                     pts:910},
-  {name:'Festive Flush',                    img:'ffalbum.png',                pts:1015},
-  {name:'The Great Indoors',                img:'TGInew.png',                 pts:1125},
-  {name:'Spobbly Not',                      img:'spobbly not.png',            pts:1240},
-  {name:'Big Dump 2: Return of the Dump',   img:'bd2rotd.png',               pts:1360},
-  {name:'Hilariously Unfortunate',          img:'HilariouslyUnfortunate.png', pts:1480},
-  {name:'Efforts and Errors',               img:'EE.png',                     pts:1600},
+  {name:'Mystery Clown',                    img:'mysteryclown.png',           pts:330},
+  {name:'The Legend of Duke',               img:'LOD.png',                    pts:420},
+  {name:"Man's Breath",                     img:'MANSBREATH.png',             pts:520},
+  {name:'Neon Banana',                      img:'Nbanana.png',                pts:630},
+  {name:'Sharing Socks with Strangers',     img:'ssws.png',                   pts:750},
+  {name:'Boney Hollow',                     img:'bh.png',                     pts:880},
+  {name:'Black and Blue and Punk All Over', img:'babapao.png',                pts:1020},
+  {name:'Midnight Suppository',             img:'ms.png',                     pts:1170},
+  {name:'Festive Flush',                    img:'ffalbum.png',                pts:1330},
+  {name:'The Great Indoors',                img:'TGInew.png',                 pts:1500},
+  {name:'Spobbly Not',                      img:'spobbly not.png',            pts:1680},
+  {name:'Big Dump 2: Return of the Dump',   img:'bd2rotd.png',               pts:1870},
+  {name:'Hilariously Unfortunate',          img:'HilariouslyUnfortunate.png', pts:2070},
+  {name:'Efforts and Errors',               img:'EE.png',                     pts:2280},
 ];
-const TOTAL_PTS = 1600;
+const TOTAL_PTS = 2280;
 
 const BGM_TRACKS = [
   'sounds/toastyjumpBGM1.mp3',
@@ -226,7 +226,7 @@ const SPEED     = 2.7;
 const KNOCK_VX  = 3.0;
 const KNOCK_VY  = -6.5;
 // 1 meter = how many pixels of climb (affects score feel)
-const PX_PER_METER = 8;
+const PX_PER_METER = 80;
 
 // ================================================================
 // GAME STATE
@@ -299,8 +299,8 @@ function generateUp() {
     const t    = Math.min(1, dist / (H * 5));
 
     // Vertical gap ramps up with height
-    const minGap = 50 + t * 40;
-    const maxGap = 68 + t * 52;
+    const minGap = 62 + t * 45;
+    const maxGap = 82 + t * 58;
     const gap    = minGap + Math.random() * (maxGap - minGap);
 
     // Platform width narrows with height
@@ -323,7 +323,7 @@ function generateUp() {
       collectibles.push({
         x: x + platW/2 + (Math.random()-0.5)*36,
         y: y - 26,
-        type: bread ? 'bread' : 'bone',
+        type: bread ? "note" : "bone",
         collected: false, popFrame: -1,
         bob: Math.random() * Math.PI * 2
       });
@@ -641,7 +641,7 @@ function update() {
         breadBank++;
         document.getElementById('hud-bread').textContent = breadBank;
         // Bread gives bonus height
-        height += 5;
+        height += 2;
         updateMilestones();
       }
     }
@@ -715,10 +715,10 @@ function draw() {
       const age = frame - c.popFrame;
       if (age < 26) {
         ctx.globalAlpha = 1 - age/26;
-        ctx.fillStyle = c.type==='bread' ? '#ffb700' : '#d4cfa8';
+        ctx.fillStyle = c.type==='note' ? '#00cfff' : '#d4cfa8';
         ctx.font = 'bold 13px VT323';
         ctx.textAlign = 'center';
-        const label = c.type==='bread' ? '+5m 🍞' : '+🦴';
+        const label = c.type==='note' ? '+2m 🎵' : '+🦴';
         ctx.fillText(label, c.x, c.y - age*1.8);
         ctx.globalAlpha=1; ctx.textAlign='left';
       }
@@ -727,7 +727,7 @@ function draw() {
     if (c.collected) return;
     const cy = c.y + Math.sin(frame*0.07+c.bob)*4;
     if (cy < -20 || cy > H+20) return;
-    c.type==='bone' ? drawBone(c.x, cy) : drawBread(c.x, cy);
+    c.type==='bone' ? drawBone(c.x, cy) : drawNote(c.x, cy);
   });
 
   // Beans
@@ -799,17 +799,20 @@ function drawBone(bx, by) {
   ctx.restore();
 }
 
-function drawBread(bx, by) {
-  ctx.save(); ctx.translate(bx, by);
-  ctx.fillStyle='#c87941';
-  ctx.beginPath(); ctx.roundRect(-10,-8,20,16,4); ctx.fill();
-  ctx.fillStyle='#8a4f1e';
-  ctx.beginPath(); ctx.roundRect(-10,-8,20,5,[4,4,0,0]); ctx.fill();
-  ctx.strokeStyle='#8a4f1e'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(-5,-1); ctx.lineTo(5,-1); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-5,3);  ctx.lineTo(5,3);  ctx.stroke();
-  ctx.fillStyle='rgba(255,210,130,0.3)';
-  ctx.beginPath(); ctx.ellipse(-2,-3,4,2,-0.4,0,Math.PI*2); ctx.fill();
+function drawNote(bx, by) {
+  ctx.save();
+  ctx.font = '22px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Gentle pulse
+  const scale = 1 + Math.sin(frame * 0.1 + by) * 0.08;
+  ctx.translate(bx, by);
+  ctx.scale(scale, scale);
+  // Cyan glow
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = '#00cfff';
+  ctx.fillText('🎵', 0, 0);
+  ctx.shadowBlur = 0;
   ctx.restore();
 }
 
