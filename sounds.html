@@ -38,7 +38,7 @@
     .on-air { display: flex; align-items: center; gap: 8px; color: #555; }
     .on-air-dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; animation: blink 1s step-end infinite; }
     @keyframes blink { 50% { opacity: 0; } }
-    .page { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .page { max-width: 860px; margin: 0 auto; padding: 20px 16px 60px; display: flex; flex-direction: column; align-items: center; gap: 0; }
 
     /* SIDE ART LAYOUT */
     .game-stage {
@@ -98,28 +98,28 @@
     .start-meta { font-family: 'VT323', monospace; font-size: 1rem; color: #333; margin-top: 14px; letter-spacing: 2px; }
 
     /* TV */
-    .tv-wrap { width: 100%; max-width: 520px; position: relative; display: none; }
+    .tv-wrap { width: 100%; max-width: 680px; position: relative; display: none; }
     .tv {
       background: linear-gradient(160deg, #2e2218 0%, #1a1410 50%, #120f0a 100%);
       border-radius: 24px 24px 18px 18px;
-      padding: 18px 20px 28px;
+      padding: 22px 26px 32px;
       border: 2px solid #3a2e1e;
       box-shadow: inset 0 2px 0 rgba(255,220,150,0.08), 0 8px 40px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6);
       position: relative;
     }
-    .tv-brand { font-family: 'VT323', monospace; font-size: 0.75rem; color: #4a3a20; letter-spacing: 4px; text-align: center; margin-bottom: 10px; }
-    .screen-bezel { background: #0a0a08; border-radius: 12px; padding: 10px; border: 3px solid #0d0d0b; box-shadow: inset 0 0 20px rgba(0,0,0,0.9); position: relative; }
+    .tv-brand { font-family: 'VT323', monospace; font-size: 0.85rem; color: #4a3a20; letter-spacing: 4px; text-align: center; margin-bottom: 12px; }
+    .screen-bezel { background: #0a0a08; border-radius: 12px; padding: 12px; border: 3px solid #0d0d0b; box-shadow: inset 0 0 20px rgba(0,0,0,0.9); position: relative; }
     .screen {
       background: var(--screen-bg);
       border-radius: 8px;
-      min-height: 240px;
+      min-height: 300px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px 16px;
+      padding: 24px 20px;
     }
     .screen::before {
       content: '';
@@ -184,56 +184,74 @@
     .tv-leg { width: 18px; height: 14px; background: linear-gradient(to bottom, #1a1410, #0f0c08); border-radius: 0 0 4px 4px; border: 1px solid #3a2e1e; border-top: none; }
 
     /* CABLE */
-    .cable-wrap { width: 100%; max-width: 520px; display: none; justify-content: center; height: 44px; position: relative; }
+    .cable-wrap { width: 100%; max-width: 680px; display: none; justify-content: center; height: 44px; position: relative; }
     .cable { width: 4px; background: linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a); border-radius: 2px; margin: 0 auto; }
 
     /* REMOTE */
-    .remote-wrap { width: 100%; max-width: 340px; display: none; }
+    .remote-wrap { width: 100%; max-width: 560px; display: none; }
     .remote {
       background: linear-gradient(160deg, #252525 0%, #181818 60%, #111 100%);
-      border-radius: 20px 20px 40px 40px;
-      padding: 16px 20px 32px;
+      border-radius: 20px 20px 48px 48px;
+      padding: 20px 28px 36px;
       border: 1px solid #333;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.7);
       position: relative;
     }
-    .remote-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #2a2a2a; }
-    .remote-brand { font-family: 'VT323', monospace; font-size: 0.9rem; color: #3a3a3a; letter-spacing: 3px; }
-    .ir-emitter { width: 12px; height: 12px; border-radius: 50%; background: #1a0808; border: 1px solid #333; }
+    .remote-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #2a2a2a; }
+    .remote-brand { font-family: 'VT323', monospace; font-size: 1rem; color: #3a3a3a; letter-spacing: 3px; }
+    .ir-emitter { width: 14px; height: 14px; border-radius: 50%; background: #1a0808; border: 1px solid #333; }
     .ir-emitter.flash { animation: ir-flash 0.2s ease-out; }
     @keyframes ir-flash { 0%{background:#ff8800;box-shadow:0 0 16px #ff8800} 100%{background:#1a0808;box-shadow:none} }
-    .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .answer-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; }
     .answer-btn {
       background: #1a1a1a; border: 1px solid #333; border-radius: 10px;
       color: var(--text); font-family: 'Share Tech Mono', monospace;
-      font-size: clamp(0.62rem, 2.2vw, 0.8rem);
-      padding: 12px 8px 12px 10px; cursor: pointer; transition: all 0.12s;
-      text-align: left; line-height: 1.3; min-height: 62px;
-      display: flex; align-items: flex-start; gap: 6px; position: relative; overflow: hidden;
+      font-size: 0.9rem;
+      padding: 13px 16px; cursor: pointer; transition: all 0.12s;
+      text-align: left; line-height: 1.2;
+      display: flex; align-items: center; gap: 12px;
+      white-space: nowrap; overflow: hidden;
+      position: relative;
     }
-    .btn-badge { font-family: 'VT323', monospace; font-size: 1.1rem; font-weight: bold; flex-shrink: 0; width: 20px; text-align: center; margin-top: -1px; }
-    .answer-btn:nth-child(1) { border-left: 3px solid var(--red); }
+    /* Fade-out mask for text that overflows */
+    .answer-btn::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 40px;
+      background: linear-gradient(to right, transparent, #1a1a1a);
+      pointer-events: none;
+      border-radius: 0 10px 10px 0;
+      transition: background 0.12s;
+    }
+    .answer-btn:hover:not(:disabled)::after { background: linear-gradient(to right, transparent, #222); }
+    .answer-btn.correct::after { background: linear-gradient(to right, transparent, rgba(0,255,65,0.12)); }
+    .answer-btn.wrong::after { background: linear-gradient(to right, transparent, rgba(255,51,85,0.12)); }
+    .answer-btn.reveal::after { background: linear-gradient(to right, transparent, #111); }
+    .btn-badge { font-family: 'VT323', monospace; font-size: 1.4rem; font-weight: bold; flex-shrink: 0; width: 24px; text-align: center; }
+    .btn-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+    .answer-btn:nth-child(1) { border-left: 4px solid var(--red); }
     .answer-btn:nth-child(1) .btn-badge { color: var(--red); }
-    .answer-btn:nth-child(2) { border-left: 3px solid var(--green); }
+    .answer-btn:nth-child(2) { border-left: 4px solid var(--green); }
     .answer-btn:nth-child(2) .btn-badge { color: var(--green); }
-    .answer-btn:nth-child(3) { border-left: 3px solid var(--amber); }
+    .answer-btn:nth-child(3) { border-left: 4px solid var(--amber); }
     .answer-btn:nth-child(3) .btn-badge { color: var(--amber); }
-    .answer-btn:nth-child(4) { border-left: 3px solid var(--blue); }
+    .answer-btn:nth-child(4) { border-left: 4px solid var(--blue); }
     .answer-btn:nth-child(4) .btn-badge { color: var(--blue); }
-    .answer-btn:hover:not(:disabled) { background: #222; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    .answer-btn:active:not(:disabled) { transform: scale(0.97) translateY(0); }
+    .answer-btn:hover:not(:disabled) { background: #222; transform: translateX(3px); box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+    .answer-btn:active:not(:disabled) { transform: scale(0.98); }
     .answer-btn:disabled { cursor: default; }
     .answer-btn.correct { background: rgba(0,255,65,0.12); border-color: var(--green); color: var(--green); box-shadow: 0 0 16px rgba(0,255,65,0.2); }
     .answer-btn.wrong { background: rgba(255,51,85,0.12); border-color: var(--red); color: var(--red); }
     .answer-btn.reveal { background: #111; border-color: #1a1a1a; color: #2a2a2a; }
     .answer-btn.reveal .btn-badge { color: #2a2a2a; }
-    .remote-bottom { display: flex; justify-content: center; margin-top: 4px; }
-    .next-btn { background: transparent; border: 1px solid var(--green-dim); border-radius: 8px; color: var(--green); font-family: 'VT323', monospace; font-size: 1.3rem; padding: 8px 28px; cursor: pointer; letter-spacing: 2px; transition: all 0.15s; display: none; }
+    .remote-bottom { display: flex; justify-content: center; margin-top: 6px; }
+    .next-btn { background: transparent; border: 1px solid var(--green-dim); border-radius: 8px; color: var(--green); font-family: 'VT323', monospace; font-size: 1.4rem; padding: 10px 36px; cursor: pointer; letter-spacing: 2px; transition: all 0.15s; display: none; }
     .next-btn.show { display: block; animation: btn-appear 0.3s ease-out; }
     @keyframes btn-appear { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
     .next-btn:hover { background: rgba(0,255,65,0.1); border-color: var(--green); }
-    .remote-deco { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
-    .deco-btn { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #2a2a2a; }
+    .remote-deco { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+    .deco-btn { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #2a2a2a; }
     .deco-btn:nth-child(1){background:#1f0808} .deco-btn:nth-child(2){background:#0a1a0a}
     .deco-btn:nth-child(3){background:#1a1008} .deco-btn:nth-child(4){background:#080a1f}
     .key-hints { text-align: center; color: #2a2a2a; font-size: 0.68rem; margin-top: 10px; letter-spacing: 1px; }
@@ -564,7 +582,7 @@ function loadRound(){
   opts.forEach((opt,i)=>{
     const btn=document.createElement('button');
     btn.className='answer-btn';
-    btn.innerHTML='<span class="btn-badge">'+letters[i]+'</span><span>'+opt+'</span>';
+    btn.innerHTML='<span class="btn-badge">'+letters[i]+'</span><span class="btn-text">'+opt+'</span>';
     btn.dataset.correct=(opt===song.title)?'1':'0';
     btn.onclick=()=>{flashIR();submitAnswer(btn,song.title);};
     grid.appendChild(btn);
