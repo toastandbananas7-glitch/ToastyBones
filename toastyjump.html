@@ -156,8 +156,9 @@
       🦴 Collect <strong style="color:#d4cfa8">50 bones</strong> → <span style="color:#ff3355">ROCKET AUTO-FIRES!</span><br>
       &nbsp;&nbsp;&nbsp;&nbsp;Blasts you upward automatically!<br><br>
       🎵 Music Notes → <span style="color:#00cfff">SLOW FALL</span> for 3 seconds!<br>
-      ☁️ <span style="color:#00cfff">Bouncy Clouds</span> → mega-jump boost!<br>
+      ☁️ <span style="color:#00cfff">Bouncy Clouds</span> → mega-jump boost (some drift!)<br>
       🧲 <span style="color:#ffb700">Magnet</span> → sucks in bones for 8 seconds!<br>
+      🥄 <span style="color:#e0e0e0">Spoon</span> → eat beans for +4m instead of knockback!<br>
       🫘 Evil Beans = knockback!<br><br>
       <strong style="color:#888">SPACE/W/↑ jump &nbsp; A/D/← → move &nbsp; R restart</strong>
     </div>
@@ -421,6 +422,8 @@ let magnetActive = false, magnetTimer = 0;
 const MAGNET_DUR = 480; // ~8s at 60fps
 let slowFallActive = false, slowFallTimer = 0;
 const SLOWFALL_DUR = 180; // ~3s at 60fps
+let spoonActive = false, spoonTimer = 0;
+const SPOON_DUR = 360; // ~6s at 60fps
 let genFrontier = 0;
 let lastPlatX = 0, lastPlatW = 90; // for neighbor-aware generation
 
@@ -476,6 +479,24 @@ document.getElementById('btn-winretry').addEventListener('click', startGame);
 // ================================================================
 // PLATFORM GENERATION — neighbor-aware + difficulty ramp
 // ================================================================
+// Compute the safe horizontal landing window for a given vertical gap,
+// based on the actual jump physics (asymmetric gravity, jump force, speed).
+// Returns {minX, maxX} = horizontal distance range (in px) reachable from launch point.
+function reachWindowForGap(gapUp) {
+  let vy = JUMP, y = 0, t = 0;
+  let enterT = null, exitT = null;
+  while (t < 400) {
+    vy += (vy < 0 ? GRAV_UP : GRAV_DOWN);
+    if (vy > 3.2) vy = 3.2;
+    y += vy;
+    t++;
+    if (y <= -gapUp && enterT === null) enterT = t;
+    if (enterT !== null && y > -gapUp) { exitT = t; break; }
+  }
+  if (enterT === null) return { minX: 10, maxX: 200 }; // fallback, shouldn't happen
+  return { minX: SPEED * enterT, maxX: SPEED * (exitT || t) };
+}
+
 function generateUp() {
   while (genFrontier > -H * 3) {
     const dist = Math.max(0, (H - 100) - genFrontier);
@@ -489,35 +510,59 @@ function generateUp() {
     // Platform width narrows with height (start wider)
     const platW = Math.round(130 - t * 50);
 
-    // Horizontal: pure random across full width, but nudge toward center over time
-    // so platforms never cluster on one side. Capped so it's always within jump reach (~280px).
+    // ---- GUARANTEED-REACHABLE horizontal placement ----
+    // Use the actual jump arc to compute the safe X range for THIS gap,
+    // centered on the previous platform's position. This makes every
+    // platform mathematically reachable, not just probably reachable.
     const margin = 20;
-    const maxReach = 240; // safe horizontal jump distance, leaves margin under physics max (~280px)
-    const fullRand = margin + Math.random() * (W - platW - margin * 2);
-    const centBias = (W / 2 - platW / 2) + (Math.random() - 0.5) * Math.min(W * 0.5, maxReach * 2);
-    const centClamped = Math.max(margin, Math.min(W - platW - margin, centBias));
-    // 50/50 blend — completely random half the time, center-biased half the time
-    const x = Math.round(Math.random() < 0.5 ? fullRand : centClamped);
+    const reach = reachWindowForGap(gap);
+    // Trim a safety margin off both ends so timing isn't pixel-perfect
+    const safeMin = reach.minX + 14;
+    const safeMax = reach.maxX * 0.82; // never demand the absolute max-distance edge case
+
+    const prevCenter = lastPlatX + lastPlatW / 2;
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    const dist2 = safeMin + Math.random() * Math.max(8, safeMax - safeMin);
+    let x = prevCenter + dir * dist2 - platW / 2;
+
+    // Clamp to screen, re-flip direction if it would go off-screen
+    if (x < margin) x = prevCenter + dist2 - platW / 2; // force rightward
+    if (x + platW > W - margin) x = prevCenter - dist2 - platW / 2; // force leftward
+    x = Math.max(margin, Math.min(W - platW - margin, x));
+
     const y = genFrontier - gap;
 
     platforms.push({ x, y, w:platW, h:PLATH, flash:0 });
+    lastPlatX = x; lastPlatW = platW;
 
-    // Bouncy cloud — more common early, rare at height
+    // Bouncy cloud — more common early, rare at height. Some drift left/right to help cross big gaps.
     if (Math.random() < Math.max(0.04, 0.18 - t * 0.14)) {
       const bx = margin + Math.random() * (W - 80 - margin * 2);
       const by = y - (minGap + Math.random() * (maxGap - minGap));
-      platforms.push({ x: bx, y: by, w: 80, h: PLATH, flash: 0, bouncy: true });
+      const moving = Math.random() < 0.45; // ~45% of clouds drift
+      platforms.push({
+        x: bx, y: by, w: 80, h: PLATH, flash: 0, bouncy: true,
+        moving, moveDir: Math.random() < 0.5 ? -1 : 1,
+        moveSpeed: 0.5 + Math.random() * 0.7,
+        moveRange: 60 + Math.random() * 80,
+        baseX: bx,
+      });
     }
 
-    // Collectible above platform
+    // Collectible — floats freely in the open space of the gap, not hugging the platform
     if (Math.random() < 0.68) {
       // Magnet: rare, only appears after 100m, more common mid-game
       const isMagnet = height > 100 && Math.random() < 0.05;
-      const bread = !isMagnet && Math.random() < 0.18;
+      // Spoon: rare, only appears after 60m (once beans are common), lets you eat beans for points
+      const isSpoon = !isMagnet && height > 60 && Math.random() < 0.05;
+      const bread = !isMagnet && !isSpoon && Math.random() < 0.18;
+      // Float height: anywhere from just above this platform to near the next one up,
+      // so it sits out in open air rather than glued to the platform surface
+      const floatY = y - (gap * 0.3) - 12 - Math.random() * (gap * 0.35);
       collectibles.push({
-        x: x + platW/2 + (Math.random()-0.5)*36,
-        y: y - 26,
-        type: isMagnet ? 'magnet' : bread ? "note" : "bone",
+        x: margin + Math.random() * (W - margin * 2),
+        y: floatY,
+        type: isMagnet ? 'magnet' : isSpoon ? 'spoon' : bread ? "note" : "bone",
         collected: false, popFrame: -1,
         bob: Math.random() * Math.PI * 2
       });
@@ -571,7 +616,14 @@ function updatePowerupHUD() {
     const el = document.createElement('span');
     el.className = 'pu-icon';
     el.style.borderColor = '#00cfff'; el.style.color = '#00cfff';
-    el.textContent = '🪶';
+    el.textContent = '👖';
+    row.appendChild(el);
+  }
+  if (spoonActive) {
+    const el = document.createElement('span');
+    el.className = 'pu-icon';
+    el.style.borderColor = '#c0c0c0'; el.style.color = '#e0e0e0';
+    el.textContent = '🥄';
     row.appendChild(el);
   }
   // Bone progress hint
@@ -630,6 +682,7 @@ function initGame() {
   rocketActive=false; rocketTimer=0;
   magnetActive=false; magnetTimer=0;
   slowFallActive=false; slowFallTimer=0;
+  spoonActive=false; spoonTimer=0;
   jumpPressed=false;
   keys.left=keys.right=keys.jump=false;
   resize();
@@ -815,6 +868,17 @@ function update() {
   if (px+PW < 0) px = W;
   if (px > W)    px = -PW;
 
+  // ---- MOVING CLOUDS ----
+  platforms.forEach(p => {
+    if (p.bouncy && p.moving) {
+      p.x += p.moveDir * p.moveSpeed;
+      if (p.x < p.baseX - p.moveRange || p.x > p.baseX + p.moveRange) {
+        p.moveDir *= -1;
+      }
+      p.x = Math.max(10, Math.min(W - p.w - 10, p.x));
+    }
+  });
+
   // ---- PLATFORM LANDING ----
   onGround = false;
   if (pvy > 0) {
@@ -860,7 +924,7 @@ function update() {
   // ---- CULL ----
   platforms    = platforms.filter(p => p.y < H + 80);
   collectibles = collectibles.filter(c => c.y < H + 80 || c.popFrame >= 0);
-  beans        = beans.filter(b => b.x > -80 && b.x < W+80);
+  beans        = beans.filter(b => (b.x > -80 && b.x < W+80) && (!b.eaten || frame - b.eatenFrame < 20));
 
   if (pinv > 0) pinv--;
 
@@ -891,6 +955,15 @@ function update() {
     slowFallTimer--;
     if (slowFallTimer <= 0) {
       slowFallActive = false;
+      updatePowerupHUD();
+    }
+  }
+
+  // ---- SPOON (eat beans for points) ----
+  if (spoonActive) {
+    spoonTimer--;
+    if (spoonTimer <= 0) {
+      spoonActive = false;
       updatePowerupHUD();
     }
   }
@@ -930,13 +1003,18 @@ function update() {
         slowFallActive = true;
         slowFallTimer = SLOWFALL_DUR;
         updatePowerupHUD();
-        showWarn('🎵 SLOW FALL! 🪶', 900);
+        showWarn('🎵 SLOW FALL! 👖', 900);
         updateMilestones();
       } else if (c.type === 'magnet') {
         magnetActive = true;
         magnetTimer = MAGNET_DUR;
         updatePowerupHUD();
         showWarn('🧲 MAGNET! Bones attracted!', 1400);
+      } else if (c.type === 'spoon') {
+        spoonActive = true;
+        spoonTimer = SPOON_DUR;
+        updatePowerupHUD();
+        showWarn('🥄 SPOON! Eat those beans!', 1400);
       }
     }
   });
@@ -953,10 +1031,19 @@ function update() {
     if (!b.hit && pinv <= 0) {
       if (px+PW-4 > b.x && px+4 < b.x+b.w && py+PH-4 > b.y && py+4 < b.y+b.h) {
         b.hit = true;
-        pvy   = KNOCK_VY;
-        pvx   = b.vx > 0 ? KNOCK_VX : -KNOCK_VX;
-        pknock=true; pknockT=22; pinv=65;
-        showWarn('🫘 BEAN ATTACK!', 1000);
+        if (spoonActive) {
+          // Eat the bean for bonus height instead of taking damage!
+          b.eaten = true;
+          b.eatenFrame = frame;
+          height += 4;
+          updateMilestones();
+          showWarn('🥄 NOM! +4m', 700);
+        } else {
+          pvy   = KNOCK_VY;
+          pvx   = b.vx > 0 ? KNOCK_VX : -KNOCK_VX;
+          pknock=true; pknockT=22; pinv=65;
+          showWarn('🫘 BEAN ATTACK!', 1000);
+        }
       }
     }
   });
@@ -1088,10 +1175,10 @@ function draw() {
       const age = frame - c.popFrame;
       if (age < 26) {
         ctx.globalAlpha = 1 - age/26;
-        ctx.fillStyle = c.type==='note' ? '#00cfff' : c.type==='magnet' ? '#ffb700' : '#d4cfa8';
+        ctx.fillStyle = c.type==='note' ? '#00cfff' : c.type==='magnet' ? '#ffb700' : c.type==='spoon' ? '#e0e0e0' : '#d4cfa8';
         ctx.font = 'bold 13px VT323';
         ctx.textAlign = 'center';
-        const label = c.type==='note' ? '🪶 SLOW FALL' : c.type==='magnet' ? '🧲 MAGNET!' : '+🦴';
+        const label = c.type==='note' ? '👖 SLOW FALL' : c.type==='magnet' ? '🧲 MAGNET!' : c.type==='spoon' ? '🥄 SPOON!' : '+🦴';
         ctx.fillText(label, c.x, c.y - age*1.8);
         ctx.globalAlpha=1; ctx.textAlign='left';
       }
@@ -1103,11 +1190,26 @@ function draw() {
     if (c.type==='bone') drawBone(c.x, cy);
     else if (c.type==='note') drawNote(c.x, cy);
     else if (c.type==='magnet') drawMagnet(c.x, cy);
+    else if (c.type==='spoon') drawSpoon(c.x, cy);
   });
 
   // Beans
   beans.forEach(b => {
     if (b.y < -60 || b.y > H+60) return;
+    if (b.eaten) {
+      // Quick "nom" poof — shrinks and fades with a little upward pop
+      const age = frame - b.eatenFrame;
+      const t = Math.min(1, age / 20);
+      ctx.save();
+      ctx.globalAlpha = 1 - t;
+      ctx.font = `${40 * (1 - t * 0.7)}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🥄', b.x + b.w/2, b.y + b.h/2 - t * 14);
+      ctx.globalAlpha = 1;
+      ctx.restore();
+      return;
+    }
     drawEmojiBean(b.x, b.y, b.w, b.h);
   });
 
@@ -1128,14 +1230,9 @@ function draw() {
     ctx.lineWidth = 1;
   }
 
-  // Slow-fall feather trail
+  // Slow-fall pants parachute
   if (slowFallActive && pvy > 0) {
-    ctx.globalAlpha = 0.35 + Math.sin(frame * 0.2) * 0.15;
-    ctx.font = '16px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('🪶', px+PW/2 + (Math.random()-0.5)*12, py+PH + 10 + Math.random()*12);
-    ctx.globalAlpha = 1;
-    ctx.textAlign = 'left';
+    drawPants(px + PW/2, py + PH + 4, frame);
   }
 
   // Next album hint
@@ -1228,6 +1325,73 @@ function drawMagnet(bx, by) {
   ctx.shadowColor = '#ffb700';
   ctx.fillText('🧲', 0, 0);
   ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+function drawSpoon(bx, by) {
+  ctx.save();
+  ctx.font = '22px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Gentle wobble, like it's eager to be used
+  const wobble = Math.sin(frame * 0.1) * 0.2;
+  ctx.translate(bx, by);
+  ctx.rotate(wobble);
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = '#e0e0e0';
+  ctx.fillText('🥄', 0, 0);
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+// Billowing pair of pants used as a parachute during Slow Fall
+function drawPants(cx, topY, frameNum) {
+  ctx.save();
+  const billow = Math.sin(frameNum * 0.15) * 4; // gentle sway
+  const puff   = 1 + Math.sin(frameNum * 0.12) * 0.08; // breathing scale
+  ctx.translate(cx + billow * 0.3, topY);
+  ctx.scale(puff, 1);
+
+  // Waistband
+  ctx.fillStyle = '#2a5fb0';
+  ctx.beginPath();
+  ctx.roundRect(-11, 0, 22, 6, 2);
+  ctx.fill();
+
+  // Two billowing legs (parachute-like, wider at bottom)
+  const legSway1 = Math.sin(frameNum * 0.15) * 3;
+  const legSway2 = Math.sin(frameNum * 0.15 + 1) * 3;
+
+  ctx.fillStyle = '#3a72d6';
+  // Left leg
+  ctx.beginPath();
+  ctx.moveTo(-11, 4);
+  ctx.quadraticCurveTo(-15 + legSway1, 16, -13 + legSway1, 26);
+  ctx.lineTo(-1, 24);
+  ctx.lineTo(-1, 5);
+  ctx.closePath();
+  ctx.fill();
+  // Right leg
+  ctx.beginPath();
+  ctx.moveTo(11, 4);
+  ctx.quadraticCurveTo(15 + legSway2, 16, 13 + legSway2, 26);
+  ctx.lineTo(1, 24);
+  ctx.lineTo(1, 5);
+  ctx.closePath();
+  ctx.fill();
+
+  // Stitch line down the middle
+  ctx.strokeStyle = '#1a3f80';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, 4); ctx.lineTo(0, 22);
+  ctx.stroke();
+
+  // Belt loop detail
+  ctx.fillStyle = '#1a3f80';
+  ctx.fillRect(-8, 0, 3, 3);
+  ctx.fillRect(5, 0, 3, 3);
+
   ctx.restore();
 }
 
