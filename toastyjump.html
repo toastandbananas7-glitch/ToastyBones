@@ -36,7 +36,7 @@
     @keyframes mpulse{0%,100%{box-shadow:0 0 4px rgba(255,183,0,0.3);}50%{box-shadow:0 0 12px rgba(255,183,0,0.7);}}
     .panel-score{font-family:'VT323',monospace;font-size:0.8rem;color:var(--green);text-align:center;margin-top:6px;letter-spacing:1px;line-height:1.3;}
     /* OVERLAYS */
-    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:500;font-family:'VT323',monospace;text-align:center;padding:20px;}
+    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:500;font-family:'VT323',monospace;text-align:center;padding:20px;overflow-y:auto;}
     .overlay.hidden{display:none;}
     .ov-title{font-size:clamp(1.8rem,6vw,3rem);color:var(--amber);text-shadow:0 0 20px rgba(255,183,0,0.4);margin-bottom:6px;letter-spacing:2px;}
     .ov-sub{font-size:0.9rem;color:#444;letter-spacing:3px;margin-bottom:20px;}
@@ -84,11 +84,10 @@
     .pu-icon{font-size:0.9rem;background:rgba(0,0,0,0.5);border:1px solid #2a2a2a;border-radius:3px;padding:1px 4px;font-family:'VT323',monospace;line-height:1.2;}
     .pu-icon.dj{border-color:#00cfff;color:#00cfff;}
     .pu-icon.rk{border-color:#ff3355;color:#ff3355;}
-    /* MOBILE ZONES */
-    #tap-left,#tap-right,#tap-jump{position:absolute;bottom:0;z-index:300;opacity:0;cursor:pointer;}
-    #tap-left{left:0;width:30%;height:100%;}
-    #tap-right{left:30%;right:88px;height:100%;}
-    #tap-jump{right:88px;width:30%;height:50%;bottom:0;}
+    /* MOBILE ZONES — invisible drag areas for left/right movement */
+    #tap-left,#tap-right{position:absolute;bottom:0;z-index:300;opacity:0;cursor:pointer;}
+    #tap-left{left:0;width:42%;height:100%;}
+    #tap-right{left:42%;right:88px;height:100%;}
     /* Rocket boost screen tint */
     #boost-overlay{position:absolute;inset:0;pointer-events:none;z-index:100;background:rgba(255,51,85,0);transition:background 0.1s;}
     #boost-overlay.active{background:rgba(255,51,85,0.08);}
@@ -110,6 +109,83 @@
     }
     #scr-pause .opt-btn:hover{border-color:var(--green); color:var(--green); background:rgba(0,255,65,0.08);}
     #scr-pause .opt-btn.muted{border-color:var(--red); color:var(--red);}
+
+    /* ===================== ON-SCREEN MOBILE CONTROLS ===================== */
+    /* Visible D-pad style buttons — only shown on touch devices via JS class toggle */
+    #mobile-controls{
+      position:absolute; inset:0; z-index:280; pointer-events:none;
+      display:none;
+    }
+    body.is-touch #mobile-controls{ display:block; }
+    body.is-touch #tap-left,
+    body.is-touch #tap-right{ display:none; } /* replaced by visible buttons below */
+
+    .mc-btn{
+      position:absolute; pointer-events:auto;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(10,10,10,0.55); border:2px solid rgba(0,255,65,0.35);
+      border-radius:50%; color:rgba(0,255,65,0.8);
+      font-size:1.6rem; user-select:none; -webkit-user-select:none;
+      transition: background 0.1s, border-color 0.1s, transform 0.1s;
+    }
+    .mc-btn.pressed{ background:rgba(0,255,65,0.25); border-color:var(--green); transform:scale(0.94); }
+
+    #mc-left{  bottom:18px; left:14px;  width:62px; height:62px; }
+    #mc-right{ bottom:18px; left:84px;  width:62px; height:62px; }
+    #mc-jump{  bottom:24px; right:104px; width:84px; height:84px;
+      border-color:rgba(255,183,0,0.4); color:rgba(255,183,0,0.85); font-size:1.9rem;
+    }
+    #mc-jump.pressed{ background:rgba(255,183,0,0.25); border-color:var(--amber); }
+
+    /* Hide bottom HUD warn text overlap on very short screens */
+    @media (max-height: 480px){
+      #mc-left,#mc-right{ width:52px; height:52px; bottom:10px; }
+      #mc-right{ left:70px; }
+      #mc-jump{ width:70px; height:70px; bottom:14px; right:96px; }
+    }
+
+    /* ===================== NARROW / MOBILE LAYOUT ===================== */
+    @media (max-width: 640px){
+      .topbar{ padding:5px 10px; font-size:0.8rem; }
+      .topbar a{ padding:2px 8px; font-size:0.8rem; }
+
+      /* Shrink the album sidebar drastically — keep the bar, hide individual thumbnails */
+      .progress-panel{ width:34px; padding:6px 2px; }
+      .panel-title{ display:none; }
+      .album-milestone{ width:14px; height:14px; right:10px; border-radius:2px; }
+      .panel-score{ font-size:0.62rem; margin-top:4px; }
+      .progress-track{ width:10px; }
+
+      /* Adjust tap zones to leave room for narrower panel */
+      #tap-right{ right:34px; }
+      #mc-jump{ right:50px; }
+
+      /* HUD: smaller text, tighter spacing so it doesn't dominate a small screen */
+      #hud{ font-size:0.85rem; line-height:1.4; top:6px; left:6px; }
+      .pu-row{ max-width:120px; }
+      .pu-icon{ font-size:0.75rem; padding:1px 3px; }
+
+      #pause-btn{ width:30px; height:30px; font-size:1rem; top:6px; right:6px; }
+
+      /* Overlays: tighten padding/width so text wraps nicely on small screens */
+      .ov-desc{ font-size:0.72rem; max-width:92vw; line-height:1.55; }
+      .ov-title{ font-size:clamp(1.4rem,7vw,2.2rem); }
+      .ov-btn{ font-size:1.3rem; padding:8px 28px; }
+
+      /* Unlock toast: don't let it eat the whole screen width */
+      #unlock-toast{ max-width:78vw; bottom:14px; left:8px; padding:8px 12px 8px 8px; }
+      .t-art{ width:48px; height:48px; }
+      .t-name{ font-size:0.95rem; }
+    }
+
+    /* Extra-narrow phones */
+    @media (max-width: 380px){
+      .progress-panel{ width:26px; }
+      #tap-right{ right:26px; }
+      #mc-jump{ right:42px; width:74px; height:74px; }
+      #mc-left{ width:54px; height:54px; }
+      #mc-right{ width:54px; height:54px; left:76px; }
+    }
   </style>
 </head>
 <body>
@@ -120,7 +196,13 @@
 <div class="game-wrapper">
   <div id="tap-left"></div>
   <div id="tap-right"></div>
-  <div id="tap-jump"></div>
+
+  <!-- Visible mobile control buttons (shown only on touch devices) -->
+  <div id="mobile-controls">
+    <div class="mc-btn" id="mc-left">◀</div>
+    <div class="mc-btn" id="mc-right">▶</div>
+    <div class="mc-btn" id="mc-jump">⤒</div>
+  </div>
   <div id="boost-overlay"></div>
 
   <!-- Pause Button -->
@@ -289,6 +371,7 @@ function resize() {
   buildMilestones();
 }
 window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 
 // ================================================================
 // BGM
@@ -462,15 +545,39 @@ document.addEventListener('keyup', e => {
   if (e.key===' ' || e.key==='ArrowUp' || e.key==='w' || e.key==='W') keys.jump = false;
 });
 
+// ---- TOUCH DEVICE DETECTION ----
+// Adds is-touch class so CSS swaps invisible drag-zones for visible D-pad buttons
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+  document.body.classList.add('is-touch');
+}
+
 const tapL = document.getElementById('tap-left');
 const tapR = document.getElementById('tap-right');
-const tapJ = document.getElementById('tap-jump');
 tapL.addEventListener('touchstart', e=>{e.preventDefault();keys.left=true;},{passive:false});
 tapL.addEventListener('touchend',   e=>{e.preventDefault();keys.left=false;},{passive:false});
 tapR.addEventListener('touchstart', e=>{e.preventDefault();keys.right=true;},{passive:false});
 tapR.addEventListener('touchend',   e=>{e.preventDefault();keys.right=false;},{passive:false});
-tapJ.addEventListener('touchstart', e=>{e.preventDefault();jumpPressed=true;keys.jump=true;},{passive:false});
-tapJ.addEventListener('touchend',   e=>{e.preventDefault();keys.jump=false;},{passive:false});
+
+// ---- VISIBLE MOBILE D-PAD BUTTONS ----
+const mcLeft  = document.getElementById('mc-left');
+const mcRight = document.getElementById('mc-right');
+const mcJump  = document.getElementById('mc-jump');
+
+function bindHoldButton(el, onDown, onUp) {
+  const down = e => { e.preventDefault(); el.classList.add('pressed'); onDown(); };
+  const up   = e => { e.preventDefault(); el.classList.remove('pressed'); onUp(); };
+  el.addEventListener('touchstart', down, {passive:false});
+  el.addEventListener('touchend',   up,   {passive:false});
+  el.addEventListener('touchcancel',up,   {passive:false});
+  // Also support mouse for testing on desktop with touch emulation
+  el.addEventListener('mousedown', down);
+  el.addEventListener('mouseup',   up);
+  el.addEventListener('mouseleave',up);
+}
+
+bindHoldButton(mcLeft,  () => keys.left = true,  () => keys.left = false);
+bindHoldButton(mcRight, () => keys.right = true, () => keys.right = false);
+bindHoldButton(mcJump,  () => { jumpPressed = true; keys.jump = true; }, () => keys.jump = false);
 
 document.getElementById('btn-start').addEventListener('click', startGame);
 document.getElementById('btn-retry').addEventListener('click', startGame);
