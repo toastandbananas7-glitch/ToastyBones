@@ -51,8 +51,6 @@
     /* UNLOCK TOAST — corner popup, game never pauses */
     #unlock-toast {
       position: absolute;
-      bottom: 24px;
-      left: 14px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -62,13 +60,57 @@
       padding: 10px 16px 10px 10px;
       z-index: 600;
       pointer-events: none;
-      transform: translateX(-140%);
-      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
       max-width: 280px;
       box-shadow: 0 0 24px rgba(0,255,65,0.3), 0 0 8px rgba(0,255,65,0.15);
+      opacity: 0;
+      /* Center-screen starting position */
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.85);
+      transition: none;
     }
-    #unlock-toast.show { transform: translateX(0); }
-    #unlock-toast.hide { transform: translateX(-140%); transition: transform 0.3s ease-in; }
+    /* Stage 1: pop in big at center */
+    #unlock-toast.center {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.15);
+      transition: opacity 0.25s ease-out, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    /* Stage 2: slide down to corner badge */
+    #unlock-toast.corner {
+      top: auto; left: 14px; bottom: 24px;
+      transform: translate(0,0) scale(1);
+      transition: top 0.55s cubic-bezier(0.22,1,0.36,1), left 0.55s cubic-bezier(0.22,1,0.36,1),
+                  bottom 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);
+    }
+    /* On touch devices, settle above the slider/jump controls instead of behind them */
+    body.is-touch #unlock-toast.corner { bottom: 96px; }
+    /* Stage 3: fade out from corner */
+    #unlock-toast.fadeout {
+      opacity: 0;
+      transition: opacity 0.4s ease-in;
+    }
+
+    /* CENTER POWERUP POPUP — pops in mid-screen, then drifts up + fades */
+    #powerup-popup{
+      position:absolute; top:38%; left:50%;
+      transform:translate(-50%,-50%) scale(0.7);
+      z-index:550; pointer-events:none;
+      font-family:'VT323',monospace;
+      font-size:clamp(1.3rem, 5vw, 2rem);
+      color:var(--green);
+      text-shadow:0 0 16px rgba(0,255,65,0.6), 0 0 4px rgba(0,0,0,0.8);
+      letter-spacing:2px; text-align:center; white-space:nowrap;
+      opacity:0;
+    }
+    #powerup-popup.pop{
+      opacity:1;
+      transform:translate(-50%,-50%) scale(1.05);
+      transition: opacity 0.18s ease-out, transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    #powerup-popup.drift{
+      opacity:0;
+      transform:translate(-50%,-160%) scale(0.95);
+      transition: opacity 0.6s ease-in, transform 0.7s ease-in;
+    }
     .t-art { width: 64px; height: 64px; border-radius: 6px; object-fit: cover; border: 2px solid var(--gdim); flex-shrink: 0; box-shadow: 0 0 10px rgba(0,255,65,0.2); }
     .t-text { display: flex; flex-direction: column; gap: 3px; }
     .t-lbl { font-family: 'VT323', monospace; font-size: 0.8rem; color: var(--green); letter-spacing: 3px; }
@@ -130,18 +172,36 @@
     }
     .mc-btn.pressed{ background:rgba(0,255,65,0.25); border-color:var(--green); transform:scale(0.94); }
 
-    #mc-left{  bottom:18px; left:14px;  width:62px; height:62px; }
-    #mc-right{ bottom:18px; left:84px;  width:62px; height:62px; }
-    #mc-jump{  bottom:24px; right:104px; width:84px; height:84px;
+    #mc-jump{  bottom:24px; right:20px; width:84px; height:84px;
       border-color:rgba(255,183,0,0.4); color:rgba(255,183,0,0.85); font-size:1.9rem;
     }
     #mc-jump.pressed{ background:rgba(255,183,0,0.25); border-color:var(--amber); }
 
+    /* SLIDER — drag anywhere on this track to move left/right.
+       Thumb position follows the touch point; player X is driven directly by
+       how far the thumb sits from center, not by discrete left/right taps. */
+    #mc-slider-track{
+      position:absolute; bottom:24px; left:20px; right:124px; height:54px;
+      pointer-events:auto;
+      background:rgba(10,10,10,0.45); border:2px solid rgba(0,255,65,0.3);
+      border-radius:27px;
+    }
+    #mc-slider-thumb{
+      position:absolute; top:3px; left:50%; width:48px; height:48px;
+      margin-left:-24px;
+      background:rgba(0,255,65,0.22); border:2px solid var(--green);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      color:var(--green); font-size:1.1rem;
+      transition: background 0.1s, left 0.05s linear;
+      pointer-events:none;
+    }
+    #mc-slider-thumb.active{ background:rgba(0,255,65,0.4); }
+
     /* Hide bottom HUD warn text overlap on very short screens */
     @media (max-height: 480px){
-      #mc-left,#mc-right{ width:52px; height:52px; bottom:10px; }
-      #mc-right{ left:70px; }
-      #mc-jump{ width:70px; height:70px; bottom:14px; right:96px; }
+      #mc-slider-track{ height:46px; bottom:10px; }
+      #mc-slider-thumb{ width:40px; height:40px; margin-left:-20px; top:1px; }
+      #mc-jump{ width:70px; height:70px; bottom:14px; right:16px; }
     }
 
     /* ===================== NARROW / MOBILE LAYOUT ===================== */
@@ -158,7 +218,8 @@
 
       /* Adjust tap zones to leave room for narrower panel */
       #tap-right{ right:34px; }
-      #mc-jump{ right:50px; }
+      #mc-jump{ right:16px; width:74px; height:74px; bottom:18px; }
+      #mc-slider-track{ left:14px; right:104px; }
 
       /* HUD: smaller text, tighter spacing so it doesn't dominate a small screen */
       #hud{ font-size:0.85rem; line-height:1.4; top:6px; left:6px; }
@@ -173,7 +234,7 @@
       .ov-btn{ font-size:1.3rem; padding:8px 28px; }
 
       /* Unlock toast: don't let it eat the whole screen width */
-      #unlock-toast{ max-width:78vw; bottom:14px; left:8px; padding:8px 12px 8px 8px; }
+      #unlock-toast{ max-width:78vw; }
       .t-art{ width:48px; height:48px; }
       .t-name{ font-size:0.95rem; }
     }
@@ -182,9 +243,8 @@
     @media (max-width: 380px){
       .progress-panel{ width:26px; }
       #tap-right{ right:26px; }
-      #mc-jump{ right:42px; width:74px; height:74px; }
-      #mc-left{ width:54px; height:54px; }
-      #mc-right{ width:54px; height:54px; left:76px; }
+      #mc-jump{ right:12px; width:64px; height:64px; }
+      #mc-slider-track{ left:10px; right:84px; }
     }
   </style>
 </head>
@@ -199,8 +259,9 @@
 
   <!-- Visible mobile control buttons (shown only on touch devices) -->
   <div id="mobile-controls">
-    <div class="mc-btn" id="mc-left">◀</div>
-    <div class="mc-btn" id="mc-right">▶</div>
+    <div id="mc-slider-track">
+      <div id="mc-slider-thumb">↔</div>
+    </div>
     <div class="mc-btn" id="mc-jump">⤒</div>
   </div>
   <div id="boost-overlay"></div>
@@ -280,7 +341,7 @@
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
 
-  <!-- UNLOCK TOAST — corner popup -->
+  <!-- UNLOCK TOAST — pops center, slides to corner -->
   <div id="unlock-toast">
     <img class="t-art" id="t-art" src="" alt="">
     <div class="t-text">
@@ -288,6 +349,9 @@
       <div class="t-name" id="t-name"></div>
     </div>
   </div>
+
+  <!-- CENTER POWERUP POPUP -->
+  <div id="powerup-popup"></div>
 </div>
 
 <script>
@@ -558,10 +622,8 @@ tapL.addEventListener('touchend',   e=>{e.preventDefault();keys.left=false;},{pa
 tapR.addEventListener('touchstart', e=>{e.preventDefault();keys.right=true;},{passive:false});
 tapR.addEventListener('touchend',   e=>{e.preventDefault();keys.right=false;},{passive:false});
 
-// ---- VISIBLE MOBILE D-PAD BUTTONS ----
-const mcLeft  = document.getElementById('mc-left');
-const mcRight = document.getElementById('mc-right');
-const mcJump  = document.getElementById('mc-jump');
+// ---- VISIBLE MOBILE D-PAD: SLIDER + JUMP BUTTON ----
+const mcJump = document.getElementById('mc-jump');
 
 function bindHoldButton(el, onDown, onUp) {
   const down = e => { e.preventDefault(); el.classList.add('pressed'); onDown(); };
@@ -575,9 +637,62 @@ function bindHoldButton(el, onDown, onUp) {
   el.addEventListener('mouseleave',up);
 }
 
-bindHoldButton(mcLeft,  () => keys.left = true,  () => keys.left = false);
-bindHoldButton(mcRight, () => keys.right = true, () => keys.right = false);
-bindHoldButton(mcJump,  () => { jumpPressed = true; keys.jump = true; }, () => keys.jump = false);
+bindHoldButton(mcJump, () => { jumpPressed = true; keys.jump = true; }, () => keys.jump = false);
+
+// ---- SLIDER (drag left/right anywhere on the track) ----
+const sliderTrack = document.getElementById('mc-slider-track');
+const sliderThumb  = document.getElementById('mc-slider-thumb');
+let sliderActive = false;
+
+function sliderUpdateFromX(clientX) {
+  const rect = sliderTrack.getBoundingClientRect();
+  const center = rect.left + rect.width / 2;
+  const halfW  = rect.width / 2 - 26; // keep thumb fully inside track
+  let offset = clientX - center;
+  offset = Math.max(-halfW, Math.min(halfW, offset));
+
+  // Move the visual thumb
+  sliderThumb.style.left = `calc(50% + ${offset}px)`;
+
+  // Dead zone near center so resting near middle doesn't drift
+  const deadZone = 10;
+  if (offset < -deadZone) {
+    keys.left = true; keys.right = false;
+  } else if (offset > deadZone) {
+    keys.right = true; keys.left = false;
+  } else {
+    keys.left = false; keys.right = false;
+  }
+}
+
+function sliderReset() {
+  sliderActive = false;
+  keys.left = false; keys.right = false;
+  sliderThumb.style.left = '50%';
+  sliderThumb.classList.remove('active');
+}
+
+function sliderStart(clientX) {
+  sliderActive = true;
+  sliderThumb.classList.add('active');
+  sliderUpdateFromX(clientX);
+}
+
+sliderTrack.addEventListener('touchstart', e => {
+  e.preventDefault();
+  sliderStart(e.touches[0].clientX);
+}, {passive:false});
+sliderTrack.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (sliderActive) sliderUpdateFromX(e.touches[0].clientX);
+}, {passive:false});
+sliderTrack.addEventListener('touchend',    e => { e.preventDefault(); sliderReset(); }, {passive:false});
+sliderTrack.addEventListener('touchcancel', e => { e.preventDefault(); sliderReset(); }, {passive:false});
+
+// Mouse support for desktop testing
+sliderTrack.addEventListener('mousedown', e => sliderStart(e.clientX));
+window.addEventListener('mousemove', e => { if (sliderActive) sliderUpdateFromX(e.clientX); });
+window.addEventListener('mouseup', () => { if (sliderActive) sliderReset(); });
 
 document.getElementById('btn-start').addEventListener('click', startGame);
 document.getElementById('btn-retry').addEventListener('click', startGame);
@@ -772,9 +887,20 @@ function showBigRocketFlash() {
   setTimeout(() => el.remove(), 1800);
 }
 
-function showWarn(msg, ms=1400) {
-  document.getElementById('hud-warn').innerHTML = `<span class="hwarn">${msg}</span>`;
-  setTimeout(() => { document.getElementById('hud-warn').textContent=''; }, ms);
+// Center-screen popup for powerup pickups, bean attacks, bouncy clouds, etc.
+// Pops in big at center, holds briefly, then drifts upward and fades.
+let powerupPopupTimer = null;
+function showWarn(msg, holdMs=900) {
+  const el = document.getElementById('powerup-popup');
+  if (powerupPopupTimer) clearTimeout(powerupPopupTimer);
+  el.textContent = msg;
+  el.classList.remove('pop','drift');
+  void el.offsetWidth; // force reflow so re-triggering the animation works every time
+  el.classList.add('pop');
+  powerupPopupTimer = setTimeout(() => {
+    el.classList.remove('pop');
+    el.classList.add('drift');
+  }, holdMs);
 }
 
 // ================================================================
@@ -820,7 +946,7 @@ function initGame() {
 function startGame() {
   ['scr-start','scr-gameover','scr-win','scr-pause'].forEach(id =>
     document.getElementById(id).classList.add('hidden'));
-  document.getElementById('unlock-toast').classList.remove('show','hide');
+  document.getElementById('unlock-toast').classList.remove('center','corner','fadeout');
   isPaused = false;
   initGame();
   running=true;
@@ -862,17 +988,28 @@ function checkUnlocks() {
     unlockedCount++;
     updateMilestones();
     playUnlockChime();
-    // Corner toast — no game pause
+
     const toast = document.getElementById('unlock-toast');
     document.getElementById('t-art').src = album.img;
     document.getElementById('t-name').textContent = album.name;
-    toast.classList.remove('hide');
-    toast.classList.add('show');
+
+    // Reset to starting (center, invisible) state, then pop in big at center
+    toast.classList.remove('center','corner','fadeout');
+    // Force reflow so the next class add re-triggers transition cleanly
+    void toast.offsetWidth;
+    toast.classList.add('center');
+
+    // After a beat at center, slide down into the corner badge
     setTimeout(() => {
-      toast.classList.remove('show');
-      toast.classList.add('hide');
+      toast.classList.remove('center');
+      toast.classList.add('corner');
+    }, 1100);
+
+    // Then fade out from the corner
+    setTimeout(() => {
+      toast.classList.add('fadeout');
       if (unlockedCount >= ALBUMS.length) setTimeout(winGame, 300);
-    }, 2200);
+    }, 2600);
   }
 }
 
