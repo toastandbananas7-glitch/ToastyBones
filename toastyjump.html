@@ -92,6 +92,30 @@
     /* Rocket boost screen tint */
     #boost-overlay{position:absolute;inset:0;pointer-events:none;z-index:100;background:rgba(255,51,85,0);transition:background 0.1s;}
     #boost-overlay.active{background:rgba(255,51,85,0.08);}
+    /* OPTIONS MENU (audio controls) */
+    #options-btn{
+      position:absolute; top:8px; right:8px; z-index:250;
+      background:rgba(0,0,0,0.6); border:1px solid #2a2a2a; border-radius:6px;
+      width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; cursor:pointer; color:#888; transition:all 0.15s;
+    }
+    #options-btn:hover{border-color:var(--green); color:var(--green);}
+    #options-panel{
+      position:absolute; top:48px; right:8px; z-index:250;
+      background:rgba(0,0,0,0.94); border:1px solid var(--green); border-radius:8px;
+      padding:10px; display:none; flex-direction:column; gap:6px; min-width:160px;
+      box-shadow:0 0 20px rgba(0,255,65,0.15);
+    }
+    #options-panel.show{display:flex;}
+    .opt-track{font-family:'VT323',monospace; font-size:0.7rem; color:#555; text-align:center; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .opt-row{display:flex; gap:4px;}
+    .opt-btn{
+      flex:1; background:#0d0d0d; border:1px solid #2a2a2a; border-radius:4px;
+      color:#888; font-family:'VT323',monospace; font-size:0.95rem; padding:6px 4px;
+      cursor:pointer; transition:all 0.15s; text-align:center;
+    }
+    .opt-btn:hover{border-color:var(--green); color:var(--green); background:rgba(0,255,65,0.08);}
+    .opt-btn.muted{border-color:var(--red); color:var(--red);}
   </style>
 </head>
 <body>
@@ -104,6 +128,17 @@
   <div id="tap-right"></div>
   <div id="tap-jump"></div>
   <div id="boost-overlay"></div>
+
+  <!-- Audio Options -->
+  <div id="options-btn" title="Music options">⚙</div>
+  <div id="options-panel">
+    <div class="opt-track" id="opt-track-name">—</div>
+    <div class="opt-row">
+      <div class="opt-btn" id="opt-prev" title="Previous track">⏮</div>
+      <div class="opt-btn" id="opt-mute" title="Mute/unmute">🔊</div>
+      <div class="opt-btn" id="opt-next" title="Next track">⏭</div>
+    </div>
+  </div>
 
   <!-- HUD -->
   <div id="hud">
@@ -201,10 +236,21 @@ const ALBUMS = [
 const TOTAL_PTS = 2280;
 
 const BGM_TRACKS = [
-  'sounds/toastyjumpBGM1.mp3',
-  'sounds/toastyjumpBGM2.mp3',
-  'sounds/toastyjumpBGM3.mp3',
-  'sounds/toastyjumpBGM4.mp3',
+  'gamemusic/BackupYourData.mp3',
+  'gamemusic/Bubble.mp3',
+  'gamemusic/DopamineRush.mp3',
+  'gamemusic/GoingCrazy.mp3',
+  'gamemusic/I\'mNotListening.mp3',
+  'gamemusic/IckySticky.mp3',
+  'gamemusic/IntoTheDark.mp3',
+  'gamemusic/MakesMeGlitch.mp3',
+  'gamemusic/MyNameIsToastyBones.mp3',
+  'gamemusic/SantasGotBeef.mp3',
+  'gamemusic/SuperDuper.mp3',
+  'gamemusic/toastyjumpBGM1.mp3',
+  'gamemusic/toastyjumpBGM2.mp3',
+  'gamemusic/toastyjumpBGM3.mp3',
+  'gamemusic/toastyjumpBGM4.mp3',
 ];
 
 // ================================================================
@@ -265,6 +311,7 @@ function playNextBGM() {
   bgmAudio.load();
   const p = bgmAudio.play();
   if (p) p.catch(() => {});
+  updateTrackLabel();
 }
 bgmAudio.addEventListener('ended', playNextBGM);
 bgmAudio.addEventListener('error', () => {
@@ -276,6 +323,60 @@ function stopBGM() {
   bgmAudio.pause();
   bgmAudio.src = '';
 }
+
+function playPrevBGM() {
+  if (!bgmShuffled.length) shuffleBGM();
+  bgmIndex = (bgmIndex - 1 + bgmShuffled.length) % bgmShuffled.length;
+  bgmAudio.src = bgmShuffled[bgmIndex];
+  bgmAudio.load();
+  const p = bgmAudio.play();
+  if (p) p.catch(() => {});
+  updateTrackLabel();
+}
+
+function trackDisplayName(path) {
+  if (!path) return '—';
+  const file = path.split('/').pop().replace('.mp3', '');
+  // Insert spaces before capital letters for readability
+  return file.replace(/([a-z])([A-Z])/g, '$1 $2');
+}
+
+function updateTrackLabel() {
+  const el = document.getElementById('opt-track-name');
+  if (el) el.textContent = trackDisplayName(bgmAudio.src);
+}
+
+// ---- OPTIONS MENU WIRING ----
+let bgmMuted = false;
+const optionsBtn   = document.getElementById('options-btn');
+const optionsPanel = document.getElementById('options-panel');
+const optMuteBtn   = document.getElementById('opt-mute');
+
+optionsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  optionsPanel.classList.toggle('show');
+});
+document.addEventListener('click', (e) => {
+  if (!optionsPanel.contains(e.target) && e.target !== optionsBtn) {
+    optionsPanel.classList.remove('show');
+  }
+});
+
+document.getElementById('opt-next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  playNextBGM();
+});
+document.getElementById('opt-prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  playPrevBGM();
+});
+optMuteBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  bgmMuted = !bgmMuted;
+  bgmAudio.muted = bgmMuted;
+  optMuteBtn.textContent = bgmMuted ? '🔇' : '🔊';
+  optMuteBtn.classList.toggle('muted', bgmMuted);
+});
 
 // ================================================================
 // CONSTANTS
@@ -376,11 +477,11 @@ function generateUp() {
     const platW = Math.round(130 - t * 50);
 
     // Horizontal: pure random across full width, but nudge toward center over time
-    // so platforms never cluster on one side
+    // so platforms never cluster on one side. Capped so it's always within jump reach (~280px).
     const margin = 20;
-    // Bias: pull toward center with one roll averaged against a center-biased roll
+    const maxReach = 240; // safe horizontal jump distance, leaves margin under physics max (~280px)
     const fullRand = margin + Math.random() * (W - platW - margin * 2);
-    const centBias = (W / 2 - platW / 2) + (Math.random() - 0.5) * (W * 0.5);
+    const centBias = (W / 2 - platW / 2) + (Math.random() - 0.5) * Math.min(W * 0.5, maxReach * 2);
     const centClamped = Math.max(margin, Math.min(W - platW - margin, centBias));
     // 50/50 blend — completely random half the time, center-biased half the time
     const x = Math.round(Math.random() < 0.5 ? fullRand : centClamped);
