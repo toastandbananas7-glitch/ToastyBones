@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toasty or Not? — A ToastyBones Guessing Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#fffb00;
+    --magenta:#ff00ff;
+    --cyan:#00ffff;
+    --green:#00ff41;
+    --red:#ff2244;
+    --bg:#05050a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    background-image:radial-gradient(900px 500px at 50% -10%,#1a0a2a 0%,var(--bg) 60%);
+    color:#fff;
+    font-family:'Share Tech Mono',monospace;
+    overflow:hidden;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  /* CRT overlay to match the main site */
+  body::after{
+    content:"";
+    position:fixed;inset:0;z-index:90;pointer-events:none;
+    background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(0,0,0,.16) 2px 4px);
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:91;pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.7) 100%);
+  }
+  #stage{
+    height:100vh;height:100dvh;
+    display:flex;flex-direction:column;align-items:center;
+    padding:12px;gap:10px;max-width:640px;margin:0 auto;
+    position:relative;
+  }
+  /* ---------- header ---------- */
+  #top{
+    width:100%;display:flex;align-items:center;gap:10px;
+    font-size:13px;letter-spacing:1px;
+  }
+  #top .logo{
+    font-family:'Orbitron',sans-serif;color:var(--yellow);
+    font-size:15px;
+    text-shadow:0 0 6px var(--magenta),0 0 14px var(--cyan);
+    white-space:nowrap;
+  }
+  #top .spacer{flex:1;}
+  #scoreLbl b,#bestLbl b{color:var(--yellow);}
+  #strikes{color:var(--red);font-size:15px;letter-spacing:2px;text-shadow:0 0 8px rgba(255,34,68,.8);}
+  /* ---------- streak meter ---------- */
+  #streakBar{
+    width:100%;display:flex;align-items:center;gap:8px;font-size:11px;color:#aaa;
+  }
+  #streakFill{
+    flex:1;height:8px;background:#111;border:1px solid #333;border-radius:4px;overflow:hidden;
+  }
+  #streakFill i{
+    display:block;height:100%;width:0%;
+    background:linear-gradient(90deg,var(--yellow),var(--magenta));
+    transition:width .25s;
+  }
+  #multi{color:var(--cyan);font-weight:bold;min-width:38px;text-align:right;}
+  /* ---------- card ---------- */
+  #cardZone{
+    flex:1;width:100%;display:flex;align-items:center;justify-content:center;
+    perspective:900px;min-height:0;
+  }
+  #card{
+    width:100%;
+    background:rgba(0,0,0,.72);
+    border:2px solid var(--yellow);
+    border-radius:16px;
+    padding:26px 20px;
+    text-align:center;
+    box-shadow:0 0 24px rgba(255,251,0,.18),inset 0 0 40px rgba(0,0,0,.6);
+    transition:transform .15s, border-color .2s, box-shadow .2s;
+    position:relative;
+  }
+  #card .eyebrow{
+    font-size:10px;letter-spacing:4px;color:var(--magenta);
+    text-shadow:0 0 8px rgba(255,0,255,.7);
+  }
+  #title{
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(20px,5.5vw,34px);
+    color:var(--yellow);
+    margin:16px 0;
+    line-height:1.25;
+    text-shadow:0 0 5px #fff,0 0 12px var(--magenta),0 0 24px var(--cyan);
+    min-height:2.4em;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #card.right{border-color:var(--green);box-shadow:0 0 34px rgba(0,255,65,.5);}
+  #card.wrong{border-color:var(--red);box-shadow:0 0 34px rgba(255,34,68,.5);animation:shakeCard .3s;}
+  @keyframes shakeCard{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-8px) rotate(-1deg);}
+    75%{transform:translateX(8px) rotate(1deg);}
+  }
+  /* reveal panel inside the card */
+  #reveal{
+    display:none;align-items:center;gap:12px;justify-content:center;
+    margin-top:8px;text-align:left;
+  }
+  #reveal img{
+    width:56px;height:56px;border-radius:8px;object-fit:cover;
+    border:2px solid var(--yellow);flex-shrink:0;
+    box-shadow:0 0 12px rgba(255,251,0,.4);
+  }
+  #reveal .verdict{font-family:'Orbitron',sans-serif;font-size:16px;}
+  #reveal .verdict.real{color:var(--green);text-shadow:0 0 10px rgba(0,255,65,.7);}
+  #reveal .verdict.fake{color:var(--red);text-shadow:0 0 10px rgba(255,34,68,.7);}
+  #reveal .sub{font-size:12px;color:#ccc;margin-top:3px;max-width:280px;}
+  /* timer */
+  #timerWrap{
+    width:100%;height:10px;background:#111;border:1px solid #333;border-radius:5px;overflow:hidden;
+  }
+  #timerWrap i{
+    display:block;height:100%;width:100%;
+    background:linear-gradient(90deg,var(--cyan),var(--green));
+    transition:width .1s linear;
+  }
+  #timerWrap.hot i{background:linear-gradient(90deg,var(--red),var(--yellow));}
+  /* ---------- buttons ---------- */
+  #btns{
+    width:100%;display:flex;gap:12px;
+  }
+  .choice{
+    flex:1;
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(16px,4vw,22px);
+    padding:18px 8px;
+    border-radius:14px;
+    border:2px solid;
+    background:#0c0c14;
+    cursor:pointer;
+    letter-spacing:2px;
+    transition:transform .08s, box-shadow .15s, background .15s, color .15s;
+    touch-action:manipulation;
+  }
+  .choice:active{transform:scale(.96);}
+  #btnReal{color:var(--green);border-color:var(--green);box-shadow:0 0 14px rgba(0,255,65,.25),0 4px 0 #005c18;}
+  #btnReal:hover{background:var(--green);color:#000;box-shadow:0 0 26px rgba(0,255,65,.7),0 4px 0 #005c18;}
+  #btnFake{color:var(--red);border-color:var(--red);box-shadow:0 0 14px rgba(255,34,68,.25),0 4px 0 #6d0018;}
+  #btnFake:hover{background:var(--red);color:#000;box-shadow:0 0 26px rgba(255,34,68,.7),0 4px 0 #6d0018;}
+  .choice small{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;opacity:.6;margin-top:4px;}
+  .choice:disabled{opacity:.45;cursor:default;}
+  /* ---------- quip line ---------- */
+  #quip{
+    width:100%;text-align:center;font-size:13px;color:#bbb;min-height:18px;
+    letter-spacing:.5px;
+  }
+  #doneBtn{
+    margin:0 auto;
+    background:transparent;border:1px solid #444;color:#888;
+    font-family:'Share Tech Mono',monospace;font-size:11px;
+    letter-spacing:2px;padding:6px 18px;border-radius:8px;cursor:pointer;
+    transition:all .2s;
+  }
+  #doneBtn:hover{border-color:var(--yellow);color:var(--yellow);box-shadow:0 0 10px rgba(255,251,0,.3);}
+  /* ---------- overlays ---------- */
+  .overlay{
+    position:fixed;inset:0;z-index:95;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(3,3,8,.94);
+    text-align:center;padding:24px;gap:16px;
+  }
+  .overlay h1{
+    font-family:'Orbitron',sans-serif;
+    color:var(--yellow);
+    font-size:clamp(26px,7vw,44px);
+    letter-spacing:3px;
+    text-shadow:0 0 10px #fff,0 0 24px var(--magenta),0 0 48px var(--cyan);
+    animation:titleGlitch 1.2s infinite;
+  }
+  @keyframes titleGlitch{
+    0%,100%{transform:translate(0);}
+    20%{transform:translate(-1px,1px);}
+    40%{transform:translate(1px,-1px);}
+    60%{transform:translate(-2px,2px);}
+    80%{transform:translate(2px,-2px);}
+  }
+  .overlay p{color:#ddd;font-size:14px;max-width:460px;line-height:1.7;}
+  .overlay .hint{color:#888;font-size:12px;}
+  .bigbtn{
+    font-family:'Orbitron',sans-serif;
+    font-size:18px;letter-spacing:2px;
+    background:var(--yellow);color:#000;
+    border:none;border-radius:10px;
+    padding:16px 42px;cursor:pointer;
+    box-shadow:0 0 24px rgba(255,251,0,.5),0 4px 0 #887700;
+    transition:all .15s;
+  }
+  .bigbtn:hover{background:var(--magenta);color:#fff;box-shadow:0 0 34px rgba(255,0,255,.8),0 4px 0 #660066;}
+  .overlay table{border-collapse:collapse;font-size:14px;}
+  .overlay td{padding:3px 12px;color:#eee;text-align:left;}
+  .overlay td:first-child{color:#888;text-align:right;}
+  #rank{
+    font-family:'Orbitron',sans-serif;color:var(--cyan);font-size:20px;letter-spacing:2px;
+    text-shadow:0 0 14px rgba(0,255,255,.8);
+  }
+  #backLink{
+    position:fixed;top:10px;left:10px;z-index:96;
+    color:#888;font-size:11px;text-decoration:none;letter-spacing:1px;
+  }
+  #backLink:hover{color:var(--yellow);}
+  /* streak flame banner */
+  #flame{
+    position:fixed;top:22%;left:0;right:0;z-index:94;
+    text-align:center;pointer-events:none;
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(22px,6vw,38px);letter-spacing:5px;
+    color:var(--yellow);
+    text-shadow:0 0 18px var(--magenta),0 0 40px var(--cyan);
+    opacity:0;transition:opacity .2s;
+  }
+</style>
+</head>
+<body>
+
+<a id="backLink" href="index.html">◀ TOASTYBONES.COM</a>
+<div id="flame"></div>
+
+<!-- START -->
+<div class="overlay" id="startOv">
+  <h1>TOASTY or NOT?</h1>
+  <p>I show you a track title. If it's a real ToastyBones song, it's <b style="color:var(--green)">TOASTY</b>.
+  If I made it up, it's <b style="color:var(--red)">NOT</b>.<br><br>
+  Sounds easy. It is not. The real catalog contains a wizard made of beans.</p>
+  <p class="hint"><b style="color:var(--cyan)">ENDLESS MODE</b> — it goes until your 3 hearts run out,
+  or until you hit <b>I'M DONE</b> and cash out on your own terms.<br>
+  Answer fast for bonus points • streaks multiply everything<br>
+  Keyboard: [←] or [T] = TOASTY &nbsp;•&nbsp; [→] or [N] = NOT</p>
+  <button class="bigbtn" onclick="startGame()">▶ START</button>
+</div>
+
+<!-- GAME OVER -->
+<div class="overlay" id="endOv" style="display:none;">
+  <h1 id="endTitle">GAME OVER</h1>
+  <div id="rank"></div>
+  <table>
+    <tr><td>Score</td><td id="rScore"></td></tr>
+    <tr><td>Correct</td><td id="rCorrect"></td></tr>
+    <tr><td>Best streak</td><td id="rStreak"></td></tr>
+    <tr><td>Accuracy</td><td id="rAcc"></td></tr>
+    <tr><td>Session best</td><td id="rBest"></td></tr>
+  </table>
+  <p id="endQuip" class="hint"></p>
+  <button class="bigbtn" onclick="startGame()">↻ PLAY AGAIN</button>
+</div>
+
+<!-- GAME -->
+<div id="stage">
+  <div id="top">
+    <span class="logo">🍞☠️ TOASTY or NOT?</span>
+    <span class="spacer"></span>
+    <span id="scoreLbl">SCORE <b id="score">0</b></span>
+    <span id="strikes">♥♥♥</span>
+  </div>
+  <div id="streakBar">
+    <span>STREAK</span>
+    <div id="streakFill"><i></i></div>
+    <span id="multi">×1</span>
+  </div>
+  <div id="cardZone">
+    <div id="card">
+      <div class="eyebrow">TRACK TITLE #<span id="qNum">1</span></div>
+      <div id="title">…</div>
+      <div id="reveal">
+        <img id="revImg" alt="" style="display:none;">
+        <div>
+          <div class="verdict" id="revVerdict"></div>
+          <div class="sub" id="revSub"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="timerWrap"><i id="timerFill"></i></div>
+  <div id="btns">
+    <button class="choice" id="btnReal" onclick="answer(true)">TOASTY<small>[←] or [T]</small></button>
+    <button class="choice" id="btnFake" onclick="answer(false)">NOT<small>[→] or [N]</small></button>
+  </div>
+  <div id="quip"></div>
+  <button id="doneBtn" onclick="cashOut()" title="End your run and see your final score">🏁 I'M DONE</button>
+</div>
+
+<script>
+/* ============================================================
+   TOASTY or NOT? — a ToastyBones guessing game
+   Real pool = every track title + every album title (all REAL).
+   Fake pool = 160 imposters. 50/50 draw each round so you
+   can't cheese it. No saves — session best only.
+   ============================================================ */
+
+const ALBUMS=[
+{name:"Unscheduled Programming",cover:"prog.png",tracks:["Back to The Future Again!","Backup Your Data","Bubble","I've Never Seen Star Wars","My Pi","Poppy is a Pokémon"]},
+{name:"Isle of Beans",cover:"IsleBeans.png",tracks:["Give Me A Minute","I'm Just Stupid","Mistakes","My Destination is You","No Escape","Push","Story Topper","The Wizard of Beans","Wildcat","You Hate My Songs"]},
+{name:"Ear-aid",cover:"ear-aid.png",tracks:["Can't Relate","Going Crazy","I Wanna Go Home","My Own Downfall","Nothing's Going My Way","Off Centered","Play-Doh!","Sleep is Overrated","Things Taste Better When They're Triangle Shaped","Tooginunk!"]},
+{name:"Fully Panted",cover:"pant.png",tracks:["A Day in the Life of Me","Ablaze","Boomerang","Glass Balloon","Knot Gnomes","Less and Less","No More","Pretty Sure I'm a Zombie","Soda Pop","The Cat's in the Cabinet"]},
+{name:"Lovey Dovey",cover:"loveydovey.png",tracks:["A Hug and A Kiss","All This Time","Always You and Me","C","Fairytales","For A Little Bit","Here With Me","It Works for Me","My Number One","Sweet Chelsey","Tie-dye Heart"]},
+{name:"Big Dump",cover:"BIGDUMP.png",tracks:["Bryan","Cult of Bryan","Food For Thought","I Can See It","I Know You Know","I Think I'm an AI Bot!","I Wonder What's Under Diglett?","In Your Face!","It's Me","It's Time To Suffer Bro!","Just One More Song","Life Away","Losing You","Misty, Oh Misty!","Moving On","My Sunglasses","Push Me Away","Songs Like This","Spring Nights","Stop Taking Photos","Stuck","Where We're Supposed To Be"]},
+{name:"Mystery Clown",cover:"mysteryclown.png",tracks:["Destined For Better Things","Fart in the Wind","I Guess I'm Stuck","I'm Not Okay","Let Go","My Pillow's Trying To Kill Me","Paper and Copper","Solidarity for My Sanity","The Jack of all Hats","Wasting All My Time"]},
+{name:"The Legend of Duke",cover:"LOD.png",tracks:["Duke","Have You Met Isaac?","Lie on Your Resume","Monster","Sleep America","The Forty Beer Man","The Jester of Beers","The Trip is Over","The Ultimate Anime Showdown","We All Fall Down","You Might be Right"]},
+{name:"Mans Breath",cover:"MANSBREATH.png",tracks:["Don't Be So Hard On Yourself","I Can't Let Go","Just One Bad Day?","LeBear and the Bear","Mirror Maze","Perfect","Quirks","Something About You","Take Me Back","You Haven't Lived It Yet"]},
+{name:"Neon Banana",cover:"Nbanana.png",tracks:["Banana (Na Na)","Get Loose!","Get Me Outta Here!","I Wish","La","Level Up!","Lost","Masters of the Banana Hands","Mr. Beast Can Save The World","My Superstar!","Oh Sweet Gus","Otamatone","The Unoriginality Song","Where Is He?","You're Toxic!"]},
+{name:"Sharing Socks with Strangers",cover:"ssws.png",tracks:["Another Bad Idea","Can You?","Childhood Problems","Clone Hero Pop Punk Star","I Can't Complain","I Think It's ADHD","I'm Not Buying It!","My Favorite Bands","Paradise Lost","Punk Rock Man","This Time","Two Eggs and A Beer","Unfortunately I'm a Millennial","Urticaria","Wait and See","You're A Snake"]},
+{name:"Boney Hollow",cover:"bh.png",tracks:["A Sliver of Me","Brew You!","Candy Tax!","Guy with a Chainsaw","Icky Sticky!","Into The Dark","Just a Ghost","My Knife's Bigger Than Yours","My Own Little Alien!","The Dragon Has Awoken","The Gunslinger","Trunk-or-Treat","What The Hex"]},
+{name:"Black and Blue and Punk All Over",cover:"babapao.png",tracks:["All My Friends","Attention Span","Because You Planned It!","Changes","Dear AI","Don't Forget!","Everyone's A Sock!","Gotta Poop!","Here We Go Again","Hurry Up and Wait!","Hypocritical!","In The Foot","Inside Joke To Me","Music Sucks","My Own Favorite Band!","MyNameIsToastyBones","Nobody Likes Pop Punk Anymore","Pop Punk Serenade","The Way That I Do","Till The End","What I Love About You"]},
+{name:"Midnight Suppository",cover:"ms.png",tracks:["After Halloween","All I Want for Christmas is Suno","Candy Cane Catheter","Chocolate Umbrellas","Don't Buy Me Gift Cards For Christmas","Don't Forget About Mel","Frosty the Colon","It's That Time of Year Again!","Make Your List","Next Year Will Come (Fly Away)","Polar Arcade","Quensiwal, Quensiwal","Santa's Little Bombshell","Sugar Town","Thanksgiving Up!","The Saint of Suno","Too Many Candy Canes","Winter Blows!","Wishbone Tragedy","Workin' On Christmas"]},
+{name:"Festive Flush",cover:"ffalbum.png",tracks:["A Warm Christmas Sock","Christmas Childhood","Dookie Dan","Five Dollars for You (No, Seriously!)","Holy Socks","Homesick","I Hope Your Christmas is Okay","Ice in the Machine","In The Christmas Tree","It's Boxing Day","Pirate Ship For Christmas","Santa Demands a Sacrifice","Santa's Got Beef","The Book of Gus","Zombie Rudolph"]},
+{name:"The Great Indoors",cover:"TGInew.png",tracks:["Anime Tears","Crazy Bazer","Don't Let it Get To You","Falling Again","In My Head","Isaac In The Dark","Junk Mail","Just Breathe","Just My Luck","Leap","Life is Like Journey to the Center of the Earth","Made for Me","Nothing is Real!","Question Everything","Super Duper","The Opposite","The Squid"]},
+{name:"Spobbly Not",cover:"spobbly not.png",tracks:["Already Over It","Beat Around The Bush","Bound for Better Days","Creatures of Habit","Ended Up On Another Planet","Gaming With The Boys","I Fall","I Get The Gist","Makes Me Glitch","My Old Friend, Time","Only In It For Me","She Settled For Me","The Government Wants Us Dead","There's Always Next Year!","When I'm Down","Wigwam!","You've Changed"]},
+{name:"Big Dump 2; Return of the Dump",cover:"bd2rotd.png",tracks:["Beach Trip in Our 30s","BFMK","Can't Go Tonight","Can't Stop","Don't Look Back","Except The Easy Way","Farts","I Caught A Pokemon!","I Should Never","I'm Burning Out","Kick It!","Me vs. The State of Florida","Michael of War","My Carhartt Heart","No One Cares","Pinkysong","Pop Punk Kid Again","Sausages in the Sand","Secret Pocket","Sober Up By Noon","The Duke of Bryan","The Rain","These Bands","Thunder Dump","Trap[ped] In an Elevator","Used To Be"]},
+{name:"Hilariously Unfortunate",cover:"HilariouslyUnfortunate.png",tracks:["Born to be Reckless","Candy Rose","Content Today","Grew Apart","Headache Again","I Do It To Myself","Into The Void","Katie's Got Rabies!","Not My Style","Same as Before","Sign Me Up!","The Weekend's Here","They Sold My Data Again","Two Red Ants!","We Don't Care","Wipe Your Tears Away"]},
+{name:"Efforts and Errors",cover:"EE.png",tracks:["Bonga Tonga!","Bored Games","Dopamine Rush","Drowning","Fade Away","Focus","I Can't Help You","I Know Who I Am","I'm Not Listening","I'm Not Surprised","Instagram Kinda Sucks","Lost a Friend to AI","Momentum","Never Again","No Taste","Overstimulated!","Party By Myself Again","Pixelated!","Secondhand Embarrassment","Secret Ingredient","Sucker for a Sappy Love Song","Take Care of You!","The Truth","Under The Bus","Waiting Now","What a Shame"]},
+{name:"Defeat The Purpose",cover:"defeatthepurpose.png",tracks:["Ambiguous Ambitions","Buttercup","Cardboard Box","I Don't Like Horses","I Hope You're Doing Well","I'm Just a Loser","Indian Robots!","Knock Me Down","Lifeline","Never Left Our Hearts Behind","Right In Front of Me","Sleep Circus","Spoken Out of Existence","That's What I Like","The Troubleshooter","Waste","With All Due Respect (No Offense)"]}
+];
+
+/* 160 imposters, ToastyBones-flavored. None are real titles. */
+const FAKES=[
+"Couch Cushion Fortress","My Blood Type is Coffee","Screaming Into the Toaster","The Ballad of Expired Coupons",
+"I Left My Brain in the Car","Socks Optional!","Grandma's Haunted Microwave","We Ran Out of Ranch",
+"Existential Crisis at the Buffet","My Wi-Fi Hates Me","Skeleton Car Wash","Please Clap",
+"Taco Tuesday Forever","I'm Allergic to Mondays","The Mailman Knows Too Much","Glow in the Dark Regrets",
+"Diet Lava","Crying in the Drive-Thru","My Lawn Gnome is Judging Me","Bees in the Basement",
+"Refrigerator Light Philosophy","I Peaked in Preschool","Spaghetti Incident Report","The Couch Ate My Keys",
+"Bring Back Dial-Up","Yelling at Clouds Again","Free Samples of Doom","My Shadow Quit",
+"Microwave Minute Eternity","Pizza for Breakfast Manifesto","The Squirrels Are Organizing","Duct Tape Romance",
+"I Lost the Aux Cord","Garage Sale Ghost","Bubble Wrap Therapy","Vampire Dentist Appointment",
+"Two Left Shoes","The Ice Cream Truck Never Came","Fluorescent Grocery Blues","My Plants Are Plotting",
+"Cereal Before Milk Gang","Screensaver of My Heart","Sentient Roomba Uprising","Napping Through the Apocalypse",
+"Extra Cheese Existentialism","The Dryer Eats Alone","Passive Aggressive Post-It Notes","Parallel Parking Panic",
+"Lint Roller Lullaby","My Bones Are Cold","Shopping Cart Full of Feelings","The Neighbors Have a Trampoline",
+"Batteries Not Included, Ever","Sweatpants Are a Lifestyle","Fish Tank Daydream","Off-Brand Superhero",
+"Ketchup Packet Hoarder","The Elevator Music Won","I Forgot Why I Walked In Here","Sunburn in the Shade",
+"My Cat Pays Rent in Chaos","Trampoline Tax","Decaf Is a Scam","Porch Light Paranoia",
+"The Great Sock Migration","Emotional Support Burrito","Snooze Button Champion","Lawnmower Symphony No. 5",
+"Haunted Bounce House","My Password Is Password","Toothpaste on the Ceiling","Group Project Nightmares",
+"The Vending Machine Owes Me","Barefoot on Legos","Cul-de-sac Rockstar","Expired Milk Confessional",
+"Static Cling Forever","The Thermostat Wars","Waffle Iron Wisdom","My Imaginary Friend Moved Out",
+"Traffic Cone Collection","Screaming Goat Serenade","The Basement Stairs Creak Back","Glitter Never Leaves",
+"Doorbell Anxiety","Leftover Lasagna Legacy","My Knees Predict the Weather","Shower Thoughts at 3AM",
+"The Remote Is in the Fridge","Participation Trophy Hall of Fame","Vacuum Cord Range Anxiety","Bird Watching the Birds Watch Me",
+"Mystery Smell in the Minivan","Crocs and Socks Nation","The Printer Smells Fear","Pothole Slalom",
+"My Horoscope Said No","Backyard Cryptid Barbecue","Untangling Christmas Lights Since Birth","The Goldfish Knows My Secrets",
+"Airplane Mode Heart","Free Wi-Fi and False Hope","Buffering...","Ctrl+Z My Life",
+"Low Battery Anthem","Unskippable Ad","Terms and Conditions Apply","My Autocorrect Is a Poet",
+"Four Bars of Nothing","Update Required","The Cloud Lost My Homework","Roomba Wedding",
+"Screen Time Shame Spiral","Incognito Mode Feelings","Pop Punk Grandpa","Mosh Pit at the Farmers Market",
+"Acoustic Version of My Problems","The Drummer Left for College","Garage Band Eviction Notice","Encore Nobody Asked For",
+"Soundcheck at Dawn","Merch Table Millionaire","Three Chords and a Grudge","Kazoo Solo!",
+"The Amp Goes to Eleven-ish","Setlist Written in Crayon","Tour Bus Is My Mom's Van","Autotune My Apology",
+"B-Side of My Personality","Hidden Track Anxiety","Vinyl I Never Play","The Triangle Player's Revenge",
+"Skeleton Pit Crew","Bone Broth Breakup","Marrow Minded","Femur Fever!",
+"Calcium Deficiency Blues","Rattling On Purpose","Closet Full of Skeletons (Literal)","Toast Never Lands Butter Side Up",
+"Burnt Toast Prophecy","Artisanal Toast Riot","Jam Side Down","Sourdough Starter Drama",
+"Crust Punk Breakfast","The Butter Knife Betrayal","Gluten Full","Breadcrumb Trail to Nowhere",
+"Toaster Bath Warning Label","Rye Humor","Isaac Owes Me Five Bucks","Bryan Strikes Back",
+"Gus, You Rascal","Misty's Day Off","The Poop Deck","I Think I'm a Ghost Now",
+"Sleep Is a Suggestion","Anxiety Speedrun","My Brain Has Tabs Open","Dopamine on Layaway"
+];
+
+/* build the real pool: every track + every album title */
+const REALS=[];
+ALBUMS.forEach((a,i)=>{
+  a.tracks.forEach(t=>REALS.push({t,a:i,isAlbum:false}));
+  REALS.push({t:a.name,a:i,isAlbum:true});
+});
+
+/* quips */
+const Q={
+  rightReal:["A certified banger.","You know your Toasty.","Bryan would be proud.","Straight off the setlist.","The bones remember."],
+  rightFake:["You can't fool a true fan.","Nice try, me.","Imposter DETECTED.","Your BS meter is calibrated.","Not on any album. Yet."],
+  wrongReal:["That's a REAL song! Go listen to it!","It's on the album, I swear.","Betrayed by your own catalog knowledge.","Real. Painfully real."],
+  wrongFake:["I made that up. Gotcha.","That song does not exist. Yet.","Total fabrication. Sorry.","Fooled ya. It DOES sound right though."],
+  timeout:["Too slow! Indecision is a decision.","The clock is undefeated.","Hesitation = strike."]
+};
+const RANKS=[
+  [0,"OPENING ACT"],[10,"LOCAL LEGEND"],[20,"TOUR MANAGER"],
+  [35,"PUNK ROCK MAN"],[50,"TOASTYBONES HIMSELF"]
+];
+
+/* ---------- state ---------- */
+const TIME_LIMIT=10;
+let realDeck,fakeDeck,current,qNum,score,strikes,streak,bestStreak,correct,total;
+let sessionBest=0,timer,timeLeft,accepting=false,gameActive=false;
+let muted=false;
+
+/* ---------- audio ---------- */
+let AC=null;
+function beep(f,d,type="square",vol=.06){
+  if(muted)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(vol,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);
+    o.connect(g);g.connect(AC.destination);
+    o.start();o.stop(AC.currentTime+d);
+  }catch(e){}
+}
+const sfx={
+  right:()=>{beep(660,.1,"triangle",.08);setTimeout(()=>beep(990,.12,"triangle",.08),80);},
+  wrong:()=>beep(110,.3,"sawtooth",.09),
+  tick:()=>beep(1200,.03,"square",.03),
+  fanfare:()=>[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.15,"triangle",.08),i*80)),
+  over:()=>[330,262,196,131].forEach((f,i)=>setTimeout(()=>beep(f,.25,"sawtooth",.08),i*140)),
+};
+
+/* ---------- helpers ---------- */
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function multi(){return 1+Math.floor(streak/5)*0.5;}
+
+/* ---------- game flow ---------- */
+function startGame(){
+  document.getElementById("startOv").style.display="none";
+  document.getElementById("endOv").style.display="none";
+  realDeck=shuffle(REALS);
+  fakeDeck=shuffle(FAKES);
+  qNum=0;score=0;strikes=3;streak=0;bestStreak=0;correct=0;total=0;
+  gameActive=true;
+  updateTop();updateStreak();
+  nextQuestion();
+}
+function nextQuestion(){
+  // reshuffle a deck if it runs dry (long runs earn it)
+  if(!realDeck.length)realDeck=shuffle(REALS);
+  if(!fakeDeck.length)fakeDeck=shuffle(FAKES);
+  const isReal=Math.random()<0.5;
+  current=isReal
+    ? {...realDeck.pop(),real:true}
+    : {t:fakeDeck.pop(),real:false};
+  qNum++;
+  document.getElementById("qNum").textContent=qNum;
+  document.getElementById("title").textContent=current.t;
+  document.getElementById("reveal").style.display="none";
+  const card=document.getElementById("card");
+  card.classList.remove("right","wrong");
+  document.getElementById("quip").textContent="";
+  setButtons(true);
+  accepting=true;
+  startTimer();
+}
+function setButtons(on){
+  document.getElementById("btnReal").disabled=!on;
+  document.getElementById("btnFake").disabled=!on;
+}
+function startTimer(){
+  clearInterval(timer);
+  timeLeft=TIME_LIMIT;
+  const fill=document.getElementById("timerFill");
+  const wrap=document.getElementById("timerWrap");
+  wrap.classList.remove("hot");
+  fill.style.width="100%";
+  timer=setInterval(()=>{
+    timeLeft-=0.1;
+    fill.style.width=Math.max(0,(timeLeft/TIME_LIMIT)*100)+"%";
+    if(timeLeft<=3&&!wrap.classList.contains("hot")){wrap.classList.add("hot");}
+    if(timeLeft<=3&&Math.abs(timeLeft%1)<0.1)sfx.tick();
+    if(timeLeft<=0){clearInterval(timer);timeOut();}
+  },100);
+}
+function timeOut(){
+  if(!accepting||!gameActive)return;
+  accepting=false;setButtons(false);
+  strike(pick(Q.timeout));
+  showReveal(false,true);
+  setTimeout(afterReveal,1900);
+}
+function answer(saidReal){
+  if(!accepting)return;
+  accepting=false;setButtons(false);
+  clearInterval(timer);
+  total++;
+  const right=(saidReal===current.real);
+  const card=document.getElementById("card");
+  if(right){
+    correct++;streak++;if(streak>bestStreak)bestStreak=streak;
+    const speedBonus=Math.round(Math.max(0,timeLeft/TIME_LIMIT)*100);
+    const pts=Math.round((100+speedBonus)*multi());
+    score+=pts;
+    card.classList.add("right");
+    sfx.right();
+    document.getElementById("quip").textContent=
+      pick(current.real?Q.rightReal:Q.rightFake)+"  +"+pts;
+    if(streak>0&&streak%5===0){
+      showFlame(streak>=15?"🔥 UNSTOPPABLE ×"+multi():"🔥 ON FIRE ×"+multi());
+      sfx.fanfare();
+    }
+  }else{
+    strike(pick(current.real?Q.wrongReal:Q.wrongFake));
+  }
+  showReveal(right,false);
+  updateTop();updateStreak();
+  setTimeout(afterReveal,right?1200:2000);
+}
+function strike(msg){
+  strikes--;streak=0;
+  const card=document.getElementById("card");
+  card.classList.add("wrong");
+  sfx.wrong();
+  document.getElementById("quip").textContent=msg;
+  updateTop();updateStreak();
+}
+function showReveal(right,wasTimeout){
+  const rev=document.getElementById("reveal");
+  const img=document.getElementById("revImg");
+  const v=document.getElementById("revVerdict");
+  const sub=document.getElementById("revSub");
+  rev.style.display="flex";
+  if(current.real){
+    v.textContent="TOASTY ✔";v.className="verdict real";
+    const alb=ALBUMS[current.a];
+    sub.textContent=current.isAlbum
+      ? "That's a whole album, actually."
+      : "From the album \""+alb.name+"\"";
+    img.src=encodeURI(alb.cover);
+    img.style.display="block";
+    img.onerror=()=>{img.style.display="none";};
+  }else{
+    v.textContent="NOT TOASTY";v.className="verdict fake";
+    sub.textContent=wasTimeout?"And you ran out of time on it. Ouch.":"Not a real song. I have no shame.";
+    img.style.display="none";
+  }
+}
+function afterReveal(){
+  if(!gameActive)return;
+  if(strikes<=0){endGame("GAME OVER");return;}
+  nextQuestion();
+}
+function updateTop(){
+  document.getElementById("score").textContent=score;
+  document.getElementById("strikes").textContent="♥".repeat(Math.max(0,strikes))+"♡".repeat(3-Math.max(0,strikes));
+}
+function updateStreak(){
+  const pct=Math.min(100,(streak%5)/5*100);
+  document.querySelector("#streakFill i").style.width=(streak>0&&streak%5===0?100:pct)+"%";
+  document.getElementById("multi").textContent="×"+multi();
+}
+function showFlame(txt){
+  const f=document.getElementById("flame");
+  f.textContent=txt;f.style.opacity=1;
+  setTimeout(()=>f.style.opacity=0,1400);
+}
+function cashOut(){
+  if(!gameActive)return;
+  endGame("CASHED OUT");
+}
+function endGame(title){
+  gameActive=false;accepting=false;
+  clearInterval(timer);
+  sfx.over();
+  document.getElementById("endTitle").textContent=title||"GAME OVER";
+  if(score>sessionBest)sessionBest=score;
+  let rank=RANKS[0][1];
+  for(const [min,name] of RANKS)if(correct>=min)rank=name;
+  document.getElementById("rank").textContent="RANK: "+rank;
+  document.getElementById("rScore").textContent=score;
+  document.getElementById("rCorrect").textContent=correct+" / "+total;
+  document.getElementById("rStreak").textContent=bestStreak;
+  document.getElementById("rAcc").textContent=total?Math.round(100*correct/total)+"%":"—";
+  document.getElementById("rBest").textContent=sessionBest;
+  document.getElementById("endQuip").textContent=
+    correct>=50?"Okay you might actually be me.":
+    correct>=35?"Certified Punk Rock Man.":
+    correct>=20?"You've clearly heard an album or two.":
+    correct>=10?"Not bad! The deep cuts are brutal.":
+    "The catalog is weirder than you thought, huh?";
+  document.getElementById("endOv").style.display="flex";
+}
+
+/* ---------- input ---------- */
+window.addEventListener("keydown",e=>{
+  const startVisible=document.getElementById("startOv").style.display!=="none";
+  const endVisible=document.getElementById("endOv").style.display==="flex";
+  if(startVisible||endVisible){
+    if(e.key==="Enter"||e.key===" "){e.preventDefault();startGame();}
+    return;
+  }
+  if(e.key==="ArrowLeft"||e.key==="t"||e.key==="T"||e.key==="r"||e.key==="R"){e.preventDefault();answer(true);}
+  if(e.key==="ArrowRight"||e.key==="n"||e.key==="N"||e.key==="f"||e.key==="F"){e.preventDefault();answer(false);}
+});
+</script>
+</body>
+</html>
