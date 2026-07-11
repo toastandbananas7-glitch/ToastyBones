@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToastyType — A ToastyBones Typing Shooter</title>
+<style>
+  :root{
+    --bg:#0a0a12;
+    --panel:#12121e;
+    --toast:#ffb347;
+    --toast-hot:#ff8c1a;
+    --punk:#ff4d88;
+    --laser:#4de8ff;
+    --paper:#f2ead9;
+    --dim:#6b6b85;
+    --good:#7dff8a;
+    --bad:#ff5555;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--paper);
+    font-family:"Courier New",Courier,monospace;
+    overflow:hidden;
+    user-select:none;
+  }
+  /* CRT scanlines to match the rest of the site */
+  body::after{
+    content:"";
+    position:fixed;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);
+    pointer-events:none;z-index:50;
+  }
+  #wrap{
+    display:flex;height:100vh;gap:10px;padding:10px;
+  }
+  #playCol{
+    flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;
+  }
+  #hud{
+    display:flex;align-items:center;gap:18px;
+    background:var(--panel);border:2px solid var(--toast);
+    border-radius:8px;padding:8px 14px;
+    font-size:14px;letter-spacing:1px;
+    box-shadow:0 0 12px rgba(255,179,71,.25);
+  }
+  #hud .title{
+    color:var(--toast);font-weight:bold;font-size:18px;
+    text-shadow:0 0 8px var(--toast-hot);
+  }
+  #hud .alpha{
+    background:var(--punk);color:#000;font-size:10px;font-weight:bold;
+    padding:2px 6px;border-radius:4px;letter-spacing:2px;
+    animation:alphaPulse 1.4s infinite;
+  }
+  @keyframes alphaPulse{50%{opacity:.55;}}
+  #hud .stat b{color:var(--toast);}
+  #hud #lives{color:var(--punk);font-size:16px;letter-spacing:3px;}
+  #hud .spacer{flex:1;}
+  #hud #streak{color:var(--laser);}
+  #canvasBox{
+    position:relative;flex:1;
+    border:2px solid var(--toast);border-radius:8px;
+    background:radial-gradient(1200px 600px at 50% 110%,#1a1030 0%,var(--bg) 60%);
+    overflow:hidden;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.8),0 0 12px rgba(255,179,71,.25);
+  }
+  canvas{display:block;width:100%;height:100%;}
+  #powerBar{
+    display:flex;gap:8px;
+    background:var(--panel);border:2px solid var(--toast);
+    border-radius:8px;padding:8px;
+    box-shadow:0 0 12px rgba(255,179,71,.25);
+  }
+  .pw{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    background:#0d0d18;border:1px solid var(--dim);
+    border-radius:6px;padding:6px 4px;cursor:pointer;
+    transition:border-color .15s, box-shadow .15s;
+    font-size:11px;text-align:center;min-width:0;
+  }
+  .pw.ready{border-color:var(--toast);box-shadow:0 0 10px rgba(255,179,71,.5);}
+  .pw.ready .key{background:var(--toast);color:#000;}
+  .pw .key{
+    background:#26263a;color:var(--paper);font-weight:bold;
+    border-radius:4px;padding:1px 8px;font-size:13px;
+  }
+  .pw .name{color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+  .pw .charges{color:var(--toast);font-size:14px;letter-spacing:2px;min-height:16px;}
+  .pw .pips{color:var(--dim);font-size:10px;}
+  .pw.active{border-color:var(--laser);box-shadow:0 0 14px rgba(77,232,255,.6);}
+  #cardCol{
+    width:270px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;
+  }
+  #cardHead{
+    background:var(--panel);border:2px solid var(--punk);
+    border-radius:8px;padding:8px;text-align:center;
+    color:var(--punk);font-weight:bold;letter-spacing:2px;font-size:13px;
+    text-shadow:0 0 8px rgba(255,77,136,.6);
+  }
+  #card{
+    flex:1;display:grid;grid-template-columns:repeat(3,1fr);
+    grid-auto-rows:1fr;gap:6px;
+    background:var(--panel);border:2px solid var(--punk);
+    border-radius:8px;padding:8px;overflow:hidden;
+  }
+  .tile{
+    position:relative;border:1px solid #2c2c44;border-radius:6px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:3px;text-align:center;font-size:9px;line-height:1.15;
+    color:var(--dim);background:#0d0d18;overflow:hidden;
+    transition:all .3s;background-size:cover;background-position:center;
+  }
+  .tile .abbr{font-weight:bold;font-size:10px;}
+  .tile .prog{font-size:9px;margin-top:2px;}
+  .tile.boss-up{border-color:var(--toast);color:var(--toast);animation:bossPulse .8s infinite;}
+  @keyframes bossPulse{50%{box-shadow:0 0 12px var(--toast);}}
+  .tile.done{
+    color:#000;border-color:var(--good);
+    text-shadow:none;
+    box-shadow:0 0 10px rgba(125,255,138,.5);
+  }
+  .tile.done .prog{display:none;}
+  #overlay{
+    position:absolute;inset:0;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(6,6,12,.9);text-align:center;padding:20px;gap:14px;
+  }
+  #overlay h1{
+    color:var(--toast);font-size:44px;letter-spacing:4px;
+    text-shadow:0 0 18px var(--toast-hot),0 0 40px var(--punk);
+  }
+  #overlay h2{color:var(--punk);font-size:20px;letter-spacing:2px;}
+  #overlay p{color:var(--paper);font-size:14px;max-width:560px;line-height:1.6;}
+  #overlay .hint{color:var(--dim);font-size:12px;}
+  #overlay .blink{animation:blink 1s infinite;color:var(--laser);font-size:16px;}
+  @keyframes blink{50%{opacity:.2;}}
+  #overlay table{margin:0 auto;border-collapse:collapse;font-size:13px;}
+  #overlay td{padding:2px 10px;color:var(--paper);}
+  #overlay td:first-child{color:var(--dim);text-align:right;}
+  #mobileBlock{
+    position:fixed;inset:0;z-index:100;display:none;
+    flex-direction:column;align-items:center;justify-content:center;
+    background:var(--bg);text-align:center;padding:30px;gap:16px;
+  }
+  #mobileBlock h1{color:var(--toast);font-size:32px;}
+  #mobileBlock p{color:var(--paper);line-height:1.6;}
+  #banner{
+    position:absolute;top:38%;left:0;right:0;z-index:15;
+    text-align:center;font-size:40px;font-weight:bold;letter-spacing:6px;
+    color:var(--toast);text-shadow:0 0 20px var(--toast-hot),0 0 50px var(--punk);
+    opacity:0;pointer-events:none;transition:opacity .2s;
+  }
+  @media (max-width:820px){
+    #cardCol{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="mobileBlock">
+  <h1>TOASTYTYPE</h1>
+  <p>This is a keyboard game, friend.<br><br>
+  Grab a real keyboard (or come back on a computer)<br>
+  and destroy the entire ToastyBones discography<br>
+  one track title at a time.</p>
+</div>
+
+<div id="wrap">
+  <div id="playCol">
+    <div id="hud">
+      <span class="title">TOASTYTYPE</span>
+      <span class="alpha">ALPHA</span>
+      <span class="stat">SCORE <b id="score">0</b></span>
+      <span class="stat" id="streak">STREAK 0</span>
+      <span class="stat">ALBUMS <b id="albumCount">0/21</b></span>
+      <span class="spacer"></span>
+      <span id="lives">&hearts;&hearts;&hearts;</span>
+    </div>
+    <div id="canvasBox">
+      <canvas id="cv"></canvas>
+      <div id="banner"></div>
+      <div id="overlay">
+        <h1>TOASTYTYPE</h1>
+        <h2>DESTROY THE DISCOGRAPHY</h2>
+        <p>Type the track titles to shoot down the ships. First letter locks your target.
+        Clear every track on an album to summon its <b>BOSS</b> — type the full album title to light it up on the card.
+        Light up all 21 albums to win. No saves. No mercy. Fresh run every time.</p>
+        <p class="hint">Powerups: <b>[1]</b> Multi-Shot &nbsp; <b>[2]</b> Abbreviation Mode &nbsp; <b>[3]</b> Echo Storm &nbsp; <b>[4]</b> CLEAR SCREEN<br>
+        Bosses are immune to powerups — those you type with your own two hands.<br>
+        [ESC] drop target &nbsp; [TAB] pause &nbsp; [`] mute</p>
+        <p class="blink">PRESS ANY KEY TO START</p>
+      </div>
+    </div>
+    <div id="powerBar">
+      <div class="pw" id="pw0" onclick="usePower(0)">
+        <span class="key">1</span><span class="name">MULTI-SHOT</span>
+        <span class="charges"></span><span class="pips"></span>
+      </div>
+      <div class="pw" id="pw1" onclick="usePower(1)">
+        <span class="key">2</span><span class="name">ABBREVIATION</span>
+        <span class="charges"></span><span class="pips"></span>
+      </div>
+      <div class="pw" id="pw2" onclick="usePower(2)">
+        <span class="key">3</span><span class="name">ECHO STORM</span>
+        <span class="charges"></span><span class="pips"></span>
+      </div>
+      <div class="pw" id="pw3" onclick="usePower(3)">
+        <span class="key">4</span><span class="name">CLEAR SCREEN</span>
+        <span class="charges"></span><span class="pips"></span>
+      </div>
+    </div>
+  </div>
+  <div id="cardCol">
+    <div id="cardHead">DISCOGRAPHY CARD<br><span style="font-size:10px;color:var(--paper)">row/column BINGO = full powerup refill</span></div>
+    <div id="card"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   TOASTYTYPE (ALPHA) — a ToastyBones typing shooter
+   All track data lives right here. To add album cover art later,
+   paste an image URL into the cover:"" field for each album.
+   ============================================================ */
+
+const ALBUMS = [
+{name:"Unscheduled Programming",abbr:"UNSCHED PROG",cover:"",tracks:[
+"Back to The Future Again!","Backup Your Data","Bubble","I've Never Seen Star Wars","My Pi","Poppy is a Pokémon"]},
+{name:"Isle of Beans",abbr:"ISLE OF BEANS",cover:"",tracks:[
+"Give Me A Minute","I'm Just Stupid","Mistakes","My Destination is You","No Escape","Push","Story Topper","The Wizard of Beans","Wildcat","You Hate My Songs"]},
+{name:"Ear-aid",abbr:"EAR-AID",cover:"",tracks:[
+"Can't Relate","Going Crazy","I Wanna Go Home","My Own Downfall","Nothing's Going My Way","Off Centered","Play-Doh!","Sleep is Overrated","Things Taste Better When They're Triangle Shaped","Tooginunk!"]},
+{name:"Fully Panted",abbr:"FULLY PANTED",cover:"",tracks:[
+"A Day in the Life of Me","Ablaze","Boomerang","Glass Balloon","Knot Gnomes","Less and Less","No More","Pretty Sure I'm a Zombie","Soda Pop","The Cat's in the Cabinet"]},
+{name:"Lovey Dovey",abbr:"LOVEY DOVEY",cover:"",tracks:[
+"A Hug and A Kiss","All This Time","Always You and Me","C","Fairytales","For A Little Bit","Here With Me","It Works for Me","My Number One","Sweet Chelsey","Tie-dye Heart"]},
+{name:"Big Dump",abbr:"BIG DUMP",cover:"",tracks:[
+"Bryan","Cult of Bryan","Food For Thought","I Can See It","I Know You Know","I Think I'm an AI Bot!","I Wonder What's Under Diglett?","In Your Face!","It's Me","It's Time To Suffer Bro!","Just One More Song","Life Away","Losing You","Misty, Oh Misty!","Moving On","My Sunglasses","Push Me Away","Songs Like This","Spring Nights","Stop Taking Photos","Stuck","Where We're Supposed To Be"]},
+{name:"Mystery Clown",abbr:"MYSTERY CLOWN",cover:"",tracks:[
+"Destined For Better Things","Fart in the Wind","I Guess I'm Stuck","I'm Not Okay","Let Go","My Pillow's Trying To Kill Me","Paper and Copper","Solidarity for My Sanity","The Jack of all Hats","Wasting All My Time"]},
+{name:"The Legend of Duke",abbr:"LEGEND OF DUKE",cover:"",tracks:[
+"Duke","Have You Met Isaac?","Lie on Your Resume","Monster","Sleep America","The Forty Beer Man","The Jester of Beers","The Trip is Over","The Ultimate Anime Showdown","We All Fall Down","You Might be Right"]},
+{name:"Mans Breath",abbr:"MANS BREATH",cover:"",tracks:[
+"Don't Be So Hard On Yourself","I Can't Let Go","Just One Bad Day?","LeBear and the Bear","Mirror Maze","Perfect","Quirks","Something About You","Take Me Back","You Haven't Lived It Yet"]},
+{name:"Neon Banana",abbr:"NEON BANANA",cover:"",tracks:[
+"Banana (Na Na)","Get Loose!","Get Me Outta Here!","I Wish","La","Level Up!","Lost","Masters of the Banana Hands","Mr. Beast Can Save The World","My Superstar!","Oh Sweet Gus","Otamatone","The Unoriginality Song","Where Is He?","You're Toxic!"]},
+{name:"Sharing Socks with Strangers",abbr:"SHARING SOCKS",cover:"",tracks:[
+"Another Bad Idea","Can You?","Childhood Problems","Clone Hero Pop Punk Star","I Can't Complain","I Think It's ADHD","I'm Not Buying It!","My Favorite Bands","Paradise Lost","Punk Rock Man","This Time","Two Eggs and A Beer","Unfortunately I'm a Millennial","Urticaria","Wait and See","You're A Snake"]},
+{name:"Boney Hollow",abbr:"BONEY HOLLOW",cover:"",tracks:[
+"A Sliver of Me","Brew You!","Candy Tax!","Guy with a Chainsaw","Icky Sticky!","Into The Dark","Just a Ghost","My Knife's Bigger Than Yours","My Own Little Alien!","The Dragon Has Awoken","The Gunslinger","Trunk-or-Treat","What The Hex"]},
+{name:"Black and Blue and Punk All Over",abbr:"BLACK AND BLUE",cover:"",tracks:[
+"All My Friends","Attention Span","Because You Planned It!","Changes","Dear AI","Don't Forget!","Everyone's A Sock!","Gotta Poop!","Here We Go Again","Hurry Up and Wait!","Hypocritical!","In The Foot","Inside Joke To Me","Music Sucks","My Own Favorite Band!","MyNameIsToastyBones","Nobody Likes Pop Punk Anymore","Pop Punk Serenade","The Way That I Do","Till The End","What I Love About You"]},
+{name:"Midnight Suppository",abbr:"MIDNIGHT SUPP",cover:"",tracks:[
+"After Halloween","All I Want for Christmas is Suno","Candy Cane Catheter","Chocolate Umbrellas","Don't Buy Me Gift Cards For Christmas","Don't Forget About Mel","Frosty the Colon","It's That Time of Year Again!","Make Your List","Next Year Will Come (Fly Away)","Polar Arcade","Quensiwal, Quensiwal","Santa's Little Bombshell","Sugar Town","Thanksgiving Up!","The Saint of Suno","Too Many Candy Canes","Winter Blows!","Wishbone Tragedy","Workin' On Christmas"]},
+{name:"Festive Flush",abbr:"FESTIVE FLUSH",cover:"",tracks:[
+"A Warm Christmas Sock","Christmas Childhood","Dookie Dan","Five Dollars for You (No, Seriously!)","Holy Socks","Homesick","I Hope Your Christmas is Okay","Ice in the Machine","In The Christmas Tree","It's Boxing Day","Pirate Ship For Christmas","Santa Demands a Sacrifice","Santa's Got Beef","The Book of Gus","Zombie Rudolph"]},
+{name:"The Great Indoors",abbr:"GREAT INDOORS",cover:"",tracks:[
+"Anime Tears","Crazy Bazer","Don't Let it Get To You","Falling Again","In My Head","Isaac In The Dark","Junk Mail","Just Breathe","Just My Luck","Leap","Life is Like Journey to the Center of the Earth","Made for Me","Nothing is Real!","Question Everything","Super Duper","The Opposite","The Squid"]},
+{name:"Spobbly Not",abbr:"SPOBBLY NOT",cover:"",tracks:[
+"Already Over It","Beat Around The Bush","Bound for Better Days","Creatures of Habit","Ended Up On Another Planet","Gaming With The Boys","I Fall","I Get The Gist","Makes Me Glitch","My Old Friend, Time","Only In It For Me","She Settled For Me","The Government Wants Us Dead","There's Always Next Year!","When I'm Down","Wigwam!","You've Changed"]},
+{name:"Big Dump 2; Return of the Dump",abbr:"BIG DUMP 2",cover:"",tracks:[
+"Beach Trip in Our 30s","BFMK","Can't Go Tonight","Can't Stop","Don't Look Back","Except The Easy Way","Farts","I Caught A Pokemon!","I Should Never","I'm Burning Out","Kick It!","Me vs. The State of Florida","Michael of War","My Carhartt Heart","No One Cares","Pinkysong","Pop Punk Kid Again","Sausages in the Sand","Secret Pocket","Sober Up By Noon","The Duke of Bryan","The Rain","These Bands","Thunder Dump","Trap[ped] In an Elevator","Used To Be"]},
+{name:"Hilariously Unfortunate",abbr:"HILARIOUSLY UNF",cover:"",tracks:[
+"Born to be Reckless","Candy Rose","Content Today","Grew Apart","Headache Again","I Do It To Myself","Into The Void","Katie's Got Rabies!","Not My Style","Same as Before","Sign Me Up!","The Weekend's Here","They Sold My Data Again","Two Red Ants!","We Don't Care","Wipe Your Tears Away"]},
+{name:"Efforts and Errors",abbr:"EFFORTS+ERRORS",cover:"",tracks:[
+"Bonga Tonga!","Bored Games","Dopamine Rush","Drowning","Fade Away","Focus","I Can't Help You","I Know Who I Am","I'm Not Listening","I'm Not Surprised","Instagram Kinda Sucks","Lost a Friend to AI","Momentum","Never Again","No Taste","Overstimulated!","Party By Myself Again","Pixelated!","Secondhand Embarrassment","Secret Ingredient","Sucker for a Sappy Love Song","Take Care of You!","The Truth","Under The Bus","Waiting Now","What a Shame"]},
+{name:"Defeat The Purpose",abbr:"DEFEAT PURPOSE",cover:"",tracks:[
+"Ambiguous Ambitions","Buttercup","Cardboard Box","I Don't Like Horses","I Hope You're Doing Well","I'm Just a Loser","Indian Robots!","Knock Me Down","Lifeline","Never Left Our Hearts Behind","Right In Front of Me","Sleep Circus","Spoken Out of Existence","That's What I Like","The Troubleshooter","Waste","With All Due Respect (No Offense)"]}
+];
+
+/* ---------- config ---------- */
+const CFG = {
+  lives:3,
+  powerCaps:[5,5,5,5],
+  powerEvery:[3,5,8,10],       // typed kills per charge: multi, abbrev, echo, clear
+  abbrevDuration:15,           // seconds
+  echoWord:"toasty",
+  maxShips:[3,7],              // ramps from -> to
+  baseSpeed:[14,44],           // px/sec ramp
+  bossSpeedMult:.5,
+  spawnGap:[2.6,1.1],          // seconds ramp
+  shortBias:[1.6,0.2],         // word-length bias ramp (higher = shorter words)
+};
+const TOTAL_TRACKS = ALBUMS.reduce((a,al)=>a+al.tracks.length,0);
+
+/* ---------- normalize ---------- */
+function normalize(s){
+  return s.toLowerCase()
+    .replace(/[éèê]/g,"e").replace(/[áà]/g,"a").replace(/[óò]/g,"o")
+    .replace(/[^a-z0-9 \-]/g,"")
+    .replace(/\s+/g," ").trim();
+}
+function initials(s){
+  return normalize(s).split(/[ \-]+/).filter(Boolean).map(w=>w[0]).join("");
+}
+
+/* ---------- state ---------- */
+let cv,ctx,W,H,dpr;
+let running=false,paused=false,gameOver=false,victory=false;
+let score,lives,typedKills,totalKills,streak,bestStreak,typos,startTime;
+let ships,particles,lasers,shockwaves,shake,flash;
+let target=null;
+let powers,powerPips;
+let abbrevTimer=0,echoActive=false,echoProgress=0,echoShips=[];
+let spawnTimer=0,muted=false;
+let albums;           // runtime album state
+let bingoLines;       // which lines already claimed
+let bannerTimer=null;
+
+/* ---------- audio (tiny synth, no files) ---------- */
+let AC=null;
+function beep(f,d,type="square",vol=.06){
+  if(muted)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(vol,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);
+    o.connect(g);g.connect(AC.destination);
+    o.start();o.stop(AC.currentTime+d);
+  }catch(e){}
+}
+const sfx={
+  hit:()=>beep(880,.05,"square",.04),
+  kill:()=>beep(320,.18,"sawtooth",.07),
+  boss:()=>beep(140,.5,"sawtooth",.1),
+  err:()=>beep(110,.12,"square",.06),
+  power:()=>beep(660,.25,"triangle",.08),
+  nuke:()=>{beep(60,.7,"sawtooth",.14);beep(90,.6,"square",.1);},
+  bingo:()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.18,"triangle",.09),i*90));},
+  life:()=>beep(80,.4,"sawtooth",.12),
+};
+
+/* ---------- setup ---------- */
+function resetGame(){
+  score=0;lives=CFG.lives;typedKills=0;totalKills=0;streak=0;bestStreak=0;typos=0;
+  ships=[];particles=[];lasers=[];shockwaves=[];shake=0;flash=0;
+  target=null;powers=[1,1,1,1];powerPips=[0,0,0,0];
+  abbrevTimer=0;echoActive=false;echoProgress=0;echoShips=[];
+  spawnTimer=0;startTime=performance.now();
+  gameOver=false;victory=false;
+  albums=ALBUMS.map((a,i)=>({
+    name:a.name,abbr:a.abbr,cover:a.cover,
+    hue:(i*47+15)%360,
+    pool:a.tracks.slice(),       // tracks not yet cleared
+    live:0,                      // ships currently on screen from this album
+    cleared:0,total:a.tracks.length,
+    bossPending:false,bossLive:false,done:false,
+  }));
+  bingoLines={};
+  buildCard();updateHUD();updatePowerBar();
+}
+
+function buildCard(){
+  const card=document.getElementById("card");
+  card.innerHTML="";
+  albums.forEach((a,i)=>{
+    const t=document.createElement("div");
+    t.className="tile";t.id="tile"+i;
+    t.innerHTML=`<span class="abbr">${a.abbr}</span><span class="prog">0/${a.total}</span>`;
+    card.appendChild(t);
+  });
+}
+function updateTile(i){
+  const a=albums[i],t=document.getElementById("tile"+i);
+  if(!t)return;
+  t.querySelector(".prog").textContent=`${a.cleared}/${a.total}`;
+  t.classList.toggle("boss-up",a.bossPending||a.bossLive);
+  if(a.done){
+    t.classList.add("done");
+    if(a.cover){t.style.backgroundImage=`url(${a.cover})`;t.querySelector(".abbr").style.textShadow="0 0 4px #000, 0 0 8px #000";t.style.color="#fff";}
+    else t.style.background=`hsl(${a.hue} 80% 55%)`;
+  }
+}
+
+/* ---------- progress ramp 0..1 ---------- */
+function ramp(){return Math.min(1,totalKills/(TOTAL_TRACKS*0.8));}
+function lerp(a,b,t){return a+(b-a)*t;}
+
+/* ---------- spawning ---------- */
+function screenFirstLetters(){
+  const set=new Set();
+  ships.forEach(s=>set.add(s.typed[0]));
+  return set;
+}
+function spawnShip(){
+  const maxOn=Math.round(lerp(CFG.maxShips[0],CFG.maxShips[1],ramp()));
+  if(ships.length>=maxOn||echoActive)return;
+  const used=screenFirstLetters();
+  // gather boss candidates first
+  const bossAlbums=albums.filter(a=>a.bossPending&&!used.has(normalize(a.name)[0]));
+  if(bossAlbums.length){
+    const a=bossAlbums[0];
+    a.bossPending=false;a.bossLive=true;
+    ships.push(makeShip(a.name,albums.indexOf(a),true));
+    sfx.boss();showBanner("ALBUM BOSS: "+a.name.toUpperCase());
+    updateTile(albums.indexOf(a));
+    return;
+  }
+  // candidate regular tracks
+  const bias=lerp(CFG.shortBias[0],CFG.shortBias[1],ramp());
+  let cands=[];
+  albums.forEach((a,ai)=>{
+    if(a.done)return;
+    a.pool.forEach(t=>{
+      const ty=normalize(t);
+      if(!used.has(ty[0]))cands.push({t,ai,w:Math.pow(1/ty.length,bias)});
+    });
+  });
+  if(!cands.length)return;
+  let sum=cands.reduce((s,c)=>s+c.w,0),r=Math.random()*sum;
+  let pick=cands[0];
+  for(const c of cands){r-=c.w;if(r<=0){pick=c;break;}}
+  const a=albums[pick.ai];
+  a.pool.splice(a.pool.indexOf(pick.t),1);
+  a.live++;
+  ships.push(makeShip(pick.t,pick.ai,false));
+}
+function makeShip(title,albumIdx,isBoss){
+  const typed=normalize(title);
+  const sp=lerp(CFG.baseSpeed[0],CFG.baseSpeed[1],ramp())*(isBoss?CFG.bossSpeedMult:(0.85+Math.random()*0.4));
+  return{
+    title,typed,inits:initials(title),album:albumIdx,isBoss,
+    x:60+Math.random()*(W-120),y:isBoss?-60:-24,
+    vx:(Math.random()-.5)*10,speed:sp,
+    progress:0,mode:"full",   // 'full' or 'abbr'
+    r:isBoss?38:14+Math.min(14,typed.length*0.6),
+    wob:Math.random()*6.28,
+  };
+}
+
+/* ---------- kills ---------- */
+function killShip(s,byTyping){
+  const idx=ships.indexOf(s);
+  if(idx>=0)ships.splice(idx,1);
+  if(target===s)target=null;
+  explode(s.x,s.y,s.isBoss?3:1,albums[s.album].hue);
+  const a=albums[s.album];
+  if(s.isBoss){
+    a.bossLive=false;a.done=true;
+    score+=1000;
+    sfx.boss();showBanner(a.name.toUpperCase()+" — COMPLETE!");
+    updateTile(s.album);
+    checkBingo();checkVictory();
+  }else{
+    a.live--;a.cleared++;
+    score+=(byTyping?10:5)*s.typed.length*(1+Math.floor(streak/50)*0.5);
+    if(a.cleared>=a.total&&!a.done&&!a.bossLive)a.bossPending=true;
+    updateTile(s.album);
+    sfx.kill();
+  }
+  totalKills++;
+  if(byTyping){
+    typedKills++;
+    for(let p=0;p<4;p++){
+      powerPips[p]++;
+      if(powerPips[p]>=CFG.powerEvery[p]){
+        powerPips[p]=0;
+        if(powers[p]<CFG.powerCaps[p]){powers[p]++;sfx.power();}
+      }
+    }
+  }
+  updateHUD();updatePowerBar();
+}
+function shipEscaped(s){
+  const idx=ships.indexOf(s);
+  if(idx>=0)ships.splice(idx,1);
+  if(target===s)target=null;
+  const a=albums[s.album];
+  if(s.isBoss){a.bossLive=false;a.bossPending=true;}   // boss re-queues
+  else{a.live--;a.pool.push(s.title);}                 // track back to pool
+  updateTile(s.album);
+  lives--;shake=Math.max(shake,14);flash=Math.max(flash,.35);
+  sfx.life();updateHUD();
+  if(lives<=0)endGame(false);
+}
+
+/* ---------- bingo / victory ---------- */
+function checkBingo(){
+  const doneAt=i=>albums[i]&&albums[i].done;
+  let hit=false;
+  for(let r=0;r<7;r++){
+    const key="r"+r;
+    if(!bingoLines[key]&&doneAt(r*3)&&doneAt(r*3+1)&&doneAt(r*3+2)){bingoLines[key]=1;hit=true;}
+  }
+  for(let c=0;c<3;c++){
+    const key="c"+c;
+    let all=true;
+    for(let r=0;r<7;r++)if(!doneAt(r*3+c))all=false;
+    if(!bingoLines[key]&&all){bingoLines[key]=1;hit=true;}
+  }
+  if(hit){
+    powers=powers.map((v,i)=>CFG.powerCaps[i]);
+    score+=2500;
+    sfx.bingo();showBanner("B I N G O !  POWERUPS REFILLED!");
+    updatePowerBar();updateHUD();
+  }
+}
+function checkVictory(){
+  if(albums.every(a=>a.done))endGame(true);
+}
+function endGame(won){
+  running=false;gameOver=!won;victory=won;
+  const mins=((performance.now()-startTime)/60000);
+  const ov=document.getElementById("overlay");
+  const cleared=albums.filter(a=>a.done).length;
+  ov.innerHTML=`
+    <h1>${won?"DISCOGRAPHY DESTROYED":"GAME OVER"}</h1>
+    <h2>${won?"You typed the entire ToastyBones catalog. Legend.":"The ships got through."}</h2>
+    <table>
+      <tr><td>Score</td><td>${Math.floor(score)}</td></tr>
+      <tr><td>Albums completed</td><td>${cleared} / ${albums.length}</td></tr>
+      <tr><td>Tracks destroyed</td><td>${totalKills}</td></tr>
+      <tr><td>Best streak</td><td>${bestStreak}</td></tr>
+      <tr><td>Typos</td><td>${typos}</td></tr>
+      <tr><td>Run time</td><td>${mins.toFixed(1)} min</td></tr>
+    </table>
+    <p class="blink">PRESS ENTER FOR A FRESH RUN</p>
+    <p class="hint">No saves. That's the deal.</p>`;
+  ov.style.display="flex";
+}
+
+/* ---------- powerups ---------- */
+function usePower(i){
+  if(!running||paused)return;
+  if(powers[i]<=0){sfx.err();return;}
+  if(i===0){ // MULTI-SHOT: nuke lowest non-boss ship
+    const t=ships.filter(s=>!s.isBoss).sort((a,b)=>b.y-a.y)[0];
+    if(!t){sfx.err();return;}
+    powers[i]--;
+    lasers.push({x1:W/2,y1:H,x2:t.x,y2:t.y,life:.15,c:"var"});
+    killShip(t,false);shake=Math.max(shake,6);
+  }
+  if(i===1){ // ABBREVIATION MODE
+    powers[i]--;abbrevTimer=CFG.abbrevDuration;
+    showBanner("ABBREVIATION MODE — TYPE INITIALS!");sfx.power();
+    if(target&&!target.isBoss){target.progress=0;target.mode="abbr";}
+  }
+  if(i===2){ // ECHO STORM
+    if(echoActive){sfx.err();return;}
+    powers[i]--;
+    // convert on-screen non-boss ships + pull extra pending tracks up to 6 total
+    echoShips=ships.filter(s=>!s.isBoss);
+    let extra=6-echoShips.length;
+    const openAlbums=albums.filter(a=>!a.done&&a.pool.length);
+    while(extra>0&&openAlbums.length){
+      const a=openAlbums[Math.floor(Math.random()*openAlbums.length)];
+      if(!a.pool.length){openAlbums.splice(openAlbums.indexOf(a),1);continue;}
+      const t=a.pool.splice(Math.floor(Math.random()*a.pool.length),1)[0];
+      a.live++;
+      const s=makeShip(t,albums.indexOf(a),false);
+      s.y=-20-Math.random()*80;s.speed*=.5;
+      ships.push(s);echoShips.push(s);
+      extra--;
+    }
+    if(!echoShips.length){powers[i]++;sfx.err();return;} // refund if nothing to echo
+    echoActive=true;echoProgress=0;target=null;
+    echoShips.forEach(s=>{s.speed*=.45;});
+    showBanner('ECHO STORM — TYPE "'+CFG.echoWord.toUpperCase()+'"!');sfx.power();
+  }
+  if(i===3){ // CLEAR SCREEN
+    const victims=ships.filter(s=>!s.isBoss);
+    if(!victims.length){sfx.err();return;}
+    powers[i]--;
+    flash=1;shake=24;
+    shockwaves.push({x:W/2,y:H/2,r:10,life:1});
+    victims.forEach(s=>killShip(s,false));
+    if(echoActive){echoActive=false;echoShips=[];}
+    sfx.nuke();showBanner("C L E A R   S C R E E N !");
+  }
+  updatePowerBar();
+}
+
+/* ---------- typing ---------- */
+function handleChar(ch){
+  if(echoActive){
+    const w=CFG.echoWord;
+    if(ch===w[echoProgress]){
+      echoProgress++;sfx.hit();
+      if(echoProgress>=w.length){
+        const list=echoShips.slice();
+        echoActive=false;echoShips=[];
+        flash=Math.max(flash,.6);shake=Math.max(shake,16);
+        shockwaves.push({x:W/2,y:H/3,r:10,life:1});
+        list.forEach((s,i)=>setTimeout(()=>{if(ships.includes(s))killShip(s,false);},i*70));
+        sfx.nuke();
+      }
+    }else{echoProgress=0;typos++;streak=0;sfx.err();shake=Math.max(shake,3);}
+    updateHUD();return;
+  }
+  if(!target){
+    // acquire: match first needed char; prefer lowest ship
+    const abbrevOK=abbrevTimer>0;
+    let best=null;
+    for(const s of ships){
+      const word=(abbrevOK&&!s.isBoss)?s.inits:s.typed;
+      if(word[0]===ch&&(!best||s.y>best.y))best=s;
+    }
+    if(best){
+      target=best;
+      target.mode=(abbrevOK&&!best.isBoss)?"abbr":"full";
+      target.progress=1;
+      hitFX(target);streakUp();
+    }else{typos++;streak=0;sfx.err();}
+  }else{
+    const word=target.mode==="abbr"?target.inits:target.typed;
+    if(ch===word[target.progress]){
+      target.progress++;hitFX(target);streakUp();
+      if(target.progress>=word.length){
+        const t=target;target=null;
+        killShip(t,true);
+      }
+    }else{typos++;streak=0;sfx.err();shake=Math.max(shake,2);}
+  }
+  updateHUD();
+}
+function streakUp(){streak++;if(streak>bestStreak)bestStreak=streak;}
+function hitFX(s){
+  lasers.push({x1:W/2,y1:H,x2:s.x+(Math.random()-.5)*10,y2:s.y,life:.12});
+  particles.push({x:s.x,y:s.y,vx:(Math.random()-.5)*60,vy:-30-Math.random()*40,life:.4,c:"#4de8ff",sz:2});
+  score+=10*(1+Math.floor(streak/50)*0.5);
+  sfx.hit();
+}
+function explode(x,y,scale,hue){
+  const n=24*scale;
+  for(let i=0;i<n;i++){
+    const a=Math.random()*6.28,v=40+Math.random()*180*scale;
+    particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.5+Math.random()*.6,c:`hsl(${hue} 90% ${55+Math.random()*30}%)`,sz:2+Math.random()*3*scale});
+  }
+  shake=Math.max(shake,4*scale);
+}
+
+/* ---------- banner ---------- */
+function showBanner(txt){
+  const b=document.getElementById("banner");
+  b.textContent=txt;b.style.opacity=1;
+  clearTimeout(bannerTimer);
+  bannerTimer=setTimeout(()=>b.style.opacity=0,1800);
+}
+
+/* ---------- HUD ---------- */
+function updateHUD(){
+  document.getElementById("score").textContent=Math.floor(score);
+  document.getElementById("streak").textContent="STREAK "+streak;
+  document.getElementById("albumCount").textContent=albums.filter(a=>a.done).length+"/"+albums.length;
+  document.getElementById("lives").innerHTML="&hearts;".repeat(Math.max(0,lives));
+}
+function updatePowerBar(){
+  const names=["MULTI-SHOT","ABBREVIATION","ECHO STORM","CLEAR SCREEN"];
+  for(let i=0;i<4;i++){
+    const el=document.getElementById("pw"+i);
+    el.querySelector(".charges").textContent="●".repeat(powers[i])+"○".repeat(CFG.powerCaps[i]-powers[i]);
+    el.querySelector(".pips").textContent=powerPips[i]+"/"+CFG.powerEvery[i]+" kills";
+    el.classList.toggle("ready",powers[i]>0);
+    el.classList.toggle("active",(i===1&&abbrevTimer>0)||(i===2&&echoActive));
+  }
+}
+
+/* ---------- game loop ---------- */
+let last=0;
+function loop(ts){
+  requestAnimationFrame(loop);
+  const dt=Math.min(.05,(ts-last)/1000);last=ts;
+  if(!running||paused)return;
+  update(dt);draw();
+}
+function update(dt){
+  // spawn
+  spawnTimer-=dt;
+  if(spawnTimer<=0){
+    spawnShip();
+    spawnTimer=lerp(CFG.spawnGap[0],CFG.spawnGap[1],ramp())*(0.8+Math.random()*0.4);
+  }
+  // abbreviation timer
+  if(abbrevTimer>0){
+    abbrevTimer-=dt;
+    if(abbrevTimer<=0){abbrevTimer=0;updatePowerBar();}
+  }
+  // ships
+  for(const s of ships.slice()){
+    s.wob+=dt*2;
+    s.y+=s.speed*dt;
+    s.x+=Math.sin(s.wob)*8*dt+s.vx*dt;
+    s.x=Math.max(40,Math.min(W-40,s.x));
+    if(s.y>H-14)shipEscaped(s);
+  }
+  // particles / lasers / waves
+  for(const p of particles.slice()){
+    p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=140*dt;
+    if(p.life<=0)particles.splice(particles.indexOf(p),1);
+  }
+  for(const l of lasers.slice()){l.life-=dt;if(l.life<=0)lasers.splice(lasers.indexOf(l),1);}
+  for(const w of shockwaves.slice()){
+    w.life-=dt;w.r+=900*dt;
+    if(w.life<=0)shockwaves.splice(shockwaves.indexOf(w),1);
+  }
+  shake=Math.max(0,shake-dt*40);
+  flash=Math.max(0,flash-dt*1.6);
+}
+
+/* ---------- draw ---------- */
+function draw(){
+  ctx.save();
+  ctx.clearRect(0,0,W,H);
+  if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+  // stars
+  ctx.fillStyle="rgba(255,255,255,.25)";
+  for(let i=0;i<40;i++){
+    const sx=(i*97)%W,sy=((i*211)+(performance.now()*.02*(1+i%3)))%H;
+    ctx.fillRect(sx,sy,1.5,1.5);
+  }
+  // lasers
+  for(const l of lasers){
+    ctx.strokeStyle=`rgba(77,232,255,${l.life*6})`;
+    ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);ctx.stroke();
+  }
+  // ships
+  ctx.textAlign="center";
+  for(const s of ships){
+    const a=albums[s.album];
+    const hue=a.hue;
+    const isTarget=(target===s);
+    // hull
+    ctx.save();
+    ctx.translate(s.x,s.y);
+    ctx.fillStyle=s.isBoss?`hsl(${hue} 85% 55%)`:`hsl(${hue} 70% 45%)`;
+    ctx.strokeStyle=isTarget?"#4de8ff":`hsl(${hue} 90% 70%)`;
+    ctx.lineWidth=isTarget?2.5:1.2;
+    ctx.beginPath();
+    if(s.isBoss){
+      ctx.moveTo(0,s.r);ctx.lineTo(s.r,-s.r*.4);ctx.lineTo(s.r*.4,-s.r);
+      ctx.lineTo(-s.r*.4,-s.r);ctx.lineTo(-s.r,-s.r*.4);ctx.closePath();
+    }else{
+      ctx.moveTo(0,s.r);ctx.lineTo(s.r*.8,-s.r*.6);ctx.lineTo(0,-s.r*.2);ctx.lineTo(-s.r*.8,-s.r*.6);ctx.closePath();
+    }
+    ctx.fill();ctx.stroke();
+    if(s.isBoss){
+      ctx.fillStyle="#000";
+      ctx.font="bold 9px Courier New";
+      ctx.fillText("BOSS",0,-2);
+    }
+    ctx.restore();
+    // word label
+    const echo=echoActive&&echoShips.includes(s);
+    // during Abbreviation Mode every non-boss ship shows its initials so
+    // players know what to type; a locked target keeps whichever mode it
+    // was locked with even if the timer runs out mid-word
+    const abbrShow=isTarget?(s.mode==="abbr"):(abbrevTimer>0&&!s.isBoss);
+    const word=echo?CFG.echoWord:(abbrShow?s.inits:s.typed);
+    const prog=echo?echoProgress:(isTarget?s.progress:0);
+    const display=echo?CFG.echoWord.toUpperCase():(abbrShow?s.inits.toUpperCase():s.title);
+    ctx.font=(s.isBoss?"bold 15px":"13px")+" Courier New";
+    const ty=s.y+s.r+16;
+    // background pill
+    const tw=ctx.measureText(display).width+12;
+    ctx.fillStyle="rgba(0,0,0,.65)";
+    ctx.fillRect(s.x-tw/2,ty-12,tw,17);
+    // typed part vs rest — map progress on normalized word onto display approximately:
+    if(prog>0){
+      // draw whole in dim, overlay typed prefix in bright
+      ctx.fillStyle=s.isBoss?"#ffb347":"#f2ead9";
+      ctx.fillText(display,s.x,ty);
+      const norm=word;
+      // build display prefix covering same letter count
+      let count=0,cut=0;
+      const dnorm=echo?word:normalize(display);
+      for(let i=0;i<display.length&&count<prog;i++){
+        const c=display[i].toLowerCase().replace(/[éèê]/,"e");
+        if(/[a-z0-9 \-]/.test(c)&&dnorm[count]===c)count++;
+        cut=i+1;
+      }
+      const pre=display.slice(0,cut);
+      const wFull=ctx.measureText(display).width;
+      ctx.save();
+      ctx.fillStyle="#4de8ff";
+      ctx.textAlign="left";
+      ctx.fillText(pre,s.x-wFull/2,ty);
+      ctx.restore();
+    }else{
+      ctx.fillStyle=echo?"#4de8ff":(s.isBoss?"#ffb347":"#f2ead9");
+      ctx.fillText(display,s.x,ty);
+    }
+  }
+  // particles
+  for(const p of particles){
+    ctx.globalAlpha=Math.max(0,p.life);
+    ctx.fillStyle=p.c;
+    ctx.fillRect(p.x,p.y,p.sz,p.sz);
+  }
+  ctx.globalAlpha=1;
+  // shockwaves
+  for(const w of shockwaves){
+    ctx.strokeStyle=`rgba(255,179,71,${w.life})`;
+    ctx.lineWidth=6*w.life;
+    ctx.beginPath();ctx.arc(w.x,w.y,w.r,0,6.28);ctx.stroke();
+  }
+  // abbreviation timer bar
+  if(abbrevTimer>0){
+    ctx.fillStyle="rgba(77,232,255,.8)";
+    ctx.fillRect(0,0,W*(abbrevTimer/CFG.abbrevDuration),4);
+  }
+  // cannon
+  ctx.fillStyle="#ffb347";
+  ctx.beginPath();ctx.moveTo(W/2-16,H);ctx.lineTo(W/2,H-18);ctx.lineTo(W/2+16,H);ctx.closePath();ctx.fill();
+  // flash
+  if(flash>0){
+    ctx.fillStyle=`rgba(255,255,255,${flash*.8})`;
+    ctx.fillRect(-20,-20,W+40,H+40);
+  }
+  ctx.restore();
+}
+
+/* ---------- input ---------- */
+window.addEventListener("keydown",e=>{
+  if(!running&&(gameOver||victory)){
+    if(e.key==="Enter"){document.getElementById("overlay").style.display="none";resetGame();running=true;}
+    return;
+  }
+  if(!running&&!gameOver&&!victory){ // start screen
+    document.getElementById("overlay").style.display="none";
+    resetGame();running=true;
+    e.preventDefault();return;
+  }
+  if(e.key==="Tab"){e.preventDefault();paused=!paused;showBanner(paused?"PAUSED":"GO!");return;}
+  if(e.key==="`"){muted=!muted;showBanner(muted?"MUTED":"SOUND ON");return;}
+  if(paused)return;
+  if(e.key==="Escape"){target=null;return;}
+  if(e.key>="1"&&e.key<="4"){
+    // digits can appear inside titles ("Beach Trip in Our 30s") —
+    // if the locked target actually needs this digit, type it instead
+    if(target){
+      const word=target.mode==="abbr"?target.inits:target.typed;
+      if(word[target.progress]===e.key){handleChar(e.key);e.preventDefault();return;}
+    }
+    usePower(parseInt(e.key)-1);e.preventDefault();return;
+  }
+  if(e.key===" "){e.preventDefault();handleChar(" ");return;}
+  if(e.key.length===1&&/[a-z0-9\-]/i.test(e.key)){handleChar(e.key.toLowerCase());}
+});
+
+/* ---------- boot ---------- */
+function fit(){
+  const box=document.getElementById("canvasBox");
+  dpr=window.devicePixelRatio||1;
+  W=box.clientWidth;H=box.clientHeight;
+  cv.width=W*dpr;cv.height=H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",()=>{if(ctx)fit();});
+window.addEventListener("load",()=>{
+  // crude mobile check: touch device with no fine pointer
+  if(window.matchMedia("(pointer:coarse)").matches&&!window.matchMedia("(pointer:fine)").matches){
+    document.getElementById("mobileBlock").style.display="flex";
+    return;
+  }
+  cv=document.getElementById("cv");ctx=cv.getContext("2d");
+  fit();resetGame();
+  requestAnimationFrame(loop);
+});
+</script>
+</body>
+</html>
