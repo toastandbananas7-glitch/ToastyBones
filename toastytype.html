@@ -611,6 +611,12 @@ function handleChar(ch){
       else{best.lockWord=best.typed;best.lockDisplay=null;}
       best.progress=1;
       hitFX(best);streakUp();stLetters++;
+      // one-letter words ("C", or single initials in Abbreviation Mode)
+      // are already complete at the moment of lock
+      if(best.progress>=best.lockWord.length){
+        target=null;
+        killShip(best,true);
+      }
     }else typo();
   }else{
     const word=target.lockWord||target.typed;
