@@ -1444,17 +1444,34 @@
   }
   setTimeout(triggerGlitchBurst, 15000 + Math.random() * 15000);
 
-  // ============ SPOTIFY PREVIEW ON HOVER ============
+// ============ SPOTIFY PREVIEW ON HOVER ============
   const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
 
   document.querySelectorAll('.album-card-wrap').forEach(wrap => {
     const preview = wrap.querySelector('.spotify-preview');
     if (!preview) return;
+
+    // Defer embed loading: don't request Spotify until this card is hovered.
+    // Loading all 22 embeds at once makes Spotify return timeouts / error pages.
+    const iframe = preview.querySelector('iframe');
+    if (iframe && iframe.getAttribute('src')) {
+      iframe.dataset.src = iframe.getAttribute('src');
+      iframe.removeAttribute('src');
+    }
+    const loadEmbed = () => {
+      if (iframe && iframe.dataset.src && !iframe.getAttribute('src')) {
+        iframe.setAttribute('src', iframe.dataset.src);
+      }
+    };
+
     let showTimer, hideTimer;
     wrap.addEventListener('mouseenter', () => {
       if (isTouchDevice()) return;
       clearTimeout(hideTimer);
-      showTimer = setTimeout(() => preview.classList.add('visible'), 350);
+      showTimer = setTimeout(() => {
+        loadEmbed();
+        preview.classList.add('visible');
+      }, 350);
     });
     wrap.addEventListener('mouseleave', () => {
       if (isTouchDevice()) return;
