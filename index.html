@@ -799,16 +799,47 @@
   <h1 class="text-lg sm:text-2xl font-orbitron drop-shadow-md px-16 sm:px-24">🔥 Big Dump 3: The Reckoning 🔥 — OUT NOW ON SPOTIFY</h1>
 </div>
 
-<!-- Hero Section -->
-<div class="mt-10 text-center bg-black/60 py-10 rounded-xl mx-4">
-  <h2 class="section-title" data-text="Big Dump 3: The Reckoning">Big Dump 3: The Reckoning</h2>
-  <a href="https://open.spotify.com/album/1cpKnnvsH2j1IQT9INT8xh" target="_blank"
-     class="inline-block px-8 py-4 bg-yellow-400 text-black font-orbitron text-xl rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
-    Listen Now on Spotify
-  </a>
-  <div class="mt-6">
-    <img src="bd3tr.png" alt="Big Dump 3: The Reckoning"
-         class="mx-auto max-w-xs rounded-lg border-4 border-yellow-400 shadow-lg">
+<!-- Hero Section (scrolling carousel) -->
+<style>
+  @keyframes heroScrollX {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .hero-carousel { overflow: hidden; }
+  .hero-carousel-track {
+    display: flex;
+    width: max-content;
+    animation: heroScrollX 16s linear infinite;
+  }
+  .hero-carousel:hover .hero-carousel-track { animation-play-state: paused; }
+  .hero-carousel-item {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.75rem 2.5rem;
+    white-space: nowrap;
+  }
+</style>
+<div class="hero-carousel mt-10 bg-black/60 rounded-xl mx-4 border-2 border-yellow-400/40">
+  <div class="hero-carousel-track">
+    <div class="hero-carousel-item">
+      <img src="bd3tr.png" alt="Big Dump 3: The Reckoning"
+           class="h-14 w-14 rounded-lg border-2 border-yellow-400 shadow-lg flex-shrink-0">
+      <span class="font-orbitron text-yellow-300 text-base sm:text-lg" style="text-shadow:0 0 8px rgba(255,251,0,0.6);">🔥 Big Dump 3: The Reckoning</span>
+      <a href="https://open.spotify.com/album/1cpKnnvsH2j1IQT9INT8xh" target="_blank"
+         class="inline-block px-4 py-2 bg-yellow-400 text-black font-orbitron text-sm rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition flex-shrink-0">
+        Listen Now on Spotify
+      </a>
+    </div>
+    <div class="hero-carousel-item" aria-hidden="true">
+      <img src="bd3tr.png" alt=""
+           class="h-14 w-14 rounded-lg border-2 border-yellow-400 shadow-lg flex-shrink-0">
+      <span class="font-orbitron text-yellow-300 text-base sm:text-lg" style="text-shadow:0 0 8px rgba(255,251,0,0.6);">🔥 Big Dump 3: The Reckoning</span>
+      <a href="https://open.spotify.com/album/1cpKnnvsH2j1IQT9INT8xh" target="_blank" tabindex="-1"
+         class="inline-block px-4 py-2 bg-yellow-400 text-black font-orbitron text-sm rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition flex-shrink-0">
+        Listen Now on Spotify
+      </a>
+    </div>
   </div>
 </div>
 
@@ -827,7 +858,7 @@
       <p class="text-white/60 font-tech text-xs mb-4">Starting at $18</p>
       <a href="https://toastybonesmerch.printful.me/product/something-inappropriate-unisex-tee" target="_blank"
          class="mt-auto inline-block w-full px-4 py-3 bg-yellow-400 text-black font-orbitron font-bold text-sm rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
-        Buy My Weird Shirts
+        Buy This Weird Shirt!
       </a>
     </div>
 
@@ -838,7 +869,7 @@
       <p class="text-white/60 font-tech text-xs mb-4">Starting at $18</p>
       <a href="https://toastybonesmerch.printful.me/product/particle-accelerator-tee" target="_blank"
          class="mt-auto inline-block w-full px-4 py-3 bg-yellow-400 text-black font-orbitron font-bold text-sm rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
-        Buy My Weird Shirts
+        Buy This Weird Shirt!
       </a>
     </div>
 
@@ -849,7 +880,7 @@
       <p class="text-white/60 font-tech text-xs mb-4">Starting at $18</p>
       <a href="https://toastybonesmerch.printful.me/product/into-the-void-tee" target="_blank"
          class="mt-auto inline-block w-full px-4 py-3 bg-yellow-400 text-black font-orbitron font-bold text-sm rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
-        Buy My Weird Shirts
+        Buy This Weird Shirt!
       </a>
     </div>
 
@@ -860,7 +891,7 @@
       <p class="text-white/60 font-tech text-xs mb-4">Starting at $18</p>
       <a href="https://toastybonesmerch.printful.me/product/bonesbonesbones-tee" target="_blank"
          class="mt-auto inline-block w-full px-4 py-3 bg-yellow-400 text-black font-orbitron font-bold text-sm rounded-lg shadow-xl hover:bg-pink-600 hover:text-white transition">
-        Buy My Weird Shirts
+        Buy This Weird Shirt!
       </a>
     </div>
 
