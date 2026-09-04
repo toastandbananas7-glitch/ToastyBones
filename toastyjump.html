@@ -323,7 +323,7 @@
     <div class="ov-title">🔥 COLLECTION COMPLETE! 🔥</div>
     <div class="score-big" id="win-score">0</div>
     <div class="score-lbl">METERS CLIMBED</div>
-    <div class="go-sum">All 19 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
+    <div class="go-sum">All 22 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
     <button class="ov-btn" id="btn-winretry" style="margin-bottom:10px;">↺ PLAY AGAIN</button>
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
@@ -378,8 +378,11 @@ const ALBUMS = [
   {name:'Big Dump 2: Return of the Dump',   img:'bd2rotd.png',               pts:1870},
   {name:'Hilariously Unfortunate',          img:'HilariouslyUnfortunate.png', pts:2070},
   {name:'Efforts and Errors',               img:'EE.png',                     pts:2280},
+  {name:'Defeat The Purpose',               img:'defeatthepurpose.png',       pts:2500},
+  {name:'Odd One Out',                      img:'ooo.png',                    pts:2730},
+  {name:'Big Dump 3: The Reckoning',        img:'bd3tr.png',                  pts:2970},
 ];
-const TOTAL_PTS = 2280;
+const TOTAL_PTS = 2970;
 
 const BGM_TRACKS = [
   'gamemusic/BackupYourData.mp3',
@@ -964,7 +967,7 @@ function endGame() {
   document.getElementById('go-sum').innerHTML =
     unlockedCount===0
       ? "No albums unlocked. I'm not surprised, just disappointed."
-      : `${unlockedCount} / 19 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
+      : `${unlockedCount} / 22 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
   const t = unlockedCount>=19?'🔥 LEGENDARY'
     :unlockedCount>=14?'IMPRESSIVE RUN'
     :unlockedCount>=7 ?'NOT BAD'
