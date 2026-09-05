@@ -595,6 +595,69 @@
 
     .album-card-wrap { position: relative; }
 
+    /* ============ ALBUM CAROUSEL ============ */
+    .album-carousel {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 2rem 2.5rem 3rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      perspective: 1200px;
+    }
+    .album-carousel::-webkit-scrollbar { display: none; }
+
+    .album-carousel .album-card-wrap {
+      flex: 0 0 auto;
+      width: 62vw;
+      max-width: 220px;
+      scroll-snap-align: center;
+    }
+
+    /* ============ ALBUM COVERFLOW ============ */
+    .coverflow-face {
+      width: 100%;
+      transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+      will-change: transform, opacity;
+      transform-style: preserve-3d;
+    }
+    @media (min-width: 640px) {
+      .album-carousel .album-card-wrap { width: 260px; }
+    }
+    @media (min-width: 1024px) {
+      .album-carousel .album-card-wrap { width: 300px; }
+    }
+
+    .album-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 9999px;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #fffb00;
+      color: #fffb00;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .album-nav-btn:hover {
+      border-color: #ff00ff;
+      color: #ff00ff;
+      background: rgba(0,0,0,0.85);
+    }
+    .album-nav-prev { left: -0.5rem; }
+    .album-nav-next { right: -0.5rem; }
+    @media (min-width: 640px) {
+      .album-nav-prev { left: -1.25rem; }
+      .album-nav-next { right: -1.25rem; }
+    }
+
     /* ============ KONAMI / SECRET MESSAGE ============ */
     #secret-msg {
       position: fixed;
@@ -897,10 +960,14 @@
 <!-- Albums Section -->
 <section class="py-20 px-6 text-center">
   <h2 class="section-title" data-text="Albums">Albums</h2>
-  <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 max-w-6xl mx-auto">
+  <div class="relative max-w-6xl mx-auto">
+    <button id="albumPrev" aria-label="Scroll albums left" class="album-nav-btn album-nav-prev">&#10094;</button>
+    <button id="albumNext" aria-label="Scroll albums right" class="album-nav-btn album-nav-next">&#10095;</button>
+    <div id="albumCarousel" class="album-carousel gap-4 sm:gap-8">
 
     <!-- Big Dump 3: The Reckoning -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
+<div class="coverflow-face">
       <span class="new-badge">🔥 NEW</span>
     <a href="https://open.spotify.com/album/1cpKnnvsH2j1IQT9INT8xh" target="_blank"
        data-spotify="1cpKnnvsH2j1IQT9INT8xh"
@@ -915,11 +982,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/1cpKnnvsH2j1IQT9INT8xh?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Odd One Out -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/777OVWACmpUedQpr6QVJGj" target="_blank"
        data-spotify="777OVWACmpUedQpr6QVJGj"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -933,11 +1002,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/777OVWACmpUedQpr6QVJGj?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
      <!-- Defeat The Purpose -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/2iY93g2SpXSnHRKqEItRGG" target="_blank"
        data-spotify="2iY93g2SpXSnHRKqEItRGG"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -951,11 +1022,13 @@
         </div>
       </div>
     </a>
+    </div>
 <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/2iY93g2SpXSnHRKqEItRGG?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Efforts and Errors -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.05s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/4dPHaGGa4FBzgzqlmbueNE" target="_blank"
        data-spotify="4dPHaGGa4FBzgzqlmbueNE"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -969,6 +1042,7 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview">
       <iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/4dPHaGGa4FBzgzqlmbueNE?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
@@ -976,6 +1050,7 @@
 
     <!-- Hilariously Unfortunate -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.10s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
        data-spotify="5QsBEo2w5hLwTcXbEVtVzI"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -989,11 +1064,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5QsBEo2w5hLwTcXbEVtVzI?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Big Dump 2: Return of the Dump -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.15s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank"
        data-spotify="7A2epK5YtI0AwzekuFQa2J"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -1007,11 +1084,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7A2epK5YtI0AwzekuFQa2J?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Spobbly Not -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.20s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank"
        data-spotify="4Se3IXXD8jRjuleluQTjf3"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -1025,11 +1104,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/4Se3IXXD8jRjuleluQTjf3?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- The Great Indoors -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank"
        data-spotify="5WK8CM8TwDUx45Rg7c2fpJ"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1043,11 +1124,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5WK8CM8TwDUx45Rg7c2fpJ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Festive Flush -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.30s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank"
        data-spotify="7HeRXhxoE7icXWhmiP5E7D"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1061,11 +1144,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7HeRXhxoE7icXWhmiP5E7D?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Midnight Suppository -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.35s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank"
        data-spotify="3JeNJkrFjTzBE8jGq1yreC"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1079,11 +1164,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/3JeNJkrFjTzBE8jGq1yreC?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Black and Blue and Punk All Over -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.40s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank"
        data-spotify="0K25mUKLkCKuRhuHJpM8t6"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1097,11 +1184,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0K25mUKLkCKuRhuHJpM8t6?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Boney Hollow -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.45s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
        data-spotify="6QM22TUsasDgIHFZn9Niba"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1115,11 +1204,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/6QM22TUsasDgIHFZn9Niba?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
 <!-- Sharing Socks with Strangers -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.50s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/5ClgUJD0UT3d6meQ3RwpZk" target="_blank"
        data-spotify="5ClgUJD0UT3d6meQ3RwpZk"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1133,11 +1224,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5ClgUJD0UT3d6meQ3RwpZk?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Man's Breath -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.55s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
       <div class="relative aspect-square bg-black rounded-xl border-2 border-green-400 shadow-xl group-hover:border-red-400 flex flex-col justify-between">
@@ -1150,11 +1243,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/artist/2VyZ4NBBwy9UIs8AcoMlH2?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Neon Banana -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.60s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/2Oyd5ELRKz0nrrKBWlbGeK" target="_blank"
        data-spotify="2Oyd5ELRKz0nrrKBWlbGeK"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1168,11 +1263,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/2Oyd5ELRKz0nrrKBWlbGeK?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- The Legend of Duke -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
        data-spotify="2r1UbSHTPFJrIH6KVF4Jb4"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1185,11 +1282,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/2r1UbSHTPFJrIH6KVF4Jb4?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Mystery Clown -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
        data-spotify="5vGODrEiQ8cCVhT9mX8Ky4"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1203,11 +1302,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/5vGODrEiQ8cCVhT9mX8Ky4?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Big Dump -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.70s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
        data-spotify="4yBkE9cfP1uA04eIVViCnn"
        class="album-link group transform transition hover:scale-105 hover:-rotate-1 block">
@@ -1221,11 +1322,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/4yBkE9cfP1uA04eIVViCnn?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Fully Panted -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.75s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
        data-spotify="3pibb5ZqPdmBje3Q50cgrC"
        class="album-link group transform transition hover:scale-105 hover:rotate-2 block">
@@ -1239,11 +1342,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/3pibb5ZqPdmBje3Q50cgrC?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Ear-aid -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.80s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
        data-spotify="0tzXB3flhk3Z8nKl4EoqaV"
        class="album-link group transform transition hover:scale-105 hover:-rotate-2 block">
@@ -1257,11 +1362,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/0tzXB3flhk3Z8nKl4EoqaV?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Lovey Dovey -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.85s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
        data-spotify="7KtMV76L80Pz6JMR1dErog"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1275,11 +1382,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7KtMV76L80Pz6JMR1dErog?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Isle of Beans -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.90s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
        data-spotify="68OQ78AmvTIEAolpFfPr2e"
        class="album-link group transform transition hover:scale-105 hover:rotate-3 block">
@@ -1293,11 +1402,13 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/68OQ78AmvTIEAolpFfPr2e?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
     <!-- Unscheduled Programming -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.95s">
+<div class="coverflow-face">
     <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
        data-spotify="7oOB89lOQ15eaTMWuGXd2j"
        class="album-link group transform transition hover:scale-105 hover:-rotate-3 block">
@@ -1311,10 +1422,12 @@
         </div>
       </div>
     </a>
+    </div>
     <div class="spotify-preview"><iframe style="border-radius:8px" src="https://open.spotify.com/embed/album/7oOB89lOQ15eaTMWuGXd2j?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
     </div>
 
-  </div><!-- end grid -->
+    </div><!-- end album-carousel -->
+  </div><!-- end carousel wrapper -->
 </section>
 
 <!-- Playlist Section -->
@@ -1489,6 +1602,68 @@
     card.style.animationPlayState = 'paused';
     cardObserver.observe(card);
   });
+
+  // ============ ALBUM CAROUSEL SCROLL ============
+  const albumCarousel = document.getElementById('albumCarousel');
+  const albumPrev = document.getElementById('albumPrev');
+  const albumNext = document.getElementById('albumNext');
+  if (albumCarousel && albumPrev && albumNext) {
+    const scrollByCard = (dir) => {
+      const card = albumCarousel.querySelector('.album-card-wrap');
+      const step = card ? card.getBoundingClientRect().width + 24 : 260;
+      albumCarousel.scrollBy({ left: dir * step, behavior: 'smooth' });
+    };
+    albumPrev.addEventListener('click', () => scrollByCard(-1));
+    albumNext.addEventListener('click', () => scrollByCard(1));
+    // Let a plain vertical mouse wheel drive the horizontal scroll too.
+    albumCarousel.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        albumCarousel.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+
+    // ============ ALBUM COVERFLOW 3D ============
+    const coverWraps = Array.from(albumCarousel.querySelectorAll('.album-card-wrap'));
+    let coverflowRaf = null;
+
+    function updateCoverflow() {
+      coverflowRaf = null;
+      const carouselRect = albumCarousel.getBoundingClientRect();
+      const centerX = carouselRect.left + carouselRect.width / 2;
+
+      coverWraps.forEach(wrap => {
+        const face = wrap.querySelector('.coverflow-face');
+        if (!face) return;
+        const rect = wrap.getBoundingClientRect();
+        const cardCenterX = rect.left + rect.width / 2;
+        const delta = rect.width ? (cardCenterX - centerX) / rect.width : 0;
+        const clamped = Math.max(-3, Math.min(3, delta));
+        const absClamped = Math.abs(clamped);
+
+        const rotateY = clamped * -32;
+        const translateZ = -absClamped * 90;
+        const scale = 1 - absClamped * 0.14;
+        const opacity = 1 - absClamped * 0.22;
+
+        face.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`;
+        face.style.opacity = Math.max(0.28, opacity);
+        wrap.style.zIndex = String(Math.round(100 - absClamped * 10));
+      });
+    }
+
+    function requestCoverflowUpdate() {
+      if (coverflowRaf === null) {
+        coverflowRaf = requestAnimationFrame(updateCoverflow);
+      }
+    }
+
+    albumCarousel.addEventListener('scroll', requestCoverflowUpdate, { passive: true });
+    window.addEventListener('resize', requestCoverflowUpdate);
+    requestCoverflowUpdate();
+    // Layout settles a beat after load (images, fonts) — recompute once more.
+    setTimeout(updateCoverflow, 300);
+  }
 
   // ============ CHANNEL CHANGE ON ALBUM CLICK ============
   const channelEl = document.getElementById('channel-change');
