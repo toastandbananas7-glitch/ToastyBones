@@ -616,38 +616,62 @@
       scroll-snap-align: center;
     }
 
-    /* ============ ALBUM SCATTER PILE ============ */
+    /* ============ ALBUM VINYL PEEK ============ */
+    /* Note: no transform (scale/rotate) ever touches .coverflow-face — the
+       Spotify preview popup anchors to the untransformed .album-card-wrap
+       box, so resizing/rotating the visible cover would desync the popup
+       from the art. Focus is communicated with color/glow only. */
     .coverflow-face {
       width: 100%;
-      transform-origin: 50% 60%;
-      transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
-      will-change: transform, opacity;
+      position: relative;
+      filter: saturate(0.4) brightness(0.72);
+      transition: filter 0.35s ease;
     }
     .coverflow-face.is-focused {
-      filter: drop-shadow(0 0 10px rgba(255,251,0,0.75)) drop-shadow(0 0 22px rgba(255,251,0,0.35));
+      filter: saturate(1.05) brightness(1.05)
+              drop-shadow(0 0 10px rgba(255,251,0,0.75))
+              drop-shadow(0 0 22px rgba(255,251,0,0.35));
     }
     @keyframes albumFocusFlash {
-      0%   { filter: brightness(2.2) saturate(1.6) drop-shadow(0 0 10px rgba(255,251,0,0.75)); }
-      100% { filter: brightness(1) saturate(1) drop-shadow(0 0 10px rgba(255,251,0,0.75)) drop-shadow(0 0 22px rgba(255,251,0,0.35)); }
+      0%   { filter: brightness(2.2) saturate(1.6); }
+      100% { filter: saturate(1.05) brightness(1.05)
+                     drop-shadow(0 0 10px rgba(255,251,0,0.75))
+                     drop-shadow(0 0 22px rgba(255,251,0,0.35)); }
     }
     .coverflow-face.focus-flicker {
       animation: albumFocusFlash 0.4s steps(3, end);
     }
 
-    .wobble-inner {
-      transform-origin: 50% 50%;
-      animation: albumWobble 3.6s ease-in-out infinite;
+    .vinyl-disc {
+      position: absolute;
+      bottom: -12%;
+      right: -12%;
+      width: 52%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: repeating-radial-gradient(circle at center,
+        #161616 0, #161616 2px, #0a0a0a 2px, #0a0a0a 4px);
+      box-shadow: 0 0 14px rgba(0,0,0,0.65);
+      pointer-events: none;
+      animation: vinylSpin 4.5s linear infinite;
     }
-    @keyframes albumWobble {
-      0%, 100% { transform: rotate(-2.5deg) translateY(0); }
-      50%      { transform: rotate(2.5deg) translateY(-5px); }
+    .vinyl-disc::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 24%; height: 24%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #fffb00;
+      box-shadow: 0 0 8px rgba(255,251,0,0.6);
     }
-    .album-card-wrap:nth-child(3n+1) .wobble-inner { animation-duration: 3.1s; animation-delay: -0.6s; }
-    .album-card-wrap:nth-child(3n+2) .wobble-inner { animation-duration: 4.2s; animation-delay: -2.1s; }
-    .album-card-wrap:nth-child(3n)   .wobble-inner { animation-duration: 3.7s; animation-delay: -1.4s; }
-    .coverflow-face.is-focused .wobble-inner {
-      animation-play-state: paused;
-      transform: rotate(0deg) translateY(0);
+    .coverflow-face.is-focused .vinyl-disc {
+      animation-duration: 1.3s;
+      box-shadow: 0 0 18px rgba(255,251,0,0.4);
+    }
+    @keyframes vinylSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
     }
     @media (min-width: 640px) {
       .album-carousel .album-card-wrap { width: 260px; }
@@ -993,6 +1017,7 @@
     <!-- Big Dump 3: The Reckoning -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
       <span class="new-badge">🔥 NEW</span>
     <a href="https://open.spotify.com/album/1cpKnnvsH2j1IQT9INT8xh" target="_blank"
@@ -1016,6 +1041,7 @@
     <!-- Odd One Out -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/777OVWACmpUedQpr6QVJGj" target="_blank"
        data-spotify="777OVWACmpUedQpr6QVJGj"
@@ -1038,6 +1064,7 @@
      <!-- Defeat The Purpose -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/2iY93g2SpXSnHRKqEItRGG" target="_blank"
        data-spotify="2iY93g2SpXSnHRKqEItRGG"
@@ -1060,6 +1087,7 @@
     <!-- Efforts and Errors -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.05s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/4dPHaGGa4FBzgzqlmbueNE" target="_blank"
        data-spotify="4dPHaGGa4FBzgzqlmbueNE"
@@ -1084,6 +1112,7 @@
     <!-- Hilariously Unfortunate -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.10s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/5QsBEo2w5hLwTcXbEVtVzI" target="_blank"
        data-spotify="5QsBEo2w5hLwTcXbEVtVzI"
@@ -1106,6 +1135,7 @@
     <!-- Big Dump 2: Return of the Dump -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.15s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/7A2epK5YtI0AwzekuFQa2J" target="_blank"
        data-spotify="7A2epK5YtI0AwzekuFQa2J"
@@ -1128,6 +1158,7 @@
     <!-- Spobbly Not -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.20s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/4Se3IXXD8jRjuleluQTjf3" target="_blank"
        data-spotify="4Se3IXXD8jRjuleluQTjf3"
@@ -1150,6 +1181,7 @@
     <!-- The Great Indoors -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.25s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/5WK8CM8TwDUx45Rg7c2fpJ" target="_blank"
        data-spotify="5WK8CM8TwDUx45Rg7c2fpJ"
@@ -1172,6 +1204,7 @@
     <!-- Festive Flush -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.30s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/7HeRXhxoE7icXWhmiP5E7D" target="_blank"
        data-spotify="7HeRXhxoE7icXWhmiP5E7D"
@@ -1194,6 +1227,7 @@
     <!-- Midnight Suppository -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.35s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/3JeNJkrFjTzBE8jGq1yreC" target="_blank"
        data-spotify="3JeNJkrFjTzBE8jGq1yreC"
@@ -1216,6 +1250,7 @@
     <!-- Black and Blue and Punk All Over -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.40s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/0K25mUKLkCKuRhuHJpM8t6" target="_blank"
        data-spotify="0K25mUKLkCKuRhuHJpM8t6"
@@ -1238,6 +1273,7 @@
     <!-- Boney Hollow -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.45s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/6QM22TUsasDgIHFZn9Niba" target="_blank"
        data-spotify="6QM22TUsasDgIHFZn9Niba"
@@ -1260,6 +1296,7 @@
 <!-- Sharing Socks with Strangers -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.50s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/5ClgUJD0UT3d6meQ3RwpZk" target="_blank"
        data-spotify="5ClgUJD0UT3d6meQ3RwpZk"
@@ -1282,6 +1319,7 @@
     <!-- Man's Breath -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.55s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/artist/2VyZ4NBBwy9UIs8AcoMlH2" target="_blank"
        class="album-link group transform transition hover:scale-105 hover:rotate-1 block">
@@ -1303,6 +1341,7 @@
     <!-- Neon Banana -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.60s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/2Oyd5ELRKz0nrrKBWlbGeK" target="_blank"
        data-spotify="2Oyd5ELRKz0nrrKBWlbGeK"
@@ -1325,6 +1364,7 @@
     <!-- The Legend of Duke -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/2r1UbSHTPFJrIH6KVF4Jb4" target="_blank"
        data-spotify="2r1UbSHTPFJrIH6KVF4Jb4"
@@ -1346,6 +1386,7 @@
     <!-- Mystery Clown -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.65s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/5vGODrEiQ8cCVhT9mX8Ky4" target="_blank"
        data-spotify="5vGODrEiQ8cCVhT9mX8Ky4"
@@ -1368,6 +1409,7 @@
     <!-- Big Dump -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.70s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/4yBkE9cfP1uA04eIVViCnn" target="_blank"
        data-spotify="4yBkE9cfP1uA04eIVViCnn"
@@ -1390,6 +1432,7 @@
     <!-- Fully Panted -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.75s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/3pibb5ZqPdmBje3Q50cgrC" target="_blank"
        data-spotify="3pibb5ZqPdmBje3Q50cgrC"
@@ -1412,6 +1455,7 @@
     <!-- Ear-aid -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.80s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/0tzXB3flhk3Z8nKl4EoqaV" target="_blank"
        data-spotify="0tzXB3flhk3Z8nKl4EoqaV"
@@ -1434,6 +1478,7 @@
     <!-- Lovey Dovey -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.85s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/7KtMV76L80Pz6JMR1dErog?si=M9FKSWsfTfSRFibKvOCPUw" target="_blank"
        data-spotify="7KtMV76L80Pz6JMR1dErog"
@@ -1456,6 +1501,7 @@
     <!-- Isle of Beans -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.90s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/68OQ78AmvTIEAolpFfPr2e" target="_blank"
        data-spotify="68OQ78AmvTIEAolpFfPr2e"
@@ -1478,6 +1524,7 @@
     <!-- Unscheduled Programming -->
     <div class="album-card-wrap card-pop" style="animation-delay:0.95s">
 <div class="coverflow-face">
+<div class="vinyl-disc"></div>
 <div class="wobble-inner">
     <a href="https://open.spotify.com/album/7oOB89lOQ15eaTMWuGXd2j" target="_blank"
        data-spotify="7oOB89lOQ15eaTMWuGXd2j"
@@ -1694,9 +1741,8 @@
       }
     }, { passive: false });
 
-    // ============ ALBUM SCATTER PILE ============
+    // ============ ALBUM VINYL PEEK (focus tracking only — no transform) ============
     const coverWraps = Array.from(albumCarousel.querySelectorAll('.album-card-wrap'));
-    const restTilts = [6, -5.5, 4, -7, 3, -4.5, 5.5, -3.5, 6.5, -6];
     let coverflowRaf = null;
 
     function updateCoverflow() {
@@ -1704,25 +1750,14 @@
       const carouselRect = albumCarousel.getBoundingClientRect();
       const centerX = carouselRect.left + carouselRect.width / 2;
 
-      coverWraps.forEach((wrap, i) => {
+      coverWraps.forEach(wrap => {
         const face = wrap.querySelector('.coverflow-face');
         if (!face) return;
         const rect = wrap.getBoundingClientRect();
         const cardCenterX = rect.left + rect.width / 2;
-        const delta = rect.width ? (cardCenterX - centerX) / rect.width : 0;
-        const clamped = Math.max(-3, Math.min(3, delta));
-        const absClamped = Math.abs(clamped);
+        const delta = rect.width ? Math.abs(cardCenterX - centerX) / rect.width : 0;
 
-        const restTilt = restTilts[i % restTilts.length];
-        const tilt = restTilt * Math.min(1, absClamped / 0.6);
-        const scale = 1.32 - absClamped * 0.16;
-        const opacity = 1 - absClamped * 0.2;
-
-        face.style.transform = `rotate(${tilt.toFixed(2)}deg) scale(${Math.max(0.7, scale).toFixed(3)})`;
-        face.style.opacity = Math.max(0.4, opacity).toFixed(2);
-        wrap.style.zIndex = String(Math.round(100 - absClamped * 10));
-
-        const nowFocused = absClamped < 0.4;
+        const nowFocused = delta < 0.4;
         const wasFocused = face.classList.contains('is-focused');
         if (nowFocused && !wasFocused) {
           face.classList.add('is-focused', 'focus-flicker');
