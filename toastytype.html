@@ -180,7 +180,7 @@
         <h2>DESTROY THE DISCOGRAPHY</h2>
         <p>Every album sends <b>5 random tracks</b> at you — type the titles to shoot them down.
         First letter locks your target. Clear all 5 and the <b>ALBUM BOSS</b> arrives:
-        type the full album title to move on. Survive all 23 albums to win. No saves — fresh run every time.</p>
+        type the full album title to move on. Survive all 24 albums to win. No saves — fresh run every time.</p>
         <p class="hint">Powerups: <b>[1]</b> Multi-Shot &nbsp; <b>[2]</b> Abbreviation Mode &nbsp; <b>[3]</b> Echo Storm &nbsp; <b>[4]</b> CLEAR SCREEN<br>
         Bosses are immune to powerups — those you type with your own two hands.<br>
         Typos cost 25 points. [ESC] drop target &nbsp; [TAB] pause &nbsp; [`] mute</p>
@@ -226,7 +226,7 @@
 <script>
 /* ============================================================
    TOASTYTYPE v2 (ALPHA) — a ToastyBones typing shooter
-   Run = 23 albums in order. Each album: 5 random tracks, then
+   Run = 24 albums in order. Each album: 5 random tracks, then
    the album-title boss. Cover art paths are relative to the
    repo root, exactly as the files are named on GitHub Pages
    (case-sensitive!).
@@ -278,7 +278,9 @@ const ALBUMS = [
 {name:"Odd One Out",cover:"ooo.png",tracks:[
 "One and Done","Can't","Hotdogs and Handgrenades","But I Didn't","Nothing With Me","I Can't Have a Bad Day With You","Juggle","Technology is Cool","Gimme Dat","About Right Now","Flip Flop Coozie","Loophole","Left Behind","But I Was Wrong","I Failed You","She Didn't Wanna Hear It","The Next New Thing","Groundhog Day"]},
 {name:"Big Dump 3: The Reckoning",cover:"bd3tr.png",tracks:[
-"Another Door","I Give Up!","Moving To Jupiter","Can't Stand The Cold","Golden Heart","Candle","Kyle Dash 8","Callie-Co!","I'm Laughing Again","Hooves On The Dance Floor","Goo-Goo-Gaa-Gaa","Another One","I Don't Wanna Go","Hold My Beer","Salt","Now It's Gone","I Hate Everything Now","Howndog","TheSongOfNoSense","WWC","Redacted","Greatest Mistake","Sucker for a Sappy Love Song","Greg Benskin","Yellow Ukulele","Porque Eso Es Lo Que Me Gusta"]}
+"Another Door","I Give Up!","Moving To Jupiter","Can't Stand The Cold","Golden Heart","Candle","Kyle Dash 8","Callie-Co!","I'm Laughing Again","Hooves On The Dance Floor","Goo-Goo-Gaa-Gaa","Another One","I Don't Wanna Go","Hold My Beer","Salt","Now It's Gone","I Hate Everything Now","Howndog","TheSongOfNoSense","WWC","Redacted","Greatest Mistake","Sucker for a Sappy Love Song","Greg Benskin","Yellow Ukulele","Porque Eso Es Lo Que Me Gusta"]},
+{name:"Something Inappropriate",cover:"somethinginappropriate.png",tracks:[
+"Seen It All","I Don't Really Think About It","Give Me Some Grace","Recalculating","None The Wiser","You're In Control","Empty","Constrained By The Limits","Whatever You Wanna Be","Unless I Die","I Love The Rain","They Told Me","Stars","You Day","Cool To Be Poor","Flow State","Pretty Damn Perfect","Something New","Intertwined","Don't Ask Me About The Weather","Home","You Get Me","Lazy on my Resume","Black Denim Jacket","We're Still Havin' Fun","This is the End"]}
 ];
 
 /* ---------- config ---------- */
@@ -295,7 +297,7 @@ const CFG = {
   bossSpeedMult:.5,
   spawnGap:[2.4,1.2],          // seconds ramp
 };
-const KILLS_TO_WIN = ALBUMS.length*(CFG.tracksPerAlbum+1); // 138
+const KILLS_TO_WIN = ALBUMS.length*(CFG.tracksPerAlbum+1); // 144
 
 /* ---------- normalize ---------- */
 function normalize(s){
@@ -510,7 +512,7 @@ function endGame(won){
   const cleared=albumDone.filter(Boolean).length;
   ov.innerHTML=`
     <h1>${won?"DISCOGRAPHY DESTROYED":"GAME OVER"}</h1>
-    <h2>${won?"You survived all 23 albums. Legend.":"The ships got through on \""+ALBUMS[waveIdx].name+"\"."}</h2>
+    <h2>${won?"You survived all 24 albums. Legend.":"The ships got through on \""+ALBUMS[waveIdx].name+"\"."}</h2>
     <table>
       <tr><td>Score</td><td>${Math.max(0,Math.floor(score))}</td></tr>
       <tr><td>Albums completed</td><td>${cleared} / ${ALBUMS.length}</td></tr>
