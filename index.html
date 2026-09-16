@@ -616,6 +616,15 @@
       scroll-snap-align: center;
     }
 
+    /* Invisible edge spacers (sized via JS) so the first/last cards can
+       actually reach the visual center — without them there's not enough
+       scroll room past the ends and the outermost 2-3 cards can never
+       become "focused". */
+    .album-carousel-spacer {
+      flex: 0 0 auto;
+      scroll-snap-align: none;
+    }
+
     /* ============ ALBUM VINYL PEEK ============ */
     /* Note: no transform (scale/rotate) ever touches .coverflow-face — the
        Spotify preview popup anchors to the untransformed .album-card-wrap
@@ -1763,6 +1772,23 @@
         albumCarousel.scrollLeft += e.deltaY;
       }
     }, { passive: false });
+
+    // ============ EDGE SPACERS — let the first/last cards reach true center ============
+    const spacerLeft = document.createElement('div');
+    const spacerRight = document.createElement('div');
+    spacerLeft.className = spacerRight.className = 'album-carousel-spacer';
+    albumCarousel.insertBefore(spacerLeft, albumCarousel.firstChild);
+    albumCarousel.appendChild(spacerRight);
+
+    function updateSpacers() {
+      const card = albumCarousel.querySelector('.album-card-wrap');
+      if (!card) return;
+      const pad = Math.max(0, (albumCarousel.clientWidth - card.getBoundingClientRect().width) / 2);
+      spacerLeft.style.width = spacerRight.style.width = pad + 'px';
+    }
+    updateSpacers();
+    window.addEventListener('resize', updateSpacers);
+    setTimeout(updateSpacers, 300);
 
     // ============ ALBUM VINYL PEEK (focus tracking only — no transform) ============
     const coverWraps = Array.from(albumCarousel.querySelectorAll('.album-card-wrap'));
