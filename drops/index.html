@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drop Watch · Pokémon TCG · Roanoke &amp; Lynchburg</title>
+<meta name="description" content="Pokémon TCG release dates, store hours and drop sightings for Roanoke and Lynchburg, VA.">
+<link rel="icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<!--
+  Drop Watch (built 2026-09-25 for Evan and his buddy).
+  Data: data.json (stores + releases, every fact checked against the
+  retailer's own page on the "verified" date; see "source"). Sightings come
+  from a Google Form's published-CSV sheet (data.json "sightings_csv").
+-->
+<style>
+  :root {
+    --bg: #0b0d12; --panel: #141821; --panel2: #1b2130; --line: rgba(255,255,255,0.08);
+    --text: #eef1f6; --dim: #9aa3b2; --yellow: #ffcb05; --red: #e3350d; --blue: #3d7dca;
+    --green: #3ddc97; --amber: #ffb020;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: radial-gradient(ellipse at 20% -10%, rgba(255,203,5,0.10), transparent 45%),
+         radial-gradient(ellipse at 100% 110%, rgba(227,53,13,0.10), transparent 45%), var(--bg) fixed;
+         color: var(--text); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
+  a { color: var(--yellow); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 22px 16px 60px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .ball { width: 44px; height: 44px; flex: none; }
+  h1 { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 2px; font-size: clamp(26px, 6vw, 38px); line-height: 1; }
+  h1 span { color: var(--yellow); }
+  .sub { font-family: 'Share Tech Mono', monospace; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; font-size: 13px; margin-top: 6px; }
+  h2 { font-family: 'Orbitron', sans-serif; font-size: 15px; letter-spacing: 3px; text-transform: uppercase; color: var(--yellow); margin: 28px 0 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  /* Next drop */
+  .next { background: linear-gradient(135deg, rgba(255,203,5,0.14), rgba(227,53,13,0.10)), var(--panel);
+          border: 1px solid rgba(255,203,5,0.35); border-radius: 18px; padding: 20px; }
+  .next .label { font-family: 'Share Tech Mono', monospace; letter-spacing: 3px; font-size: 12px; color: var(--yellow); text-transform: uppercase; }
+  .next .name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: clamp(20px, 4.6vw, 28px); margin: 6px 0 4px; }
+  .next .when { font-size: 18px; }
+  .count { display: flex; gap: 10px; margin: 14px 0 10px; flex-wrap: wrap; }
+  .count div { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px 14px; text-align: center; min-width: 74px; }
+  .count b { display: block; font-family: 'Orbitron', sans-serif; font-size: 26px; color: var(--yellow); }
+  .count small { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .doors { color: var(--text); font-size: 15px; margin-top: 6px; }
+  .doors b { color: var(--yellow); }
+  /* Release list */
+  .rel { display: grid; gap: 10px; }
+  .rel .card { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: start; }
+  .rel .date { font-family: 'Orbitron', sans-serif; text-align: center; background: var(--panel2); border-radius: 12px; padding: 8px 4px; }
+  .rel .date .m { font-size: 12px; color: var(--yellow); letter-spacing: 2px; }
+  .rel .date .d { font-size: 28px; font-weight: 900; line-height: 1.1; }
+  .rel .date .y { font-size: 11px; color: var(--dim); }
+  .rel .past { opacity: 0.55; }
+  .kind { display: inline-block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--bg); background: var(--yellow); border-radius: 6px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+  .rel h3 { font-size: 17px; }
+  .muted { color: var(--dim); font-size: 14px; }
+  .src { font-size: 12px; color: var(--dim); }
+  /* Tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tabs button { font: 600 14px system-ui, sans-serif; color: var(--text); background: var(--panel); border: 1px solid var(--line);
+                 border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+  .tabs button.on { background: var(--yellow); color: #111; border-color: var(--yellow); }
+  /* Stores */
+  .stores { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+  .store h3 { font-size: 17px; }
+  .store .tag { color: var(--dim); font-size: 13px; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; margin: 8px 0 6px; }
+  .pill.open { background: rgba(61,220,151,0.15); color: var(--green); }
+  .pill.soon { background: rgba(255,176,32,0.15); color: var(--amber); }
+  .pill.closed { background: rgba(227,53,13,0.15); color: #ff7a5c; }
+  .pill.call { background: rgba(154,163,178,0.15); color: var(--dim); }
+  .pill.warn { background: rgba(227,53,13,0.2); color: #ff7a5c; }
+  .local { border-color: rgba(61,125,202,0.45); }
+  .badge { font-size: 11px; color: #fff; background: var(--blue); border-radius: 6px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+  .row { font-size: 14px; margin-top: 3px; }
+  .note { font-size: 13px; color: var(--dim); margin-top: 6px; }
+  details { margin-top: 6px; font-size: 13px; color: var(--dim); }
+  summary { cursor: pointer; }
+  .week { display: grid; grid-template-columns: 44px 1fr; gap: 1px 8px; margin-top: 6px; font-family: 'Share Tech Mono', monospace; }
+  .week .today { color: var(--yellow); }
+  .verified { font-size: 11px; color: var(--dim); margin-top: 8px; }
+  .events { margin-top: 12px; }
+  /* Sightings */
+  .sight { display: grid; gap: 8px; }
+  .sight .card { padding: 12px 14px; }
+  .sight .who { font-size: 12px; color: var(--dim); }
+  .btn { display: inline-block; font: 700 15px system-ui, sans-serif; background: var(--red); color: #fff; border-radius: 12px; padding: 12px 18px; margin-top: 10px; }
+  .btn:hover { text-decoration: none; filter: brightness(1.1); }
+  footer { margin-top: 36px; color: var(--dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="ball" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="#fff" stroke="#111" stroke-width="6"/>
+      <path d="M4 50a46 46 0 0 1 92 0z" fill="#e3350d" stroke="#111" stroke-width="6"/>
+      <line x1="4" y1="50" x2="96" y2="50" stroke="#111" stroke-width="6"/>
+      <circle cx="50" cy="50" r="13" fill="#fff" stroke="#111" stroke-width="6"/>
+    </svg>
+    <div>
+      <h1>DROP <span>WATCH</span></h1>
+      <div class="sub">Pokémon TCG · Roanoke &amp; Lynchburg</div>
+    </div>
+  </header>
+
+  <section id="next"></section>
+
+  <h2>Release calendar</h2>
+  <div class="rel" id="releases"></div>
+  <p class="muted" id="relnote" style="margin-top:10px"></p>
+
+  <h2>Stores</h2>
+  <div class="tabs" id="tabs"></div>
+  <div class="stores" id="stores"></div>
+  <div class="events muted" id="events"></div>
+
+  <h2>Sightings</h2>
+  <div id="sightings"></div>
+
+  <footer>
+    <p id="updated"></p>
+    <p style="margin-top:6px">Every store address and hour was checked against the store's own website on the date shown on its card. Hours change on big release days, so call ahead if it matters. Not affiliated with Pokémon or any store.</p>
+  </footer>
+</div>
+
+<script>
+var DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
+var DAYNAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+var data = null, area = 'all';
+
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function localDate(iso) { var p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+function fmt12(hm) { var p = hm.split(':'), h = +p[0], m = p[1]; var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return h + (m === '00' ? '' : ':' + m) + ' ' + ap; }
+function mins(hm) { var p = hm.split(':'); return (+p[0]) * 60 + (+p[1]); }
+function longDate(d) { return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); }
+
+function statusFor(store, now) {
+  if (store.warn) return { cls: 'warn', text: 'May be closed · call first' };
+  if (!store.hours) return { cls: 'call', text: 'Call for hours' };
+  var today = store.hours[DAYS[now.getDay()]];
+  var t = now.getHours() * 60 + now.getMinutes();
+  if (today && t >= mins(today[0]) && t < mins(today[1])) {
+    var left = mins(today[1]) - t;
+    return { cls: left <= 60 ? 'soon' : 'open', text: 'Open · closes ' + fmt12(today[1]) };
+  }
+  if (today && t < mins(today[0])) return { cls: 'closed', text: 'Opens ' + fmt12(today[0]) + ' today' };
+  for (var i = 1; i <= 7; i++) {
+    var d = store.hours[DAYS[(now.getDay() + i) % 7]];
+    if (d) return { cls: 'closed', text: 'Closed · opens ' + fmt12(d[0]) + (i === 1 ? ' tomorrow' : ' ' + DAYNAMES[(now.getDay() + i) % 7]) };
+  }
+  return { cls: 'call', text: 'Call for hours' };
+}
+
+function renderNext() {
+  var box = document.getElementById('next');
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var up = data.releases.filter(function (r) { return localDate(r.date) >= today; })
+                        .sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+  if (!up.length) { box.appendChild(el('div', 'card muted', 'No upcoming release announced yet.')); return; }
+  var r = up[0], d = localDate(r.date);
+  var card = el('div', 'next');
+  card.appendChild(el('div', 'label', 'Next drop'));
+  card.appendChild(el('div', 'name', r.name));
+  card.appendChild(el('div', 'when', longDate(d)));
+  var count = el('div', 'count');
+  function tick() {
+    var ms = d - new Date(); if (ms < 0) ms = 0;
+    var parts = [[Math.floor(ms / 864e5), 'days'], [Math.floor(ms / 36e5) % 24, 'hours'], [Math.floor(ms / 6e4) % 60, 'min']];
+    count.innerHTML = '';
+    parts.forEach(function (p) { var c = el('div'); c.appendChild(el('b', null, p[0])); c.appendChild(el('small', null, p[1])); count.appendChild(c); });
+  }
+  tick(); setInterval(tick, 30000);
+  card.appendChild(count);
+  // Earliest doors on release day, per city, from the verified hours.
+  data.areas.forEach(function (a) {
+    var best = null;
+    a.stores.forEach(function (s) {
+      if (!s.hours || s.warn) return;
+      var h = s.hours[DAYS[d.getDay()]]; if (!h) return;
+      if (!best || mins(h[0]) < mins(best.h[0])) best = { s: s, h: h };
+    });
+    if (best) {
+      var line = el('div', 'doors');
+      line.innerHTML = a.name + ': earliest doors <b>' + fmt12(best.h[0]) + '</b>';
+      line.appendChild(document.createTextNode(' at ' + best.s.name + ' (' + best.s.tag + ')'));
+      card.appendChild(line);
+    }
+  });
+  box.appendChild(card);
+}
+
+function renderReleases() {
+  var box = document.getElementById('releases');
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  data.releases.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; }).forEach(function (r) {
+    var d = localDate(r.date);
+    var card = el('div', 'card' + (d < today ? ' past' : ''));
+    var date = el('div', 'date');
+    date.appendChild(el('div', 'm', MONTHS[d.getMonth()]));
+    date.appendChild(el('div', 'd', d.getDate()));
+    date.appendChild(el('div', 'y', d.getFullYear() + (d < today ? ' · out now' : '')));
+    var body = el('div');
+    var h = el('h3', null, r.name); h.appendChild(el('span', 'kind', r.kind)); body.appendChild(h);
+    body.appendChild(el('p', 'muted', r.detail));
+    var src = el('a', 'src', 'Source: Pokémon'); src.href = r.source; src.target = '_blank'; src.rel = 'noopener';
+    body.appendChild(src);
+    card.appendChild(date); card.appendChild(body); box.appendChild(card);
+  });
+  document.getElementById('relnote').textContent = data.releases_note || '';
+}
+
+function renderTabs() {
+  var box = document.getElementById('tabs'); box.innerHTML = '';
+  [['all', 'Both']].concat(data.areas.map(function (a) { return [a.id, a.name]; })).forEach(function (t) {
+    var b = el('button', t[0] === area ? 'on' : '', t[1]);
+    b.onclick = function () { area = t[0]; try { localStorage.setItem('dropwatch-area', area); } catch (e) {} renderTabs(); renderStores(); };
+    box.appendChild(b);
+  });
+}
+
+function renderStores() {
+  var box = document.getElementById('stores'); box.innerHTML = '';
+  var ev = document.getElementById('events'); ev.innerHTML = '';
+  var now = new Date();
+  data.areas.forEach(function (a) {
+    if (area !== 'all' && area !== a.id) return;
+    a.stores.forEach(function (s) {
+      var card = el('div', 'card store' + (s.type === 'local' ? ' local' : ''));
+      var h = el('h3', null, s.name); if (s.type === 'local') h.appendChild(el('span', 'badge', 'Card shop'));
+      card.appendChild(h);
+      card.appendChild(el('div', 'tag', (area === 'all' ? a.name + ' · ' : '') + s.tag));
+      var st = statusFor(s, now); card.appendChild(el('span', 'pill ' + st.cls, st.text));
+      var addr = el('div', 'row'); var map = el('a', null, s.address);
+      map.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.name + ' ' + s.address); map.target = '_blank'; map.rel = 'noopener';
+      addr.appendChild(map); card.appendChild(addr);
+      if (s.phone) { var ph = el('div', 'row'); var tel = el('a', null, s.phone); tel.href = 'tel:' + s.phone.replace(/[^0-9]/g, ''); ph.appendChild(tel); card.appendChild(ph); }
+      if (s.note) card.appendChild(el('div', 'note', s.note));
+      if (s.hours) {
+        var det = el('details'); det.appendChild(el('summary', null, 'Weekly hours'));
+        var wk = el('div', 'week');
+        DAYS.forEach(function (k, i) {
+          var cls = i === now.getDay() ? 'today' : '';
+          wk.appendChild(el('span', cls, DAYNAMES[i]));
+          wk.appendChild(el('span', cls, s.hours[k] ? fmt12(s.hours[k][0]) + ' – ' + fmt12(s.hours[k][1]) : 'Closed'));
+        });
+        det.appendChild(wk); card.appendChild(det);
+      }
+      var v = el('div', 'verified', 'Checked ' + localDate(s.verified).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ');
+      var src = el('a', null, 'source'); src.href = s.source; src.target = '_blank'; src.rel = 'noopener'; v.appendChild(src);
+      card.appendChild(v);
+      box.appendChild(card);
+    });
+    var p = el('p', null, 'Prereleases and events near ' + a.name + ': ');
+    var link = el('a', null, 'Play! Pokémon event locator'); link.href = a.events_url; link.target = '_blank'; link.rel = 'noopener';
+    p.appendChild(link); ev.appendChild(p);
+  });
+}
+
+// Minimal CSV parser (quoted fields, commas, newlines).
+function parseCSV(t) {
+  var rows = [], row = [], f = '', q = false;
+  for (var i = 0; i < t.length; i++) {
+    var c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
+    else if (c !== '\r') f += c;
+  }
+  if (f || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+
+function renderSightings() {
+  var box = document.getElementById('sightings');
+  if (data.report_form) {
+    var b = el('a', 'btn', 'Report a sighting'); b.href = data.report_form; b.target = '_blank'; b.rel = 'noopener';
+    box.appendChild(b);
+  }
+  var list = el('div', 'sight'); list.style.marginTop = '14px'; box.appendChild(list);
+  if (!data.sightings_csv) { list.appendChild(el('div', 'card muted', 'The sightings log is getting set up. Reports from the field land here.')); return; }
+  fetch(data.sightings_csv + (data.sightings_csv.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now())
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      var rows = parseCSV(t); var head = rows.shift() || [];
+      var col = function (name) { for (var i = 0; i < head.length; i++) if (head[i].toLowerCase().indexOf(name) >= 0) return i; return -1; };
+      var iT = col('timestamp'), iS = col('store'), iW = col('what'), iWhen = col('when'), iN = col('name');
+      rows = rows.filter(function (r) { return r.join('').trim(); }).reverse().slice(0, 20);
+      if (!rows.length) { list.appendChild(el('div', 'card muted', 'No sightings yet. Be the first.')); return; }
+      rows.forEach(function (r) {
+        var c = el('div', 'card');
+        c.appendChild(el('strong', null, (r[iS] || 'Somewhere') + ': '));
+        c.appendChild(document.createTextNode(r[iW] || ''));
+        c.appendChild(el('div', 'who', [r[iWhen] || r[iT], r[iN] ? 'reported by ' + r[iN] : ''].filter(Boolean).join(' · ')));
+        list.appendChild(c);
+      });
+    })
+    .catch(function () { list.appendChild(el('div', 'card muted', 'Couldn\'t load sightings right now.')); });
+}
+
+try { area = localStorage.getItem('dropwatch-area') || 'all'; } catch (e) {}
+fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
+  data = d;
+  renderNext(); renderReleases(); renderTabs(); renderStores(); renderSightings();
+  document.getElementById('updated').textContent = 'Last updated ' + localDate(d.updated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.';
+  setInterval(renderStores, 60000);
+});
+</script>
+</body>
+</html>
