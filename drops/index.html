@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Drop Watch · Pokémon TCG · Roanoke &amp; Lynchburg</title>
+<title>Drop Watch · Pokémon TCG · Roanoke, Lynchburg &amp; the Lake</title>
 <meta name="description" content="Pokémon TCG release dates, store hours and drop sightings for Roanoke and Lynchburg, VA.">
 <link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,6 +82,11 @@
   .week { display: grid; grid-template-columns: 44px 1fr; gap: 1px 8px; margin-top: 6px; font-family: 'Share Tech Mono', monospace; }
   .week .today { color: var(--yellow); }
   .verified { font-size: 11px; color: var(--dim); margin-top: 8px; }
+  .dist { float: right; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--dim); background: var(--panel2); border-radius: 8px; padding: 2px 8px; }
+  .links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .links a { font-size: 13px; font-weight: 600; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; }
+  .links a:hover { text-decoration: none; border-color: var(--yellow); }
+  .links a.call { background: rgba(61,220,151,0.12); border-color: rgba(61,220,151,0.35); }
   .events { margin-top: 12px; }
   /* Sightings */
   .sight { display: grid; gap: 8px; }
@@ -103,7 +108,7 @@
     </svg>
     <div>
       <h1>DROP <span>WATCH</span></h1>
-      <div class="sub">Pokémon TCG · Roanoke &amp; Lynchburg</div>
+      <div class="sub">Pokémon TCG · 35 miles around Goodview, VA</div>
     </div>
   </header>
 
@@ -114,6 +119,7 @@
   <p class="muted" id="relnote" style="margin-top:10px"></p>
 
   <h2>Stores</h2>
+  <p class="muted" id="radius" style="margin:-4px 0 12px"></p>
   <div class="tabs" id="tabs"></div>
   <div class="stores" id="stores"></div>
   <div class="events muted" id="events"></div>
@@ -216,7 +222,7 @@ function renderReleases() {
 
 function renderTabs() {
   var box = document.getElementById('tabs'); box.innerHTML = '';
-  [['all', 'Both']].concat(data.areas.map(function (a) { return [a.id, a.name]; })).forEach(function (t) {
+  [['all', 'All']].concat(data.areas.map(function (a) { return [a.id, a.name]; })).forEach(function (t) {
     var b = el('button', t[0] === area ? 'on' : '', t[1]);
     b.onclick = function () { area = t[0]; try { localStorage.setItem('dropwatch-area', area); } catch (e) {} renderTabs(); renderStores(); };
     box.appendChild(b);
@@ -231,6 +237,7 @@ function renderStores() {
     if (area !== 'all' && area !== a.id) return;
     a.stores.forEach(function (s) {
       var card = el('div', 'card store' + (s.type === 'local' ? ' local' : ''));
+      if (s.miles != null) card.appendChild(el('span', 'dist', s.miles + ' mi'));
       var h = el('h3', null, s.name); if (s.type === 'local') h.appendChild(el('span', 'badge', 'Card shop'));
       card.appendChild(h);
       card.appendChild(el('div', 'tag', (area === 'all' ? a.name + ' · ' : '') + s.tag));
@@ -238,8 +245,13 @@ function renderStores() {
       var addr = el('div', 'row'); var map = el('a', null, s.address);
       map.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.name + ' ' + s.address); map.target = '_blank'; map.rel = 'noopener';
       addr.appendChild(map); card.appendChild(addr);
-      if (s.phone) { var ph = el('div', 'row'); var tel = el('a', null, s.phone); tel.href = 'tel:' + s.phone.replace(/[^0-9]/g, ''); ph.appendChild(tel); card.appendChild(ph); }
       if (s.note) card.appendChild(el('div', 'note', s.note));
+      var links = el('div', 'links');
+      function btn(text, href, cls) { var a = el('a', cls || null, text); a.href = href; if (href.indexOf('tel:') !== 0) { a.target = '_blank'; a.rel = 'noopener'; } links.appendChild(a); }
+      if (s.phone) btn('Call ' + s.phone, 'tel:' + s.phone.replace(/[^0-9]/g, ''), 'call');
+      if (s.website) btn(/facebook\.com/.test(s.website) ? 'Facebook' : 'Website', s.website);
+      if (s.facebook) btn('Facebook', s.facebook);
+      if (links.children.length) card.appendChild(links);
       if (s.hours) {
         var det = el('details'); det.appendChild(el('summary', null, 'Weekly hours'));
         var wk = el('div', 'week');
@@ -307,6 +319,7 @@ try { area = localStorage.getItem('dropwatch-area') || 'all'; } catch (e) {}
 fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
   data = d;
   renderNext(); renderReleases(); renderTabs(); renderStores(); renderSightings();
+  document.getElementById('radius').textContent = d.radius_note || '';
   document.getElementById('updated').textContent = 'Last updated ' + localDate(d.updated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.';
   setInterval(renderStores, 60000);
 });

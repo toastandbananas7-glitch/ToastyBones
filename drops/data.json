@@ -1,98 +1,832 @@
 {
-  "updated": "2026-09-25",
-  "sightings_csv": "",
-  "report_form": "",
-  "releases": [
+ "updated": "2026-09-25",
+ "sightings_csv": "",
+ "report_form": "",
+ "releases": [
+  {
+   "date": "2026-11-06",
+   "name": "Mega Evolution—Delta Reign",
+   "kind": "Expansion",
+   "detail": "Mega Rayquaza ex, Mega Golurk ex, Mega Malamar ex, Mega Golisopod ex. 135+ cards.",
+   "source": "https://www.pokemon.com/us/news/the-pokemon-tcg-mega-evolution-delta-reign-expansion-arrives-november-6-2026"
+  },
+  {
+   "date": "2026-09-16",
+   "name": "30th Celebration wave",
+   "kind": "Collections",
+   "detail": "Elite Trainer Box, Pokémon Center ETB (Pokémon Center only), ex Box (Sylveon ex & Greninja ex), Tech Sticker, Knock Out and Poster Collections.",
+   "source": "https://www.pokemon.com/us/news/check-out-every-pokemon-tcg-product-release-in-september-2026"
+  }
+ ],
+ "releases_note": "Pokémon hasn't posted its October 2026 product list yet. It goes here the day it does.",
+ "areas": [
+  {
+   "id": "roanoke",
+   "name": "Roanoke",
+   "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495",
+   "stores": [
     {
-      "date": "2026-11-06",
-      "name": "Mega Evolution—Delta Reign",
-      "kind": "Expansion",
-      "detail": "Mega Rayquaza ex, Mega Golurk ex, Mega Malamar ex, Mega Golisopod ex. 135+ cards.",
-      "source": "https://www.pokemon.com/us/news/the-pokemon-tcg-mega-evolution-delta-reign-expansion-arrives-november-6-2026"
+     "name": "Walmart Supercenter",
+     "tag": "Challenger Ave #3243",
+     "type": "big",
+     "address": "4524 Challenger Ave, Roanoke, VA 24012",
+     "phone": "(540) 977-3745",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/3243-roanoke-va",
+     "verified": "2026-09-25",
+     "miles": 11,
+     "website": "https://www.walmart.com/store/3243-roanoke-va"
     },
     {
-      "date": "2026-09-16",
-      "name": "30th Celebration wave",
-      "kind": "Collections",
-      "detail": "Elite Trainer Box, Pokémon Center ETB (Pokémon Center only), ex Box (Sylveon ex & Greninja ex), Tech Sticker, Knock Out and Poster Collections.",
-      "source": "https://www.pokemon.com/us/news/check-out-every-pokemon-tcg-product-release-in-september-2026"
-    }
-  ],
-  "releases_note": "Pokémon hasn't posted its October 2026 product list yet. It goes here the day it does.",
-  "areas": [
-    {
-      "id": "roanoke",
-      "name": "Roanoke",
-      "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495",
-      "stores": [
-        {"name": "Target", "tag": "Valley View", "type": "big", "address": "4737 Valley View Blvd NW, Roanoke, VA 24012", "phone": "(540) 265-6932",
-         "hours": {"sun": ["07:00","22:00"], "mon": ["07:00","22:00"], "tue": ["07:00","22:00"], "wed": ["07:00","22:00"], "thu": ["07:00","22:00"], "fri": ["07:00","22:00"], "sat": ["07:00","22:00"]},
-         "source": "https://www.target.com/sl/roanoke/1162", "verified": "2026-09-25"},
-        {"name": "Walmart Supercenter", "tag": "Valley View #2312", "type": "big", "address": "4807 Valley View Blvd NW, Roanoke, VA 24012", "phone": "(540) 265-5600",
-         "hours": {"sun": ["06:00","23:00"], "mon": ["06:00","23:00"], "tue": ["06:00","23:00"], "wed": ["06:00","23:00"], "thu": ["06:00","23:00"], "fri": ["06:00","23:00"], "sat": ["06:00","23:00"]},
-         "source": "https://www.walmart.com/store/2312-roanoke-va", "verified": "2026-09-25"},
-        {"name": "Walmart Supercenter", "tag": "Clearbrook #1301", "type": "big", "address": "5350 Clearbrook Village Ln, Roanoke, VA 24014", "phone": "(540) 772-3892",
-         "hours": {"sun": ["06:00","23:00"], "mon": ["06:00","23:00"], "tue": ["06:00","23:00"], "wed": ["06:00","23:00"], "thu": ["06:00","23:00"], "fri": ["06:00","23:00"], "sat": ["06:00","23:00"]},
-         "source": "https://www.walmart.com/store/1301-roanoke-va", "verified": "2026-09-25"},
-        {"name": "Walmart Supercenter", "tag": "Challenger Ave #3243", "type": "big", "address": "4524 Challenger Ave, Roanoke, VA 24012", "phone": "(540) 977-3745",
-         "hours": {"sun": ["06:00","23:00"], "mon": ["06:00","23:00"], "tue": ["06:00","23:00"], "wed": ["06:00","23:00"], "thu": ["06:00","23:00"], "fri": ["06:00","23:00"], "sat": ["06:00","23:00"]},
-         "source": "https://www.walmart.com/store/3243-roanoke-va", "verified": "2026-09-25"},
-        {"name": "Best Buy", "tag": "Valley View", "type": "big", "address": "4707 Valley View Blvd NW, Roanoke, VA 24012", "phone": "(540) 362-4080",
-         "hours": {"sun": ["10:00","20:00"], "mon": ["10:00","21:00"], "tue": ["10:00","21:00"], "wed": ["10:00","21:00"], "thu": ["10:00","21:00"], "fri": ["10:00","21:00"], "sat": ["10:00","21:00"]},
-         "source": "https://stores.bestbuy.com/va/roanoke/4707-valley-view-blvd-nw-434.html", "verified": "2026-09-25"},
-        {"name": "GameStop", "tag": "Valley View Crossing", "type": "big", "address": "4757 Valley View Blvd NW, Ste B, Roanoke, VA 24012", "phone": "(540) 362-3354",
-         "hours": {"sun": ["10:00","19:00"], "mon": ["10:00","21:00"], "tue": ["10:00","21:00"], "wed": ["10:00","21:00"], "thu": ["11:00","20:00"], "fri": ["10:00","21:00"], "sat": ["10:00","21:00"]},
-         "source": "https://www.gamestop.com/store/us/va/roanoke/902/valley-view-mall-gamestop", "verified": "2026-09-25"},
-        {"name": "Barnes & Noble", "tag": "Valley View Mall", "type": "big", "address": "4802 Valley View Blvd NW, Roanoke, VA 24012", "phone": "",
-         "hours": null, "note": "B&N doesn't list hours online. Call before you go.",
-         "source": "https://stores.barnesandnoble.com/store/2294", "verified": "2026-09-25"},
-        {"name": "Barnes & Noble", "tag": "Tanglewood", "type": "big", "address": "4478 Electric Road SW, Roanoke, VA 24018", "phone": "",
-         "hours": null, "note": "B&N doesn't list hours online. Call before you go.",
-         "source": "https://stores.barnesandnoble.com/store/2870", "verified": "2026-09-25"},
-        {"name": "Blade Gaming", "tag": "Downtown · Play! Pokémon store", "type": "local", "address": "430 Salem Ave SW, Suite A, Roanoke, VA 24016", "phone": "",
-         "hours": null, "note": "Official Play! Pokémon store: prereleases and league. Check their page for hours and drop-day plans.",
-         "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495", "verified": "2026-09-25"},
-        {"name": "Star City Games", "tag": "Williamson Rd · Play! Pokémon store", "type": "local", "address": "5728 Williamson Rd NW, Roanoke, VA 24012", "phone": "",
-         "hours": null, "note": "Official Play! Pokémon store: prereleases and league. Check their page for hours and drop-day plans.",
-         "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495", "verified": "2026-09-25"},
-        {"name": "Clerks Cards & Comics", "tag": "Bedford · Play! Pokémon store", "type": "local", "address": "514 Blue Ridge Ave, Suite C, Bedford, VA 24523", "phone": "",
-         "hours": null, "note": "Official Play! Pokémon store, halfway between the two cities.",
-         "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495", "verified": "2026-09-25"}
-      ]
+     "name": "The Collector's Lair",
+     "tag": "Bennington St",
+     "type": "local",
+     "address": "2110 Bennington St, Roanoke, VA 24014",
+     "phone": "(540) 366-5000",
+     "hours": null,
+     "note": "Comics and collectibles shop. Card-shop directories list Pokémon here; call to check stock.",
+     "website": "https://www.facebook.com/CollectorsLairRoanoke/",
+     "source": "https://www.facebook.com/CollectorsLairRoanoke/about",
+     "verified": "2026-09-25",
+     "miles": 11
     },
     {
-      "id": "lynchburg",
-      "name": "Lynchburg",
-      "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4137536&longitude=-79.1422464",
-      "stores": [
-        {"name": "Target", "tag": "Wards Rd", "type": "big", "address": "4028 Wards Rd, Lynchburg, VA 24502", "phone": "(434) 239-6163",
-         "hours": {"sun": ["07:00","22:00"], "mon": ["07:00","22:00"], "tue": ["07:00","22:00"], "wed": ["07:00","22:00"], "thu": ["07:00","22:00"], "fri": ["07:00","22:00"], "sat": ["07:00","22:00"]},
-         "source": "https://www.target.com/sl/lynchburg/1275", "verified": "2026-09-25"},
-        {"name": "Walmart Supercenter", "tag": "Wards Rd #1350", "type": "big", "address": "3900 Wards Rd, Lynchburg, VA 24502", "phone": "(434) 832-0304",
-         "hours": {"sun": ["06:00","23:00"], "mon": ["06:00","23:00"], "tue": ["06:00","23:00"], "wed": ["06:00","23:00"], "thu": ["06:00","23:00"], "fri": ["06:00","23:00"], "sat": ["06:00","23:00"]},
-         "source": "https://www.walmart.com/store/1350-lynchburg-va", "verified": "2026-09-25"},
-        {"name": "Walmart Supercenter", "tag": "Old Forest Rd #4697", "type": "big", "address": "3227 Old Forest Rd, Lynchburg, VA 24501", "phone": "(434) 200-9132",
-         "hours": {"sun": ["06:00","23:00"], "mon": ["06:00","23:00"], "tue": ["06:00","23:00"], "wed": ["06:00","23:00"], "thu": ["06:00","23:00"], "fri": ["06:00","23:00"], "sat": ["06:00","23:00"]},
-         "source": "https://www.walmart.com/store/4697-lynchburg-va", "verified": "2026-09-25"},
-        {"name": "Best Buy", "tag": "Wards Rd", "type": "big", "address": "4024 Wards Rd, Lynchburg, VA 24502", "phone": "(434) 239-9885",
-         "hours": {"sun": ["10:00","20:00"], "mon": ["10:00","21:00"], "tue": ["10:00","21:00"], "wed": ["10:00","21:00"], "thu": ["10:00","21:00"], "fri": ["10:00","21:00"], "sat": ["10:00","21:00"]},
-         "source": "https://stores.bestbuy.com/va/lynchburg/4024-wards-rd-444.html", "verified": "2026-09-25"},
-        {"name": "GameStop", "tag": "Wards Crossing", "type": "big", "address": "4026 Wards Rd, Ste K, Lynchburg, VA 24502", "phone": "(434) 832-0715",
-         "hours": {"sun": ["10:00","19:00"], "mon": ["10:00","21:00"], "tue": ["10:00","21:00"], "wed": ["10:00","21:00"], "thu": ["10:00","21:00"], "fri": ["09:00","22:00"], "sat": ["09:00","22:00"]},
-         "source": "https://www.gamestop.com/store/us/va/lynchburg/4828/wards-crossing-gamestop", "verified": "2026-09-25"},
-        {"name": "GameStop", "tag": "Forest Brook Rd", "type": "big", "address": "3207 Forest Brook Rd, Ste E, Lynchburg, VA 24501", "phone": "(434) 385-8059",
-         "hours": null, "warn": true, "note": "GameStop lists no hours for this store and shows it closed on a Friday. It may have closed. Call first.",
-         "source": "https://www.gamestop.com/store/us/va/lynchburg/6930/swm-retail-center-gamestop", "verified": "2026-09-25"},
-        {"name": "Barnes & Noble", "tag": "Wards Crossing", "type": "big", "address": "4024-C Wards Road, Lynchburg, VA 24502", "phone": "",
-         "hours": null, "note": "B&N doesn't list hours online. Call before you go.",
-         "source": "https://stores.barnesandnoble.com/store/2026", "verified": "2026-09-25"},
-        {"name": "Dragon Fire Games", "tag": "Downtown · Play! Pokémon store", "type": "local", "address": "408 Federal St, Lynchburg, VA 24504", "phone": "",
-         "hours": null, "note": "Official Play! Pokémon store: prereleases and league. Check their page for hours and drop-day plans.",
-         "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4137536&longitude=-79.1422464", "verified": "2026-09-25"},
-        {"name": "Underground Cards & Disc Shop", "tag": "Forest · Play! Pokémon store", "type": "local", "address": "1219 Burnbridge Rd, Suite A, Forest, VA 24551", "phone": "",
-         "hours": null, "note": "Official Play! Pokémon store: prereleases and league. Check their page for hours and drop-day plans.",
-         "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4137536&longitude=-79.1422464", "verified": "2026-09-25"}
+     "name": "Walmart Supercenter",
+     "tag": "Clearbrook #1301",
+     "type": "big",
+     "address": "5350 Clearbrook Village Ln, Roanoke, VA 24014",
+     "phone": "(540) 772-3892",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
       ]
+     },
+     "source": "https://www.walmart.com/store/1301-roanoke-va",
+     "verified": "2026-09-25",
+     "miles": 12,
+     "website": "https://www.walmart.com/store/1301-roanoke-va"
+    },
+    {
+     "name": "Blade Gaming",
+     "tag": "Downtown · Play! Pokémon store",
+     "type": "local",
+     "address": "430 Salem Ave SW, Suite A, Roanoke, VA 24016",
+     "phone": "(540) 204-4016",
+     "hours": null,
+     "note": "Official Play! Pokémon store: prereleases and league. Check their page for hours and drop-day plans.",
+     "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495",
+     "verified": "2026-09-25",
+     "miles": 13,
+     "website": "https://blade.tcgplayerpro.com/",
+     "facebook": "https://www.facebook.com/BladeGaminginc/"
+    },
+    {
+     "name": "Target",
+     "tag": "Valley View",
+     "type": "big",
+     "address": "4737 Valley View Blvd NW, Roanoke, VA 24012",
+     "phone": "(540) 265-6932",
+     "hours": {
+      "sun": [
+       "07:00",
+       "22:00"
+      ],
+      "mon": [
+       "07:00",
+       "22:00"
+      ],
+      "tue": [
+       "07:00",
+       "22:00"
+      ],
+      "wed": [
+       "07:00",
+       "22:00"
+      ],
+      "thu": [
+       "07:00",
+       "22:00"
+      ],
+      "fri": [
+       "07:00",
+       "22:00"
+      ],
+      "sat": [
+       "07:00",
+       "22:00"
+      ]
+     },
+     "source": "https://www.target.com/sl/roanoke/1162",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://www.target.com/sl/roanoke/1162"
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Valley View #2312",
+     "type": "big",
+     "address": "4807 Valley View Blvd NW, Roanoke, VA 24012",
+     "phone": "(540) 265-5600",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/2312-roanoke-va",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://www.walmart.com/store/2312-roanoke-va"
+    },
+    {
+     "name": "Best Buy",
+     "tag": "Valley View",
+     "type": "big",
+     "address": "4707 Valley View Blvd NW, Roanoke, VA 24012",
+     "phone": "(540) 362-4080",
+     "hours": {
+      "sun": [
+       "10:00",
+       "20:00"
+      ],
+      "mon": [
+       "10:00",
+       "21:00"
+      ],
+      "tue": [
+       "10:00",
+       "21:00"
+      ],
+      "wed": [
+       "10:00",
+       "21:00"
+      ],
+      "thu": [
+       "10:00",
+       "21:00"
+      ],
+      "fri": [
+       "10:00",
+       "21:00"
+      ],
+      "sat": [
+       "10:00",
+       "21:00"
+      ]
+     },
+     "source": "https://stores.bestbuy.com/va/roanoke/4707-valley-view-blvd-nw-434.html",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://stores.bestbuy.com/va/roanoke/4707-valley-view-blvd-nw-434.html"
+    },
+    {
+     "name": "GameStop",
+     "tag": "Valley View Crossing",
+     "type": "big",
+     "address": "4757 Valley View Blvd NW, Ste B, Roanoke, VA 24012",
+     "phone": "(540) 362-3354",
+     "hours": {
+      "sun": [
+       "10:00",
+       "19:00"
+      ],
+      "mon": [
+       "10:00",
+       "21:00"
+      ],
+      "tue": [
+       "10:00",
+       "21:00"
+      ],
+      "wed": [
+       "10:00",
+       "21:00"
+      ],
+      "thu": [
+       "11:00",
+       "20:00"
+      ],
+      "fri": [
+       "10:00",
+       "21:00"
+      ],
+      "sat": [
+       "10:00",
+       "21:00"
+      ]
+     },
+     "source": "https://www.gamestop.com/store/us/va/roanoke/902/valley-view-mall-gamestop",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://www.gamestop.com/store/us/va/roanoke/902/valley-view-mall-gamestop"
+    },
+    {
+     "name": "Barnes & Noble",
+     "tag": "Valley View Mall",
+     "type": "big",
+     "address": "4802 Valley View Blvd NW, Roanoke, VA 24012",
+     "phone": "(540) 563-5683",
+     "hours": null,
+     "note": "B&N doesn't list hours online. Call before you go.",
+     "source": "https://stores.barnesandnoble.com/store/2294",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://stores.barnesandnoble.com/store/2294"
+    },
+    {
+     "name": "Barnes & Noble",
+     "tag": "Tanglewood",
+     "type": "big",
+     "address": "4478 Electric Road SW, Roanoke, VA 24018",
+     "phone": "(540) 776-2960",
+     "hours": null,
+     "note": "B&N doesn't list hours online. Call before you go.",
+     "source": "https://stores.barnesandnoble.com/store/2870",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://stores.barnesandnoble.com/store/2870"
+    },
+    {
+     "name": "Star City Comics & Games",
+     "tag": "Williamson Rd · Play! Pokémon store",
+     "type": "local",
+     "address": "5728 Williamson Rd NW, Roanoke, VA 24012",
+     "phone": "(540) 767-4263",
+     "hours": {
+      "sun": [
+       "12:00",
+       "18:00"
+      ],
+      "mon": null,
+      "tue": [
+       "12:00",
+       "19:00"
+      ],
+      "wed": [
+       "12:00",
+       "19:00"
+      ],
+      "thu": [
+       "12:00",
+       "19:00"
+      ],
+      "fri": [
+       "11:00",
+       "20:00"
+      ],
+      "sat": [
+       "11:00",
+       "20:00"
+      ]
+     },
+     "note": "Official Play! Pokémon store: prereleases and league.",
+     "source": "https://www.starcitycomicsandgames.com/",
+     "verified": "2026-09-25",
+     "miles": 15,
+     "website": "https://www.starcitycomicsandgames.com/"
+    },
+    {
+     "name": "The Collector's Lair",
+     "tag": "North · Williamson Rd",
+     "type": "local",
+     "address": "5327-B Williamson Rd, Roanoke, VA 24012",
+     "phone": "",
+     "hours": null,
+     "note": "Comics and collectibles shop. Card-shop directories list Pokémon here; call to check stock. No phone listed; message them on Facebook.",
+     "website": "https://www.facebook.com/CollectorsLairRoanokeNorth/",
+     "source": "https://www.facebook.com/CollectorsLairRoanokeNorth/about",
+     "verified": "2026-09-25",
+     "miles": 15
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Salem #1309",
+     "type": "big",
+     "address": "1851 W Main St, Salem, VA 24153",
+     "phone": "(540) 375-2919",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/1309-salem-va",
+     "website": "https://www.walmart.com/store/1309-salem-va",
+     "verified": "2026-09-25",
+     "miles": 21
     }
-  ]
+   ]
+  },
+  {
+   "id": "lake",
+   "name": "Around the Lake",
+   "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2143&longitude=-79.7250",
+   "stores": [
+    {
+     "name": "Clerks Cards & Comics",
+     "tag": "Bedford · Play! Pokémon store",
+     "type": "local",
+     "address": "514 Blue Ridge Ave, Suite C, Bedford, VA 24523",
+     "phone": "(540) 583-5088",
+     "hours": null,
+     "note": "Official Play! Pokémon store. Their website is still \"opening soon\", so Facebook is the best place for hours and drops.",
+     "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709116&longitude=-79.9449495",
+     "verified": "2026-09-25",
+     "miles": 14,
+     "website": "https://www.facebook.com/p/clerks-cards-and-comics-61567770271296/"
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Bedford #1399",
+     "type": "big",
+     "address": "1126 E Lynchburg Salem Tpke, Bedford, VA 24523",
+     "phone": "(540) 586-6176",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/1399-bedford-va",
+     "website": "https://www.walmart.com/store/1399-bedford-va",
+     "verified": "2026-09-25",
+     "miles": 15
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Rocky Mount #2337",
+     "type": "big",
+     "address": "550 Old Franklin Tpke, Rocky Mount, VA 24151",
+     "phone": "(540) 484-1002",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/2337-rocky-mount-va",
+     "website": "https://www.walmart.com/store/2337-rocky-mount-va",
+     "verified": "2026-09-25",
+     "miles": 16
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Altavista #3768",
+     "type": "big",
+     "address": "125 Clarion Rd, Altavista, VA 24517",
+     "phone": "(434) 309-2245",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/3768-altavista-va",
+     "website": "https://www.walmart.com/store/3768-altavista-va",
+     "verified": "2026-09-25",
+     "miles": 26
+    }
+   ]
+  },
+  {
+   "id": "lynchburg",
+   "name": "Lynchburg",
+   "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4137536&longitude=-79.1422464",
+   "stores": [
+    {
+     "name": "Underground Cards & Disc Shop",
+     "tag": "Forest · Play! Pokémon store",
+     "type": "local",
+     "address": "1219 Burnbridge Rd, Suite A, Forest, VA 24551",
+     "phone": "(540) 320-4456",
+     "hours": null,
+     "note": "Official Play! Pokémon store, next to Apocalypse Ale Works. Hours and drops on Facebook.",
+     "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4137536&longitude=-79.1422464",
+     "verified": "2026-09-25",
+     "miles": 26,
+     "website": "https://www.facebook.com/profile.php?id=61580091503524"
+    },
+    {
+     "name": "Target",
+     "tag": "Wards Rd",
+     "type": "big",
+     "address": "4028 Wards Rd, Lynchburg, VA 24502",
+     "phone": "(434) 239-6163",
+     "hours": {
+      "sun": [
+       "07:00",
+       "22:00"
+      ],
+      "mon": [
+       "07:00",
+       "22:00"
+      ],
+      "tue": [
+       "07:00",
+       "22:00"
+      ],
+      "wed": [
+       "07:00",
+       "22:00"
+      ],
+      "thu": [
+       "07:00",
+       "22:00"
+      ],
+      "fri": [
+       "07:00",
+       "22:00"
+      ],
+      "sat": [
+       "07:00",
+       "22:00"
+      ]
+     },
+     "source": "https://www.target.com/sl/lynchburg/1275",
+     "verified": "2026-09-25",
+     "miles": 31,
+     "website": "https://www.target.com/sl/lynchburg/1275"
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Wards Rd #1350",
+     "type": "big",
+     "address": "3900 Wards Rd, Lynchburg, VA 24502",
+     "phone": "(434) 832-0304",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/1350-lynchburg-va",
+     "verified": "2026-09-25",
+     "miles": 31,
+     "website": "https://www.walmart.com/store/1350-lynchburg-va"
+    },
+    {
+     "name": "Walmart Supercenter",
+     "tag": "Old Forest Rd #4697",
+     "type": "big",
+     "address": "3227 Old Forest Rd, Lynchburg, VA 24501",
+     "phone": "(434) 200-9132",
+     "hours": {
+      "sun": [
+       "06:00",
+       "23:00"
+      ],
+      "mon": [
+       "06:00",
+       "23:00"
+      ],
+      "tue": [
+       "06:00",
+       "23:00"
+      ],
+      "wed": [
+       "06:00",
+       "23:00"
+      ],
+      "thu": [
+       "06:00",
+       "23:00"
+      ],
+      "fri": [
+       "06:00",
+       "23:00"
+      ],
+      "sat": [
+       "06:00",
+       "23:00"
+      ]
+     },
+     "source": "https://www.walmart.com/store/4697-lynchburg-va",
+     "verified": "2026-09-25",
+     "miles": 31,
+     "website": "https://www.walmart.com/store/4697-lynchburg-va"
+    },
+    {
+     "name": "Best Buy",
+     "tag": "Wards Rd",
+     "type": "big",
+     "address": "4024 Wards Rd, Lynchburg, VA 24502",
+     "phone": "(434) 239-9885",
+     "hours": {
+      "sun": [
+       "10:00",
+       "20:00"
+      ],
+      "mon": [
+       "10:00",
+       "21:00"
+      ],
+      "tue": [
+       "10:00",
+       "21:00"
+      ],
+      "wed": [
+       "10:00",
+       "21:00"
+      ],
+      "thu": [
+       "10:00",
+       "21:00"
+      ],
+      "fri": [
+       "10:00",
+       "21:00"
+      ],
+      "sat": [
+       "10:00",
+       "21:00"
+      ]
+     },
+     "source": "https://stores.bestbuy.com/va/lynchburg/4024-wards-rd-444.html",
+     "verified": "2026-09-25",
+     "miles": 31,
+     "website": "https://stores.bestbuy.com/va/lynchburg/4024-wards-rd-444.html"
+    },
+    {
+     "name": "GameStop",
+     "tag": "Wards Crossing",
+     "type": "big",
+     "address": "4026 Wards Rd, Ste K, Lynchburg, VA 24502",
+     "phone": "(434) 832-0715",
+     "hours": {
+      "sun": [
+       "10:00",
+       "19:00"
+      ],
+      "mon": [
+       "10:00",
+       "21:00"
+      ],
+      "tue": [
+       "10:00",
+       "21:00"
+      ],
+      "wed": [
+       "10:00",
+       "21:00"
+      ],
+      "thu": [
+       "10:00",
+       "21:00"
+      ],
+      "fri": [
+       "09:00",
+       "22:00"
+      ],
+      "sat": [
+       "09:00",
+       "22:00"
+      ]
+     },
+     "source": "https://www.gamestop.com/store/us/va/lynchburg/4828/wards-crossing-gamestop",
+     "verified": "2026-09-25",
+     "miles": 31,
+     "website": "https://www.gamestop.com/store/us/va/lynchburg/4828/wards-crossing-gamestop"
+    },
+    {
+     "name": "Barnes & Noble",
+     "tag": "Wards Crossing",
+     "type": "big",
+     "address": "4024-C Wards Road, Lynchburg, VA 24502",
+     "phone": "(434) 239-8688",
+     "hours": null,
+     "note": "B&N doesn't list hours online. Call before you go.",
+     "source": "https://stores.barnesandnoble.com/store/2026",
+     "verified": "2026-09-25",
+     "miles": 31,
+     "website": "https://stores.barnesandnoble.com/store/2026"
+    },
+    {
+     "name": "The Collectors Lair",
+     "tag": "Fort Ave",
+     "type": "local",
+     "address": "5220 Fort Ave, Lynchburg, VA 24502",
+     "phone": "(434) 237-7649",
+     "hours": null,
+     "note": "Comics and collectibles shop. Card-shop directories list Pokémon here; call to check stock.",
+     "website": "https://www.facebook.com/TheCollectorsLair/",
+     "source": "https://www.facebook.com/TheCollectorsLair/about",
+     "verified": "2026-09-25",
+     "miles": 32
+    },
+    {
+     "name": "Dragon Fire Games",
+     "tag": "Downtown · Play! Pokémon store",
+     "type": "local",
+     "address": "408 Federal St, Lynchburg, VA 24504",
+     "phone": "(434) 944-7355",
+     "hours": null,
+     "note": "Official Play! Pokémon store. Moved here from Memorial Ave in 2026. Posts restocks and prerelease events on Facebook.",
+     "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4137536&longitude=-79.1422464",
+     "verified": "2026-09-25",
+     "miles": 34,
+     "website": "https://www.facebook.com/profile.php?id=100057461079514"
+    }
+   ]
+  }
+ ],
+ "origin": "Goodview",
+ "radius_note": "Every store within 35 miles of Goodview that sells Pokémon cards. Distances are straight-line."
 }
