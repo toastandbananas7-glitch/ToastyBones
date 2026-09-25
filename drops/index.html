@@ -82,6 +82,10 @@
   .week { display: grid; grid-template-columns: 44px 1fr; gap: 1px 8px; margin-top: 6px; font-family: 'Share Tech Mono', monospace; }
   .week .today { color: var(--yellow); }
   .verified { font-size: 11px; color: var(--dim); margin-top: 8px; }
+  .lastseen { margin-top: 10px; font-size: 13px; background: rgba(255,203,5,0.08); border: 1px solid rgba(255,203,5,0.25); border-radius: 10px; padding: 8px 10px; }
+  .lastseen strong { color: var(--yellow); }
+  .pattern { color: var(--dim); font-size: 12px; margin-top: 3px; }
+  .spotted { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #ff7a5c; }
   .dist { float: right; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--dim); background: var(--panel2); border-radius: 8px; padding: 2px 8px; }
   .links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .links a { font-size: 13px; font-weight: 600; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; }
@@ -137,7 +141,7 @@
 var DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
 var DAYNAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-var data = null, area = 'all';
+var data = null, area = 'all', SIGHTS = [];
 
 function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 function localDate(iso) { var p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
@@ -229,6 +233,24 @@ function renderTabs() {
   });
 }
 
+// Must match the Google Form's Store options exactly: "Area · Name (tag)".
+function storeKey(a, s) { return a.name + ' · ' + s.name + ' (' + s.tag.split(' · Play!')[0] + ')'; }
+function reportLink(a, s) {
+  return data.report_form + '?usp=pp_url&' + data.form_store_entry + '=' + encodeURIComponent(storeKey(a, s));
+}
+// "Usually spotted Tuesdays around 8 AM" once a store has 3+ sightings.
+function pattern(list) {
+  if (list.length < 3) return '';
+  var days = {}, hours = [];
+  list.forEach(function (x) { if (!x.ts) return; days[x.ts.getDay()] = (days[x.ts.getDay()] || 0) + 1; hours.push(x.ts.getHours()); });
+  var best = Object.keys(days).sort(function (a, b) { return days[b] - days[a]; })[0];
+  if (best == null) return '';
+  hours.sort(function (a, b) { return a - b; });
+  var h = hours[Math.floor(hours.length / 2)];
+  var names = ['Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'];
+  return 'Usually spotted ' + names[best] + ' around ' + fmt12((h < 10 ? '0' : '') + h + ':00');
+}
+
 function renderStores() {
   var box = document.getElementById('stores'); box.innerHTML = '';
   var ev = document.getElementById('events'); ev.innerHTML = '';
@@ -264,6 +286,19 @@ function renderStores() {
       }
       var v = el('div', 'verified', 'Checked ' + localDate(s.verified).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ');
       var src = el('a', null, 'source'); src.href = s.source; src.target = '_blank'; src.rel = 'noopener'; v.appendChild(src);
+      var mine = SIGHTS.filter(function (x) { return x.store === storeKey(a, s); });
+      if (mine.length) {
+        var last = mine[0];
+        var ls = el('div', 'lastseen');
+        ls.appendChild(el('strong', null, 'Last spotted: '));
+        ls.appendChild(document.createTextNode((last.when || last.ago) + ' · ' + last.what));
+        var pat = pattern(mine); if (pat) ls.appendChild(el('div', 'pattern', pat));
+        card.appendChild(ls);
+      }
+      if (data.report_form) {
+        var rep = el('a', 'spotted', 'Spotted something here?'); rep.href = reportLink(a, s); rep.target = '_blank'; rep.rel = 'noopener';
+        card.appendChild(rep);
+      }
       card.appendChild(v);
       box.appendChild(card);
     });
@@ -288,8 +323,19 @@ function parseCSV(t) {
   return rows;
 }
 
+function ago(d) {
+  var m = Math.round((Date.now() - d) / 60000);
+  if (m < 60) return m + ' min ago';
+  if (m < 1440) return Math.round(m / 60) + ' hr ago';
+  return Math.round(m / 1440) + ' days ago';
+}
+// Google Forms timestamps look like 9/25/2026 14:05:31 (sheet locale US).
+function parseTs(t) {
+  var m = (t || '').match(/(\d+)\/(\d+)\/(\d{4}) (\d+):(\d+):?(\d+)?/);
+  return m ? new Date(+m[3], +m[1] - 1, +m[2], +m[4], +m[5], +(m[6] || 0)) : null;
+}
 function renderSightings() {
-  var box = document.getElementById('sightings');
+  var box = document.getElementById('sightings'); box.innerHTML = '';
   if (data.report_form) {
     var b = el('a', 'btn', 'Report a sighting'); b.href = data.report_form; b.target = '_blank'; b.rel = 'noopener';
     box.appendChild(b);
@@ -302,17 +348,22 @@ function renderSightings() {
       var rows = parseCSV(t); var head = rows.shift() || [];
       var col = function (name) { for (var i = 0; i < head.length; i++) if (head[i].toLowerCase().indexOf(name) >= 0) return i; return -1; };
       var iT = col('timestamp'), iS = col('store'), iW = col('what'), iWhen = col('when'), iN = col('name');
-      rows = rows.filter(function (r) { return r.join('').trim(); }).reverse().slice(0, 20);
-      if (!rows.length) { list.appendChild(el('div', 'card muted', 'No sightings yet. Be the first.')); return; }
-      rows.forEach(function (r) {
+      SIGHTS = rows.filter(function (r) { return r.join('').trim(); }).map(function (r) {
+        var ts = parseTs(r[iT]);
+        return { ts: ts, ago: ts ? ago(ts) : r[iT], store: r[iS] || '', what: r[iW] || '', when: (r[iWhen] || '').trim(), name: r[iN] || '' };
+      }).sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      renderStores();
+      list.innerHTML = '';
+      if (!SIGHTS.length) { list.appendChild(el('div', 'card muted', 'No sightings yet. Be the first.')); return; }
+      SIGHTS.slice(0, 20).forEach(function (x) {
         var c = el('div', 'card');
-        c.appendChild(el('strong', null, (r[iS] || 'Somewhere') + ': '));
-        c.appendChild(document.createTextNode(r[iW] || ''));
-        c.appendChild(el('div', 'who', [r[iWhen] || r[iT], r[iN] ? 'reported by ' + r[iN] : ''].filter(Boolean).join(' · ')));
+        c.appendChild(el('strong', null, x.store + ': '));
+        c.appendChild(document.createTextNode(x.what));
+        c.appendChild(el('div', 'who', [x.when || x.ago, x.name ? 'reported by ' + x.name : ''].filter(Boolean).join(' · ')));
         list.appendChild(c);
       });
     })
-    .catch(function () { list.appendChild(el('div', 'card muted', 'Couldn\'t load sightings right now.')); });
+    .catch(function () { list.appendChild(el('div', 'card muted', 'Could not load sightings right now.')); });
 }
 
 try { area = localStorage.getItem('dropwatch-area') || 'all'; } catch (e) {}
@@ -322,6 +373,7 @@ fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(
   document.getElementById('radius').textContent = d.radius_note || '';
   document.getElementById('updated').textContent = 'Last updated ' + localDate(d.updated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.';
   setInterval(renderStores, 60000);
+  setInterval(renderSightings, 300000);
 });
 </script>
 </body>

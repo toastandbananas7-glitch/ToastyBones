@@ -1,7 +1,7 @@
 {
  "updated": "2026-09-25",
- "sightings_csv": "",
- "report_form": "",
+ "sightings_csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9XSlxanEdN-cfL5_IR0wH8psVQvREL4SBnzZJYNJuQz-vvHsLdWIuLpXFNbSMOdzZUUaCJ0vtOHiU/pub?output=csv",
+ "report_form": "https://docs.google.com/forms/d/e/1FAIpQLScJgEXQJdpLlnTJkr8ZKBoMp750M9p2IIRy3XYONJoymn3emA/viewform",
  "releases": [
   {
    "date": "2026-11-06",
@@ -828,5 +828,6 @@
   }
  ],
  "origin": "Goodview",
- "radius_note": "Every store within 35 miles of Goodview that sells Pokémon cards. Distances are straight-line."
+ "radius_note": "Every store within 35 miles of Goodview that sells Pokémon cards. Distances are straight-line.",
+ "form_store_entry": "entry.1663992212"
 }
