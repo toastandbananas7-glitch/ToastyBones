@@ -29,7 +29,7 @@ SKIP_SET = re.compile(r"Promo|Energies", re.I)
 # Sealed items nobody lines up at Target for: wholesale cases/displays, bundles
 # of several SKUs, and online-only Pokemon Center exclusives.
 SKIP_SEALED = re.compile(r"\bCase\b|Display|Set of \d|Code Card|Pokemon Center|International Version", re.I)
-TOP_CARDS = 10
+TOP_CARDS = 40
 MOVER_MIN = 5.0      # ignore bulk: a $0.40 card going to $0.80 isn't news
 KEEP_DAYS = 35
 
@@ -97,10 +97,13 @@ def main():
             item = {"id": pid, "name": p["name"], "price": round(mp, 2),
                     "img": p["imageUrl"], "url": p["url"]}
             if ext(p, "Rarity"):
-                item.update(number=ext(p, "Number"), rarity=ext(p, "Rarity"),
+                # "Mew ex - 152/128" -> "Mew ex"; the number has its own field.
+                item.update(name=re.sub(r"\s+-\s+\S+$", "", p["name"]),
+                            number=ext(p, "Number"), rarity=ext(p, "Rarity"),
                             finish=sub if sub != "Normal" else None)
                 cards.append(item)
             elif not SKIP_SEALED.search(p["name"]):
+                item["released"] = ((p.get("presaleInfo") or {}).get("releasedOn") or g["publishedOn"])[:10]
                 for rule in msrp_rules:
                     if re.search(rule["match"], p["name"], re.I):
                         item.update(msrp=rule["msrp"], msrp_source=rule["source"])

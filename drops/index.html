@@ -119,6 +119,17 @@
   .sr .pr { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--yellow); text-align: right; }
   .mult { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 7px; margin-left: 6px; background: rgba(61,220,151,0.15); color: var(--green); }
   .mult.hot { background: rgba(227,53,13,0.2); color: #ff7a5c; }
+  .carwrap { position: relative; }
+  .carousel { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 8px; scrollbar-width: thin; scrollbar-color: var(--panel2) transparent; }
+  .carousel .pc { flex: 0 0 158px; scroll-snap-align: start; position: relative; }
+  .carousel > .card { flex: 1 0 100%; }
+  .rank { position: absolute; top: 14px; left: 14px; font: 700 12px 'Orbitron', sans-serif; color: #111; background: var(--yellow); border-radius: 8px; padding: 2px 7px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+  .arrow { position: absolute; top: 40%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(11,13,18,0.85); color: var(--yellow); font-size: 20px; cursor: pointer; z-index: 2; }
+  .arrow:hover { border-color: var(--yellow); }
+  .arrow.l { left: -6px; } .arrow.r { right: -6px; }
+  .arrow[disabled] { opacity: 0; pointer-events: none; }
+  @media (hover: none) { .arrow { display: none; } }
+  .unrel { color: var(--amber); }
   h3.sub2 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin: 18px 0 10px; font-weight: 600; }
   footer { margin-top: 36px; color: var(--dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
 </style>
@@ -149,8 +160,12 @@
   <select class="setpick" id="setpick" aria-label="Choose a set"></select>
   <h3 class="sub2">Worth the line · sealed product</h3>
   <div class="sealed" id="sealed"></div>
-  <h3 class="sub2">Chase cards · top 10</h3>
-  <div class="grid" id="chase"></div>
+  <h3 class="sub2" id="chasehead">Chase cards</h3>
+  <div class="carwrap">
+    <button class="arrow l" id="chaseL" aria-label="Scroll left">&#8249;</button>
+    <div class="carousel" id="chase"></div>
+    <button class="arrow r" id="chaseR" aria-label="Scroll right">&#8250;</button>
+  </div>
   <h3 class="sub2">Heating up · biggest 7-day gains, all sets</h3>
   <div class="grid" id="movers"></div>
 
@@ -173,7 +188,7 @@
 var DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
 var DAYNAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-var data = null, area = 'all', SIGHTS = [];
+var data = null, area = 'all', SIGHTS = [], NEXT_TICK = null;
 
 function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 function localDate(iso) { var p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
@@ -199,7 +214,7 @@ function statusFor(store, now) {
 }
 
 function renderNext() {
-  var box = document.getElementById('next');
+  var box = document.getElementById('next'); box.innerHTML = ''; clearInterval(NEXT_TICK);
   var today = new Date(); today.setHours(0, 0, 0, 0);
   var up = data.releases.filter(function (r) { return localDate(r.date) >= today; })
                         .sort(function (a, b) { return a.date < b.date ? -1 : 1; });
@@ -208,6 +223,7 @@ function renderNext() {
   var card = el('div', 'next');
   card.appendChild(el('div', 'label', 'Next drop'));
   card.appendChild(el('div', 'name', r.name));
+  if (r.kind === 'Sealed wave') card.appendChild(el('div', 'muted', r.detail));
   card.appendChild(el('div', 'when', longDate(d)));
   var count = el('div', 'count');
   function tick() {
@@ -216,7 +232,7 @@ function renderNext() {
     count.innerHTML = '';
     parts.forEach(function (p) { var c = el('div'); c.appendChild(el('b', null, p[0])); c.appendChild(el('small', null, p[1])); count.appendChild(c); });
   }
-  tick(); setInterval(tick, 30000);
+  tick(); NEXT_TICK = setInterval(tick, 30000);
   card.appendChild(count);
   // Earliest doors on release day, per city, from the verified hours.
   data.areas.forEach(function (a) {
@@ -237,7 +253,7 @@ function renderNext() {
 }
 
 function renderReleases() {
-  var box = document.getElementById('releases');
+  var box = document.getElementById('releases'); box.innerHTML = '';
   var today = new Date(); today.setHours(0, 0, 0, 0);
   data.releases.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; }).forEach(function (r) {
     var d = localDate(r.date);
@@ -249,7 +265,7 @@ function renderReleases() {
     var body = el('div');
     var h = el('h3', null, r.name); h.appendChild(el('span', 'kind', r.kind)); body.appendChild(h);
     body.appendChild(el('p', 'muted', r.detail));
-    var src = el('a', 'src', 'Source: Pokémon'); src.href = r.source; src.target = '_blank'; src.rel = 'noopener';
+    var src = el('a', 'src', 'Source: ' + (r.source_name || 'Pokémon')); src.href = r.source; src.target = '_blank'; src.rel = 'noopener';
     body.appendChild(src);
     card.appendChild(date); card.appendChild(body); box.appendChild(card);
   });
@@ -406,17 +422,20 @@ function chg(item) {
   if (!v) return null;
   return el('span', 'ch ' + (v[0] >= 0 ? 'up' : 'down'), (v[0] >= 0 ? '▲ ' : '▼ ') + Math.abs(v[0]) + '% ' + v[1]);
 }
-function cardTile(c, setName) {
+function todayISO() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function shortDate(iso) { return localDate(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+function cardTile(c, setName, rank) {
   var a = el('a', 'pc'); a.href = c.url; a.target = '_blank'; a.rel = 'noopener';
   var img = el('img'); img.src = c.img; img.alt = c.name; img.loading = 'lazy'; a.appendChild(img);
+  if (rank) a.appendChild(el('span', 'rank', '#' + rank));
   a.appendChild(el('div', 'nm', c.name));
-  a.appendChild(el('div', 'rar', [setName, c.rarity, c.finish].filter(Boolean).join(' · ')));
-  var p = el('div', 'pr', money(c.price)); a.appendChild(p);
+  a.appendChild(el('div', 'rar', [setName, c.number, c.rarity, c.finish].filter(Boolean).join(' · ')));
+  a.appendChild(el('div', 'pr', money(c.price)));
   var ch = chg(c); if (ch) a.appendChild(ch);
   return a;
 }
 function renderMarket() {
-  var st = MARKET.sets[SET];
+  var st = MARKET.sets[SET], today = todayISO();
   var sb = document.getElementById('sealed'); sb.innerHTML = '';
   if (!st.sealed.length) sb.appendChild(el('div', 'card muted', 'No sealed product listed for this set.'));
   (SEALED_ALL ? st.sealed : st.sealed.slice(0, 10)).forEach(function (s) {
@@ -425,7 +444,11 @@ function renderMarket() {
     var mid = el('div'); var nm = el('div', 'nm', s.name.replace(st.name + ' ', ''));
     if (s.msrp) { var x = s.price / s.msrp; nm.appendChild(el('span', 'mult' + (x >= 2 ? ' hot' : ''), x.toFixed(1) + 'x retail')); }
     mid.appendChild(nm);
-    mid.appendChild(el('div', 'rt', s.msrp ? 'Retail ' + money(s.msrp) : 'Retail price not confirmed'));
+    var rt = el('div', 'rt', s.msrp ? 'Retail ' + money(s.msrp) : '');
+    var sep = s.msrp ? ' · ' : '';
+    if (s.released && s.released > today) rt.appendChild(el('span', 'unrel', sep + 'Not yet released · out ' + shortDate(s.released)));
+    else if (s.released) rt.appendChild(document.createTextNode(sep + 'Released ' + shortDate(s.released)));
+    mid.appendChild(rt);
     a.appendChild(mid);
     var r = el('div', 'pr', money(s.price)); var ch = chg(s); if (ch) { r.appendChild(el('br')); r.appendChild(ch); }
     a.appendChild(r); sb.appendChild(a);
@@ -435,9 +458,32 @@ function renderMarket() {
     more.style.marginTop = '4px'; more.onclick = function () { SEALED_ALL = !SEALED_ALL; renderMarket(); };
     sb.appendChild(more);
   }
-  var cb = document.getElementById('chase'); cb.innerHTML = '';
+  var cb = document.getElementById('chase'); cb.innerHTML = ''; cb.scrollLeft = 0;
+  document.getElementById('chasehead').textContent = 'Chase cards' + (st.cards.length ? ' · top ' + st.cards.length : '');
   if (!st.cards.length) cb.appendChild(el('div', 'card muted', 'Card prices show up once the set list is out.'));
-  st.cards.forEach(function (c) { cb.appendChild(cardTile(c)); });
+  st.cards.forEach(function (c, i) { cb.appendChild(cardTile(c, null, i + 1)); });
+  arrows();
+}
+// Carousel: arrow buttons page by the visible width; a vertical wheel scrolls
+// it sideways until the end, then the page scrolls as normal.
+function arrows() {
+  var cb = document.getElementById('chase');
+  document.getElementById('chaseL').disabled = cb.scrollLeft <= 2;
+  document.getElementById('chaseR').disabled = cb.scrollLeft + cb.clientWidth >= cb.scrollWidth - 2;
+}
+function initCarousel() {
+  var cb = document.getElementById('chase');
+  document.getElementById('chaseL').onclick = function () { cb.scrollBy({ left: -cb.clientWidth * 0.9 }); };
+  document.getElementById('chaseR').onclick = function () { cb.scrollBy({ left: cb.clientWidth * 0.9 }); };
+  cb.addEventListener('scroll', arrows, { passive: true });
+  window.addEventListener('resize', arrows);
+  cb.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    var max = cb.scrollWidth - cb.clientWidth;
+    if ((e.deltaY > 0 && cb.scrollLeft < max - 2) || (e.deltaY < 0 && cb.scrollLeft > 2)) {
+      e.preventDefault(); cb.style.scrollBehavior = 'auto'; cb.scrollLeft += e.deltaY; cb.style.scrollBehavior = '';
+    }
+  }, { passive: false });
 }
 function renderMovers() {
   var mb = document.getElementById('movers'); mb.innerHTML = '';
@@ -449,27 +495,51 @@ function renderMovers() {
   }
   MARKET.movers.forEach(function (c) { mb.appendChild(cardTile(c, c.set.replace(/^ME\d*:\s*/, ''))); });
 }
+// Sets often land in waves (bundles and tins weeks after launch). Upcoming
+// sealed release dates from TCGplayer's listings join the release calendar;
+// the set's own launch day is left to the official entries in data.json.
+function addWaves(m) {
+  var today = todayISO(), waves = {};
+  m.sets.forEach(function (st) {
+    st.sealed.forEach(function (s) {
+      if (!s.released || s.released <= today || s.released === st.release) return;
+      var k = s.released + '|' + st.name;
+      (waves[k] = waves[k] || { date: s.released, set: st.name, items: [], url: s.url }).items.push(s.name.replace(st.name + ' ', ''));
+    });
+  });
+  Object.keys(waves).forEach(function (k) {
+    var w = waves[k], kinds = {}, order = [];
+    // "Mini Tin [Mew]", "Mini Tin [Lapras]"... -> "Mini Tins (2 designs)"
+    w.items.forEach(function (n) { var b = n.replace(/\s*\[.*\]$/, ''); if (!kinds[b]) { kinds[b] = 0; order.push(b); } kinds[b]++; });
+    var parts = order.map(function (b) { return kinds[b] > 1 ? b + 's (' + kinds[b] + ' designs)' : b; });
+    var names = order.map(function (b) { return kinds[b] > 1 ? b + 's' : b; });
+    data.releases.push({ date: w.date, name: w.set + ': ' + names.slice(0, 2).join(' & ') + (names.length > 2 ? ' & more' : ''),
+                         kind: 'Sealed wave', detail: parts.join(', ') + '.',
+                         source: w.url, source_name: 'TCGplayer release date' });
+  });
+}
 function initMarket() {
-  fetch('market.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (m) {
+  return fetch('market.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (m) {
     MARKET = m;
-    var today = new Date().toISOString().slice(0, 10);
+    var today = todayISO();
     var pick = document.getElementById('setpick');
     m.sets.forEach(function (s, i) {
-      var o = el('option', null, s.name + (s.release > today ? ' · presale, out ' : ' · ') + localDate(s.release).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+      var o = el('option', null, s.name + (s.release > today ? ' · presale, out ' : ' · ') + shortDate(s.release));
       o.value = i; pick.appendChild(o);
     });
     SET = Math.max(0, m.sets.findIndex(function (s) { return s.release <= today; }));
     pick.value = SET;
     pick.onchange = function () { SET = +pick.value; SEALED_ALL = false; renderMarket(); };
-    renderMarket(); renderMovers();
+    initCarousel(); renderMarket(); renderMovers();
+    return m;
   }).catch(function () { document.getElementById('sealed').appendChild(el('div', 'card muted', 'Could not load prices right now.')); });
 }
 
 try { area = localStorage.getItem('dropwatch-area') || 'all'; } catch (e) {}
-initMarket();
 fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
   data = d;
   renderNext(); renderReleases(); renderTabs(); renderStores(); renderSightings();
+  initMarket().then(function (m) { if (m) { addWaves(m); renderNext(); renderReleases(); } });
   document.getElementById('radius').textContent = d.radius_note || '';
   document.getElementById('updated').textContent = 'Last updated ' + localDate(d.updated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.';
   setInterval(renderStores, 60000);
