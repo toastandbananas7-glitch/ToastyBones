@@ -98,6 +98,28 @@
   .sight .who { font-size: 12px; color: var(--dim); }
   .btn { display: inline-block; font: 700 15px system-ui, sans-serif; background: var(--red); color: #fff; border-radius: 12px; padding: 12px 18px; margin-top: 10px; }
   .btn:hover { text-decoration: none; filter: brightness(1.1); }
+  /* Market */
+  .setpick { width: 100%; font: 600 15px system-ui, sans-serif; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+  .grid > .card { grid-column: 1 / -1; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .pc { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 4px; color: var(--text); }
+  .pc:hover { text-decoration: none; border-color: var(--yellow); }
+  .pc img { width: 100%; aspect-ratio: 5 / 7; object-fit: contain; border-radius: 8px; background: var(--panel2); }
+  .pc .nm { font-size: 13px; font-weight: 600; line-height: 1.25; }
+  .pc .rar { font-size: 11px; color: var(--dim); }
+  .pc .pr { font-family: 'Orbitron', sans-serif; font-size: 17px; color: var(--yellow); margin-top: auto; }
+  .up { color: var(--green); } .down { color: #ff7a5c; }
+  .ch { font-size: 12px; font-family: 'Share Tech Mono', monospace; }
+  .sealed { display: grid; gap: 8px; }
+  .sr { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; color: var(--text); }
+  .sr:hover { text-decoration: none; border-color: var(--yellow); }
+  .sr img { width: 52px; height: 52px; object-fit: contain; border-radius: 6px; background: var(--panel2); }
+  .sr .nm { font-size: 14px; font-weight: 600; }
+  .sr .rt { font-size: 12px; color: var(--dim); }
+  .sr .pr { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--yellow); text-align: right; }
+  .mult { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 7px; margin-left: 6px; background: rgba(61,220,151,0.15); color: var(--green); }
+  .mult.hot { background: rgba(227,53,13,0.2); color: #ff7a5c; }
+  h3.sub2 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin: 18px 0 10px; font-weight: 600; }
   footer { margin-top: 36px; color: var(--dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
 </style>
 </head>
@@ -122,6 +144,16 @@
   <div class="rel" id="releases"></div>
   <p class="muted" id="relnote" style="margin-top:10px"></p>
 
+  <h2>Market</h2>
+  <p class="muted" style="margin:-4px 0 12px">What it all actually sells for. TCGplayer market prices, refreshed daily. If a box sells for 3x retail, it's worth the line.</p>
+  <select class="setpick" id="setpick" aria-label="Choose a set"></select>
+  <h3 class="sub2">Worth the line · sealed product</h3>
+  <div class="sealed" id="sealed"></div>
+  <h3 class="sub2">Chase cards · top 10</h3>
+  <div class="grid" id="chase"></div>
+  <h3 class="sub2">Heating up · biggest 7-day gains, all sets</h3>
+  <div class="grid" id="movers"></div>
+
   <h2>Stores</h2>
   <p class="muted" id="radius" style="margin:-4px 0 12px"></p>
   <div class="tabs" id="tabs"></div>
@@ -133,7 +165,7 @@
 
   <footer>
     <p id="updated"></p>
-    <p style="margin-top:6px">Every store address and hour was checked against the store's own website on the date shown on its card. Hours change on big release days, so call ahead if it matters. Not affiliated with Pokémon or any store.</p>
+    <p style="margin-top:6px">Every store address and hour was checked against the store's own website on the date shown on its card. Hours change on big release days, so call ahead if it matters. Prices are TCGplayer market prices (via tcgcsv.com), refreshed daily; retail prices are shown only where an official price is confirmed. Not affiliated with Pokémon or any store.</p>
   </footer>
 </div>
 
@@ -366,7 +398,75 @@ function renderSightings() {
     .catch(function () { list.appendChild(el('div', 'card muted', 'Could not load sightings right now.')); });
 }
 
+// Market: market.json is rebuilt daily by .github/scripts/market.py.
+var MARKET = null, SET = 0, SEALED_ALL = false;
+function money(v) { return '$' + (v >= 1000 ? Math.round(v).toLocaleString('en-US') : v.toFixed(2)); }
+function chg(item) {
+  var v = item.ch7 != null ? [item.ch7, '7d'] : item.ch30 != null ? [item.ch30, '30d'] : null;
+  if (!v) return null;
+  return el('span', 'ch ' + (v[0] >= 0 ? 'up' : 'down'), (v[0] >= 0 ? '▲ ' : '▼ ') + Math.abs(v[0]) + '% ' + v[1]);
+}
+function cardTile(c, setName) {
+  var a = el('a', 'pc'); a.href = c.url; a.target = '_blank'; a.rel = 'noopener';
+  var img = el('img'); img.src = c.img; img.alt = c.name; img.loading = 'lazy'; a.appendChild(img);
+  a.appendChild(el('div', 'nm', c.name));
+  a.appendChild(el('div', 'rar', [setName, c.rarity, c.finish].filter(Boolean).join(' · ')));
+  var p = el('div', 'pr', money(c.price)); a.appendChild(p);
+  var ch = chg(c); if (ch) a.appendChild(ch);
+  return a;
+}
+function renderMarket() {
+  var st = MARKET.sets[SET];
+  var sb = document.getElementById('sealed'); sb.innerHTML = '';
+  if (!st.sealed.length) sb.appendChild(el('div', 'card muted', 'No sealed product listed for this set.'));
+  (SEALED_ALL ? st.sealed : st.sealed.slice(0, 10)).forEach(function (s) {
+    var a = el('a', 'sr'); a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
+    var img = el('img'); img.src = s.img; img.alt = ''; img.loading = 'lazy'; a.appendChild(img);
+    var mid = el('div'); var nm = el('div', 'nm', s.name.replace(st.name + ' ', ''));
+    if (s.msrp) { var x = s.price / s.msrp; nm.appendChild(el('span', 'mult' + (x >= 2 ? ' hot' : ''), x.toFixed(1) + 'x retail')); }
+    mid.appendChild(nm);
+    mid.appendChild(el('div', 'rt', s.msrp ? 'Retail ' + money(s.msrp) : 'Retail price not confirmed'));
+    a.appendChild(mid);
+    var r = el('div', 'pr', money(s.price)); var ch = chg(s); if (ch) { r.appendChild(el('br')); r.appendChild(ch); }
+    a.appendChild(r); sb.appendChild(a);
+  });
+  if (st.sealed.length > 10) {
+    var more = el('button', 'setpick', SEALED_ALL ? 'Show fewer' : 'Show all ' + st.sealed.length);
+    more.style.marginTop = '4px'; more.onclick = function () { SEALED_ALL = !SEALED_ALL; renderMarket(); };
+    sb.appendChild(more);
+  }
+  var cb = document.getElementById('chase'); cb.innerHTML = '';
+  if (!st.cards.length) cb.appendChild(el('div', 'card muted', 'Card prices show up once the set list is out.'));
+  st.cards.forEach(function (c) { cb.appendChild(cardTile(c)); });
+}
+function renderMovers() {
+  var mb = document.getElementById('movers'); mb.innerHTML = '';
+  if (!MARKET.movers.length) {
+    mb.appendChild(el('div', 'card muted', MARKET.history_days < 7
+      ? 'Price tracking started September 26, 2026. The biggest risers show up here after a week of history.'
+      : 'Nothing over $5 went up this week.'));
+    return;
+  }
+  MARKET.movers.forEach(function (c) { mb.appendChild(cardTile(c, c.set.replace(/^ME\d*:\s*/, ''))); });
+}
+function initMarket() {
+  fetch('market.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (m) {
+    MARKET = m;
+    var today = new Date().toISOString().slice(0, 10);
+    var pick = document.getElementById('setpick');
+    m.sets.forEach(function (s, i) {
+      var o = el('option', null, s.name + (s.release > today ? ' · presale, out ' : ' · ') + localDate(s.release).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+      o.value = i; pick.appendChild(o);
+    });
+    SET = Math.max(0, m.sets.findIndex(function (s) { return s.release <= today; }));
+    pick.value = SET;
+    pick.onchange = function () { SET = +pick.value; SEALED_ALL = false; renderMarket(); };
+    renderMarket(); renderMovers();
+  }).catch(function () { document.getElementById('sealed').appendChild(el('div', 'card muted', 'Could not load prices right now.')); });
+}
+
 try { area = localStorage.getItem('dropwatch-area') || 'all'; } catch (e) {}
+initMarket();
 fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
   data = d;
   renderNext(); renderReleases(); renderTabs(); renderStores(); renderSightings();

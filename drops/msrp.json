@@ -1,0 +1,15 @@
+{
+ "_note": "Official US retail prices for sealed products, only where a source states them. 'match' is a case-insensitive regex on the TCGplayer product name; first match wins. Add a rule only with a source.",
+ "rules": [
+  {
+   "match": "^30th Celebration Elite Trainer Box$",
+   "msrp": 49.99,
+   "source": "https://www.techtimes.com/articles/327680/20260917/pokemon-tcg-30th-celebration-launches-worldwide-gamestop-lists-etb-triple-price.htm"
+  },
+  {
+   "match": "^30th Celebration Ultra-Premium Collection \\[(Day|Night)\\]$",
+   "msrp": 179.99,
+   "source": "https://www.techtimes.com/articles/327680/20260917/pokemon-tcg-30th-celebration-launches-worldwide-gamestop-lists-etb-triple-price.htm"
+  }
+ ]
+}
