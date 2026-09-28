@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-25",
+ "updated": "2026-09-27",
  "sightings_csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9XSlxanEdN-cfL5_IR0wH8psVQvREL4SBnzZJYNJuQz-vvHsLdWIuLpXFNbSMOdzZUUaCJ0vtOHiU/pub?output=csv",
  "report_form": "https://docs.google.com/forms/d/e/1FAIpQLScJgEXQJdpLlnTJkr8ZKBoMp750M9p2IIRy3XYONJoymn3emA/viewform",
  "releases": [
@@ -375,6 +375,48 @@
      "source": "https://www.facebook.com/CollectorsLairRoanokeNorth/about",
      "verified": "2026-09-25",
      "miles": 15
+    },
+    {
+     "name": "Sam's Club",
+     "tag": "Towne Square #8220",
+     "type": "big",
+     "address": "1455 Town Square Blvd, Roanoke, VA 24012",
+     "phone": "(540) 563-2620",
+     "hours": {
+      "sun": [
+       "09:00",
+       "20:00"
+      ],
+      "mon": [
+       "09:00",
+       "20:00"
+      ],
+      "tue": [
+       "09:00",
+       "20:00"
+      ],
+      "wed": [
+       "09:00",
+       "20:00"
+      ],
+      "thu": [
+       "09:00",
+       "20:00"
+      ],
+      "fri": [
+       "09:00",
+       "20:00"
+      ],
+      "sat": [
+       "09:00",
+       "20:00"
+      ]
+     },
+     "note": "Members only at the register: guest passes don't work in clubs. Plus members shop 8-9 AM, an hour before everyone else. Sam's gets its own exclusive Pokémon boxes, limit 2 per membership; the July 2026 one hit clubs on a Tuesday morning and sold out.",
+     "source": "https://www.samsclub.com/club/8220-roanoke-va",
+     "verified": "2026-09-27",
+     "miles": 15,
+     "website": "https://www.samsclub.com/club/8220-roanoke-va"
     },
     {
      "name": "Walmart Supercenter",
@@ -797,6 +839,48 @@
      "verified": "2026-09-25",
      "miles": 31,
      "website": "https://stores.barnesandnoble.com/store/2026"
+    },
+    {
+     "name": "Sam's Club",
+     "tag": "Wards Rd #6458",
+     "type": "big",
+     "address": "3912 Wards Rd, Lynchburg, VA 24502",
+     "phone": "(434) 237-5234",
+     "hours": {
+      "sun": [
+       "09:00",
+       "20:00"
+      ],
+      "mon": [
+       "09:00",
+       "20:00"
+      ],
+      "tue": [
+       "09:00",
+       "20:00"
+      ],
+      "wed": [
+       "09:00",
+       "20:00"
+      ],
+      "thu": [
+       "09:00",
+       "20:00"
+      ],
+      "fri": [
+       "09:00",
+       "20:00"
+      ],
+      "sat": [
+       "09:00",
+       "20:00"
+      ]
+     },
+     "note": "Members only at the register: guest passes don't work in clubs. Plus members shop 8-9 AM, an hour before everyone else. Sam's gets its own exclusive Pokémon boxes, limit 2 per membership; the July 2026 one hit clubs on a Tuesday morning and sold out.",
+     "source": "https://www.samsclub.com/club/6458-lynchburg-va",
+     "verified": "2026-09-27",
+     "miles": 31,
+     "website": "https://www.samsclub.com/club/6458-lynchburg-va"
     },
     {
      "name": "The Collectors Lair",
