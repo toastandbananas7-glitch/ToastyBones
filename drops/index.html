@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Drop Watch · Pokémon TCG · Roanoke, Lynchburg &amp; the Lake</title>
+<meta name="theme-color" content="#0b0d12">
 <meta name="description" content="Pokémon TCG release dates, store hours and drop sightings for Roanoke and Lynchburg, VA.">
 <link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,7 +100,7 @@
   .btn { display: inline-block; font: 700 15px system-ui, sans-serif; background: var(--red); color: #fff; border-radius: 12px; padding: 12px 18px; margin-top: 10px; }
   .btn:hover { text-decoration: none; filter: brightness(1.1); }
   /* Market */
-  .setpick { width: 100%; font: 600 15px system-ui, sans-serif; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+  .setpick { width: 100%; font: 600 16px system-ui, sans-serif; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
   .grid > .card { grid-column: 1 / -1; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
   .pc { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 4px; color: var(--text); }
@@ -117,6 +118,13 @@
   .sr .nm { font-size: 14px; font-weight: 600; }
   .sr .rt { font-size: 12px; color: var(--dim); }
   .sr .pr { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--yellow); text-align: right; }
+  .sr .pr.rng { font-size: 14px; line-height: 1.3; }
+  button.sr { font: inherit; width: 100%; text-align: left; cursor: pointer; }
+  .sr .caret { color: var(--yellow); font-size: 12px; margin-left: 6px; }
+  .sr.variant { margin-left: 18px; }
+  .sgroup { font: 700 12px 'Share Tech Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin: 10px 0 0; }
+  .sgroup:first-child { margin-top: 0; }
+  .sgroup.soon { color: var(--amber); }
   .mult { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 7px; margin-left: 6px; background: rgba(61,220,151,0.15); color: var(--green); }
   .mult.hot { background: rgba(227,53,13,0.2); color: #ff7a5c; }
   .carwrap { position: relative; }
@@ -129,8 +137,30 @@
   .arrow.l { left: -6px; } .arrow.r { right: -6px; }
   .arrow[disabled] { opacity: 0; pointer-events: none; }
   @media (hover: none) { .arrow { display: none; } }
-  .unrel { color: var(--amber); }
   h3.sub2 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin: 18px 0 10px; font-weight: 600; }
+  /* Section bar: pinned so phones can jump past the long store list. */
+  .nav { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+         margin: -8px -16px 18px; padding: 10px 16px; background: rgba(11,13,18,0.9); backdrop-filter: blur(8px);
+         -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .nav::-webkit-scrollbar, .tabs::-webkit-scrollbar { display: none; }
+  .nav a { flex: none; font: 600 13px system-ui, sans-serif; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; }
+  .nav a:hover { text-decoration: none; border-color: var(--yellow); }
+  h2, #next { scroll-margin-top: 64px; }
+  @media (max-width: 560px) {
+    .wrap { padding-top: 16px; }
+    .card { padding: 14px; }
+    .next { padding: 16px; }
+    .rel .card { grid-template-columns: 64px 1fr; gap: 12px; }
+    .rel .date .d { font-size: 22px; }
+    .rel .date .m { letter-spacing: 1px; }
+    .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 12px; padding: 0 16px 2px; }
+    .tabs button { flex: none; }
+    .sr { grid-template-columns: 44px 1fr auto; gap: 10px; padding: 8px 10px; }
+    .sr img { width: 44px; height: 44px; }
+    .sr .pr { font-size: 15px; }
+    .sr .pr.rng { font-size: 13px; }
+    .sr.variant { margin-left: 12px; }
+  }
   footer { margin-top: 36px; color: var(--dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
 </style>
 </head>
@@ -149,16 +179,20 @@
     </div>
   </header>
 
+  <nav class="nav" aria-label="Sections">
+    <a href="#next">Next drop</a><a href="#cal">Calendar</a><a href="#market">Market</a><a href="#storesec">Stores</a><a href="#sightsec">Sightings</a>
+  </nav>
+
   <section id="next"></section>
 
-  <h2>Release calendar</h2>
+  <h2 id="cal">Release calendar</h2>
   <div class="rel" id="releases"></div>
   <p class="muted" id="relnote" style="margin-top:10px"></p>
 
-  <h2>Market</h2>
+  <h2 id="market">Market</h2>
   <p class="muted" style="margin:-4px 0 12px">What it all actually sells for. TCGplayer market prices, refreshed daily. If a box sells for 3x retail, it's worth the line.</p>
   <select class="setpick" id="setpick" aria-label="Choose a set"></select>
-  <h3 class="sub2">Worth the line · sealed product</h3>
+  <h3 class="sub2">Worth the line · sealed product by release date</h3>
   <div class="sealed" id="sealed"></div>
   <h3 class="sub2" id="chasehead">Chase cards</h3>
   <div class="carwrap">
@@ -169,13 +203,13 @@
   <h3 class="sub2">Heating up · biggest 7-day gains, all sets</h3>
   <div class="grid" id="movers"></div>
 
-  <h2>Stores</h2>
+  <h2 id="storesec">Stores</h2>
   <p class="muted" id="radius" style="margin:-4px 0 12px"></p>
   <div class="tabs" id="tabs"></div>
   <div class="stores" id="stores"></div>
   <div class="events muted" id="events"></div>
 
-  <h2>Sightings</h2>
+  <h2 id="sightsec">Sightings</h2>
   <div id="sightings"></div>
 
   <footer>
@@ -415,7 +449,7 @@ function renderSightings() {
 }
 
 // Market: market.json is rebuilt daily by .github/scripts/market.py.
-var MARKET = null, SET = 0, SEALED_ALL = false;
+var MARKET = null, SET = 0, SEALED_ALL = false, OPEN_GROUPS = {};
 function money(v) { return '$' + (v >= 1000 ? Math.round(v).toLocaleString('en-US') : v.toFixed(2)); }
 function chg(item) {
   var v = item.ch7 != null ? [item.ch7, '7d'] : item.ch30 != null ? [item.ch30, '30d'] : null;
@@ -434,28 +468,73 @@ function cardTile(c, setName, rank) {
   var ch = chg(c); if (ch) a.appendChild(ch);
   return a;
 }
+function dayMonth(iso) { return localDate(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+// Worth the line, by release date: upcoming soonest first (that's the line
+// to stand in), then released newest first; same day sorts by price. Products
+// with 3+ versions on the same day ("Mini Tin [Mew]"...) fold into one row.
+function sealedRows(st, today) {
+  var groups = {}, order = [], rows = [];
+  st.sealed.forEach(function (s) {
+    var base = s.name.replace(st.name + ' ', '').replace(/\s*\[[^\]]*\]/, '').trim();
+    var k = (s.released || '') + '|' + base;
+    if (!groups[k]) { groups[k] = { base: base, items: [] }; order.push(k); }
+    groups[k].items.push(s);
+  });
+  order.forEach(function (k) {
+    var g = groups[k]; g.items.sort(function (a, b) { return b.price - a.price; });
+    var rel = g.items[0].released || null;
+    if (g.items.length >= 3) rows.push({ key: SET + '|' + k, group: g, released: rel, price: g.items[0].price });
+    else g.items.forEach(function (s) { rows.push({ item: s, released: rel, price: s.price }); });
+  });
+  function tier(r) { return !r.released ? 2 : r.released > today ? 0 : 1; }
+  return rows.sort(function (a, b) {
+    var ta = tier(a), tb = tier(b);
+    if (ta !== tb) return ta - tb;
+    if (a.released !== b.released) return (a.released < b.released ? -1 : 1) * (ta === 0 ? 1 : -1);
+    return b.price - a.price;
+  });
+}
+function dateHead(iso, today) {
+  if (!iso) return el('div', 'sgroup', 'Release date unknown');
+  if (iso <= today) return el('div', 'sgroup', 'Released ' + shortDate(iso));
+  var days = Math.round((localDate(iso) - localDate(today)) / 864e5);
+  return el('div', 'sgroup soon', 'Out ' + dayMonth(iso) + ' · ' + (days === 1 ? 'tomorrow' : 'in ' + days + ' days'));
+}
+function sealedRow(s, st) {
+  var a = el('a', 'sr'); a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
+  var img = el('img'); img.src = s.img; img.alt = ''; img.loading = 'lazy'; a.appendChild(img);
+  var mid = el('div'); var nm = el('div', 'nm', s.name.replace(st.name + ' ', ''));
+  if (s.msrp) { var x = s.price / s.msrp; nm.appendChild(el('span', 'mult' + (x >= 2 ? ' hot' : ''), x.toFixed(1) + 'x retail')); }
+  mid.appendChild(nm);
+  if (s.msrp) mid.appendChild(el('div', 'rt', 'Retail ' + money(s.msrp)));
+  a.appendChild(mid);
+  var r = el('div', 'pr', money(s.price)); var ch = chg(s); if (ch) { r.appendChild(el('br')); r.appendChild(ch); }
+  a.appendChild(r);
+  return a;
+}
 function renderMarket() {
   var st = MARKET.sets[SET], today = todayISO();
   var sb = document.getElementById('sealed'); sb.innerHTML = '';
   if (!st.sealed.length) sb.appendChild(el('div', 'card muted', 'No sealed product listed for this set.'));
-  (SEALED_ALL ? st.sealed : st.sealed.slice(0, 10)).forEach(function (s) {
-    var a = el('a', 'sr'); a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
-    var img = el('img'); img.src = s.img; img.alt = ''; img.loading = 'lazy'; a.appendChild(img);
-    var mid = el('div'); var nm = el('div', 'nm', s.name.replace(st.name + ' ', ''));
-    if (s.msrp) { var x = s.price / s.msrp; nm.appendChild(el('span', 'mult' + (x >= 2 ? ' hot' : ''), x.toFixed(1) + 'x retail')); }
-    mid.appendChild(nm);
-    var rt = el('div', 'rt', s.msrp ? 'Retail ' + money(s.msrp) : '');
-    var sep = s.msrp ? ' · ' : '';
-    if (s.released && s.released > today) rt.appendChild(el('span', 'unrel', sep + 'Not yet released · out ' + shortDate(s.released)));
-    else if (s.released) rt.appendChild(document.createTextNode(sep + 'Released ' + shortDate(s.released)));
-    mid.appendChild(rt);
-    a.appendChild(mid);
-    var r = el('div', 'pr', money(s.price)); var ch = chg(s); if (ch) { r.appendChild(el('br')); r.appendChild(ch); }
-    a.appendChild(r); sb.appendChild(a);
+  var rows = sealedRows(st, today), lastDate;
+  (SEALED_ALL ? rows : rows.slice(0, 10)).forEach(function (r) {
+    if (r.released !== lastDate) { lastDate = r.released; sb.appendChild(dateHead(r.released, today)); }
+    if (!r.group) { sb.appendChild(sealedRow(r.item, st)); return; }
+    var g = r.group, open = !!OPEN_GROUPS[r.key];
+    var b = el('button', 'sr'); b.type = 'button'; b.setAttribute('aria-expanded', open);
+    var img = el('img'); img.src = g.items[0].img; img.alt = ''; img.loading = 'lazy'; b.appendChild(img);
+    var mid = el('div'); var nm = el('div', 'nm', g.base + 's'); nm.appendChild(el('span', 'caret', open ? '▲' : '▼'));
+    mid.appendChild(nm); mid.appendChild(el('div', 'rt', g.items.length + ' designs · ' + (open ? 'tap to hide' : 'tap to see each'))); b.appendChild(mid);
+    var pr = el('div', 'pr rng', money(g.items[g.items.length - 1].price)); pr.appendChild(el('br'));
+    pr.appendChild(document.createTextNode('– ' + money(g.items[0].price))); b.appendChild(pr);
+    b.onclick = function () { OPEN_GROUPS[r.key] = !open; renderMarket(); };
+    sb.appendChild(b);
+    if (open) g.items.forEach(function (s) { var row = sealedRow(s, st); row.classList.add('variant'); sb.appendChild(row); });
   });
-  if (st.sealed.length > 10) {
+  if (rows.length > 10) {
     var more = el('button', 'setpick', SEALED_ALL ? 'Show fewer' : 'Show all ' + st.sealed.length);
-    more.style.marginTop = '4px'; more.onclick = function () { SEALED_ALL = !SEALED_ALL; renderMarket(); };
+    more.style.marginTop = '4px';
+    more.onclick = function () { SEALED_ALL = !SEALED_ALL; renderMarket(); if (!SEALED_ALL) sb.previousElementSibling.scrollIntoView(); };
     sb.appendChild(more);
   }
   var cb = document.getElementById('chase'); cb.innerHTML = ''; cb.scrollLeft = 0;
