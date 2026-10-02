@@ -18,7 +18,7 @@ jobs:
       - run: python .github/scripts/market.py
       - name: Commit if changed
         run: |
-          git add drops/market.json drops/market-history.json
+          git add drops/market.json drops/market-history.json drops/search.json
           if git diff --cached --quiet; then echo "No change"; exit 0; fi
           git config user.name "Drop Watch bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-27",
+ "updated": "2026-10-02",
  "sightings_csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9XSlxanEdN-cfL5_IR0wH8psVQvREL4SBnzZJYNJuQz-vvHsLdWIuLpXFNbSMOdzZUUaCJ0vtOHiU/pub?output=csv",
  "report_form": "https://docs.google.com/forms/d/e/1FAIpQLScJgEXQJdpLlnTJkr8ZKBoMp750M9p2IIRy3XYONJoymn3emA/viewform",
  "releases": [
@@ -416,7 +416,11 @@
      "source": "https://www.samsclub.com/club/8220-roanoke-va",
      "verified": "2026-09-27",
      "miles": 15,
-     "website": "https://www.samsclub.com/club/8220-roanoke-va"
+     "website": "https://www.samsclub.com/club/8220-roanoke-va",
+     "early": {
+      "label": "Plus members",
+      "open": "08:00"
+     }
     },
     {
      "name": "Walmart Supercenter",
@@ -880,7 +884,11 @@
      "source": "https://www.samsclub.com/club/6458-lynchburg-va",
      "verified": "2026-09-27",
      "miles": 31,
-     "website": "https://www.samsclub.com/club/6458-lynchburg-va"
+     "website": "https://www.samsclub.com/club/6458-lynchburg-va",
+     "early": {
+      "label": "Plus members",
+      "open": "08:00"
+     }
     },
     {
      "name": "The Collectors Lair",
@@ -913,5 +921,14 @@
  ],
  "origin": "Goodview",
  "radius_note": "Every store within 35 miles of Goodview that sells Pokémon cards. Distances are straight-line.",
- "form_store_entry": "entry.1663992212"
+ "form_store_entry": "entry.1663992212",
+ "chains": {
+  "Target": {
+   "tip": "Pokémon restocks come from third-party vendor routes, so the day differs store to store and there is no official schedule. A line has formed at the Roanoke store two hours before doors."
+  },
+  "GameStop": {
+   "tip": "Priced the 30th Celebration Elite Trainer Box at triple retail at launch.",
+   "source": "https://www.techtimes.com/articles/327680/20260917/pokemon-tcg-30th-celebration-launches-worldwide-gamestop-lists-etb-triple-price.htm"
+  }
+ }
 }

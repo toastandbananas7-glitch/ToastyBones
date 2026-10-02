@@ -8,6 +8,8 @@ Writes:
   drops/market.json          what the page shows (per set: chase cards + sealed)
   drops/market-history.json  daily market price per tracked product, last 35 days,
                              used for the 7/30-day change and the "heating up" list
+  drops/search.json          every card + sealed product with all finishes' market/low
+                             prices, for the page's price lookup
 """
 import json
 import os
@@ -19,6 +21,7 @@ from datetime import date, datetime, timedelta
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "drops", "market.json")
 HIST = os.path.join(ROOT, "drops", "market-history.json")
+SEARCH = os.path.join(ROOT, "drops", "search.json")
 MSRP = os.path.join(ROOT, "drops", "msrp.json")
 BASE = "https://tcgcsv.com/tcgplayer/3"
 UA = {"User-Agent": "DropWatch/1.0 (toastybones.com/drops)"}
@@ -80,14 +83,17 @@ def main():
     groups = [g for g in get("/groups") if SET_RE.match(g["name"]) and not SKIP_SET.search(g["name"])]
     groups.sort(key=lambda g: g["publishedOn"], reverse=True)
 
-    sets, prices_today, card_meta = [], {}, {}
+    sets, prices_today, card_meta, search = [], {}, {}, []
     for g in groups:
         products = {p["productId"]: p for p in get("/%d/products" % g["groupId"])}
-        best = {}
+        best, variants = {}, {}
         for pr in get("/%d/prices" % g["groupId"]):
             mp = pr.get("marketPrice")
             if mp and mp > best.get(pr["productId"], (0,))[0]:
                 best[pr["productId"]] = (mp, pr["subTypeName"])
+            if mp or pr.get("lowPrice"):
+                variants.setdefault(pr["productId"], []).append(
+                    [pr["subTypeName"], mp and round(mp, 2), pr.get("lowPrice") and round(pr["lowPrice"], 2)])
 
         cards, sealed = [], []
         for pid, (mp, sub) in best.items():
@@ -102,6 +108,8 @@ def main():
                             number=ext(p, "Number"), rarity=ext(p, "Rarity"),
                             finish=sub if sub != "Normal" else None)
                 cards.append(item)
+                search.append({"id": pid, "n": item["name"], "s": len(sets), "no": item["number"],
+                               "r": item["rarity"], "v": variants.get(pid, [])})
             elif not SKIP_SEALED.search(p["name"]):
                 item["released"] = ((p.get("presaleInfo") or {}).get("releasedOn") or g["publishedOn"])[:10]
                 for rule in msrp_rules:
@@ -109,6 +117,8 @@ def main():
                         item.update(msrp=rule["msrp"], msrp_source=rule["source"])
                         break
                 sealed.append(item)
+                search.append({"id": pid, "n": item["name"], "s": len(sets), "k": "s", "rel": item["released"],
+                               "ms": item.get("msrp"), "v": variants.get(pid, [])})
 
         cards.sort(key=lambda c: c["price"], reverse=True)
         sealed.sort(key=lambda s: s["price"], reverse=True)
@@ -163,6 +173,20 @@ def main():
            "sets": sets, "movers": movers[:12]}
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+
+    # Lookup index: every card and sealed product in the era, all finishes, with
+    # market and lowest-listing prices. Image and product URLs are rebuilt from the id.
+    for it in search:
+        s = hist["p"].get(str(it["id"]))
+        c7 = change(s, dates, 7)
+        if c7 is not None:
+            it["c7"] = c7
+        for k in [k for k, v in it.items() if v in (None, [])]:
+            del it[k]
+    idx = {"updated": today, "sets": [{"name": s["name"], "code": s["code"], "release": s["release"]} for s in sets],
+           "items": search}
+    with open(SEARCH, "w", encoding="utf-8") as f:
+        json.dump(idx, f, ensure_ascii=False, separators=(",", ":"))
     with open(HIST, "w", encoding="utf-8") as f:
         json.dump(hist, f, separators=(",", ":"))
     print("sets=%d tracked=%d movers=%d" % (len(sets), len(hist["p"]), len(movers)))
