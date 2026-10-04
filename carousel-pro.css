@@ -1,0 +1,111 @@
+/* ToastyBones "pro" carousels (2026-10-04). Add-on only: remove the <link> and <script> tags that load
+   carousel-pro.css / carousel-pro.js and the old look returns. Scoped to .album-carousel. */
+
+:root { --sbw: 0px; }
+
+/* ---- full-bleed stage, bigger cards ---- */
+@media (min-width: 640px) {
+  .relative.max-w-6xl.mx-auto:has(> .album-carousel) {
+    max-width: none;
+    width: calc(100vw - var(--sbw));
+    margin-left: calc(50% - 50vw + var(--sbw) / 2);
+    margin-right: 0;
+  }
+}
+.album-carousel {
+  padding: 5.5rem 2.5rem 10rem;
+}
+.album-carousel .album-card-wrap {
+  max-width: none;
+  width: clamp(230px, 22vw, 330px);
+  z-index: var(--z, 1);
+}
+@media (max-width: 639px) {
+  .album-carousel { padding: 4rem 1.5rem 7rem; }
+  .album-carousel .album-card-wrap { width: 62vw; max-width: 260px; }
+}
+
+/* ---- 3D coverflow: JS sets --r (turn), --s (scale), --z (stacking) per card ---- */
+.album-carousel .coverflow-face {
+  transform-origin: 50% 0;
+  transform: perspective(1000px) rotateX(var(--tx, 0deg)) rotateY(calc(var(--r, 0deg) + var(--ty, 0deg))) scale(var(--s, 1));
+  will-change: transform;
+}
+.album-carousel .coverflow-face.is-focused {
+  filter: saturate(1.2) brightness(1.1)
+          drop-shadow(0 0 12px var(--glow, #fffb00))
+          drop-shadow(0 0 34px var(--glow, #fffb00));
+  animation: proPulse 1.7s ease-in-out infinite alternate;
+}
+.album-carousel .coverflow-face.is-focused.focus-flicker { animation: albumFocusFlash 0.4s steps(3, end); }
+@keyframes proPulse {
+  from { filter: saturate(1.2) brightness(1.06) drop-shadow(0 0 8px var(--glow, #fffb00)) drop-shadow(0 0 22px var(--glow, #fffb00)); }
+  to   { filter: saturate(1.35) brightness(1.18) drop-shadow(0 0 16px var(--glow, #fffb00)) drop-shadow(0 0 48px var(--glow, #fffb00)); }
+}
+
+/* ---- the record slides out further and spins fast on the focused card ---- */
+.album-carousel .vinyl-disc { transition: right 0.5s cubic-bezier(.2,1.4,.4,1), bottom 0.5s cubic-bezier(.2,1.4,.4,1); }
+.album-carousel .coverflow-face.is-focused .vinyl-disc {
+  right: -22%;
+  bottom: -4%;
+  animation-duration: 0.9s;
+  box-shadow: 0 0 26px var(--glow, #fffb00);
+}
+.album-carousel .coverflow-face.is-focused .vinyl-disc::after { background: var(--glow, #fffb00); box-shadow: 0 0 12px var(--glow, #fffb00); }
+
+/* ---- bigger, glowing title on the focused card ---- */
+.album-carousel .coverflow-face.is-focused p.glitch-hover {
+  font-size: 1.12rem;
+  text-shadow: 0 0 8px var(--glow, #ff00ff), 0 0 18px var(--glow, #00ffff), 0 0 2px #000;
+}
+
+/* ---- glitch jolt + sparks when a new card lands in the middle ---- */
+.album-carousel .coverflow-face.pro-glitch { animation: proGlitch 0.36s steps(2, end); }
+@keyframes proGlitch {
+  0%   { translate: -7px 0; filter: hue-rotate(90deg) brightness(1.9) contrast(1.4); }
+  25%  { translate: 6px -2px; filter: hue-rotate(-60deg) brightness(1.5); }
+  50%  { translate: -3px 2px; filter: hue-rotate(40deg) brightness(1.7) saturate(1.8); }
+  75%  { translate: 2px 0; filter: brightness(1.3); }
+  100% { translate: 0 0; }
+}
+.pro-spark {
+  position: absolute;
+  left: 50%; top: 42%;
+  width: 7px; height: 7px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--glow, #fffb00);
+  box-shadow: 0 0 10px 2px var(--glow, #fffb00);
+  pointer-events: none;
+  z-index: 40;
+  animation: proSpark 0.75s ease-out forwards;
+}
+@keyframes proSpark {
+  from { transform: translate(0, 0) scale(1.2); opacity: 1; }
+  to   { transform: translate(var(--dx), var(--dy)) scale(0.1); opacity: 0; }
+}
+
+/* ---- arrows: bigger, neon, and clear of the fixed left sidebar ---- */
+.album-carousel ~ .album-nav-btn, .relative > .album-nav-btn {
+  width: 3.5rem; height: 3.5rem; font-size: 1.5rem;
+  box-shadow: 0 0 14px rgba(255,251,0,0.55), inset 0 0 8px rgba(255,251,0,0.25);
+}
+.relative > .album-nav-btn { z-index: 300; }
+.relative > .album-nav-btn:hover { box-shadow: 0 0 22px rgba(255,0,255,0.8), inset 0 0 10px rgba(255,0,255,0.35); transform: translateY(-50%) scale(1.12); }
+@media (min-width: 640px) { .relative > .album-nav-prev { left: 236px; } .relative > .album-nav-next { right: 28px; } }
+@media (max-width: 639px) { .relative > .album-nav-btn { width: 2.75rem; height: 2.75rem; font-size: 1.1rem; } }
+
+/* ---- sound toggle ---- */
+.pro-sound {
+  position: absolute; top: 0.25rem; right: 1.5rem; z-index: 300;
+  background: rgba(0,0,0,0.65); border: 2px solid #ff00ff; color: #fff;
+  border-radius: 9999px; padding: 0.15rem 0.6rem; font-size: 0.85rem; cursor: pointer;
+}
+.pro-sound:hover { border-color: #fffb00; }
+
+@media (prefers-reduced-motion: reduce) {
+  .album-carousel .coverflow-face { transform: none !important; }
+  .album-carousel .coverflow-face.is-focused { animation: none !important; }
+  .album-carousel .coverflow-face.pro-glitch { animation: none !important; }
+  .pro-spark { display: none; }
+}
