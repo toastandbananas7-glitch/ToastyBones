@@ -323,7 +323,7 @@
     <div class="ov-title">🔥 COLLECTION COMPLETE! 🔥</div>
     <div class="score-big" id="win-score">0</div>
     <div class="score-lbl">METERS CLIMBED</div>
-    <div class="go-sum">All 23 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
+    <div class="go-sum">All 26 ToastyBones albums unlocked.<br>You are dangerously obsessed. Respect.</div>
     <button class="ov-btn" id="btn-winretry" style="margin-bottom:10px;">↺ PLAY AGAIN</button>
     <a href="https://toastybones.com" style="color:#2a2a2a;font-size:0.72rem;letter-spacing:2px;text-decoration:none;">← RETURN TO BASE</a>
   </div>
@@ -359,6 +359,7 @@
 // ALBUMS — thresholds now in METERS
 // ================================================================
 const ALBUMS = [
+  {name:'Unscheduled Programming',          img:'prog.png',                   pts:10},
   {name:'Isle of Beans',                    img:'IsleBeans.png',              pts:30},
   {name:'Ear-aid',                          img:'ear-aid.png',                pts:70},
   {name:'Fully Panted',                     img:'pant.png',                   pts:120},
@@ -382,8 +383,10 @@ const ALBUMS = [
   {name:'Odd One Out',                      img:'ooo.png',                    pts:2730},
   {name:'Big Dump 3: The Reckoning',        img:'bd3tr.png',                  pts:2970},
   {name:'Something Inappropriate',          img:'somethinginappropriate.png', pts:3220},
+  {name:'BREAD-CORE',                       img:'bread-core-web.png',          pts:3480},
+  {name:"It's Growing on Me!",              img:'igon.png',                   pts:3750},
 ];
-const TOTAL_PTS = 3220;
+const TOTAL_PTS = 3750;
 
 const BGM_TRACKS = [
   'gamemusic/BackupYourData.mp3',
@@ -968,7 +971,7 @@ function endGame() {
   document.getElementById('go-sum').innerHTML =
     unlockedCount===0
       ? "No albums unlocked. I'm not surprised, just disappointed."
-      : `${unlockedCount} / 23 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
+      : `${unlockedCount} / 26 albums unlocked:<br>`+unlocked.map(a=>a.name).join(' · ');
   const t = unlockedCount>=19?'🔥 LEGENDARY'
     :unlockedCount>=14?'IMPRESSIVE RUN'
     :unlockedCount>=7 ?'NOT BAD'
