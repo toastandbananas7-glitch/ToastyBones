@@ -2074,13 +2074,9 @@
     };
     albumPrev.addEventListener('click', () => scrollByCard(-1));
     albumNext.addEventListener('click', () => scrollByCard(1));
-    // Let a plain vertical mouse wheel drive the horizontal scroll too.
-    albumCarousel.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        albumCarousel.scrollLeft += e.deltaY;
-      }
-    }, { passive: false });
+    // 2026-10-04: the old handler turned every vertical wheel tick into sideways scrolling and called
+    // preventDefault(), so the page could not scroll while the mouse was over a carousel (Evan). The wheel now
+    // scrolls the page; carousels move with the arrow buttons, swipe/drag, or a sideways wheel/trackpad gesture.
 
     // ============ EDGE SPACERS — let the first/last cards reach true center ============
     const spacerLeft = document.createElement('div');
