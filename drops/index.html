@@ -226,6 +226,8 @@
   .verdict.long { background: rgba(227,53,13,0.16); } .verdict.long b { color: #ff7a5c; }
   .orow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .orow button { font: 600 13px system-ui, sans-serif; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; cursor: pointer; }
+  .sharebtn { margin-left: auto; flex: none; font: 600 12px system-ui, sans-serif; color: var(--yellow); background: rgba(255,203,5,0.08); border: 1px solid rgba(255,203,5,0.35); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+  .orow .sharebtn { margin-left: 0; font-size: 13px; padding: 9px 12px; border-radius: 10px; }
   .live { margin-top: 10px; padding: 9px 10px; border-radius: 12px; background: rgba(0,0,0,0.25); }
   .livest { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--dim); }
   .liveln { font-size: 12px; color: var(--dim); margin-top: 3px; }
@@ -1092,10 +1094,29 @@ function tapRow(s) {
   });
   return b;
 }
+// Share: the phone's share sheet (or the clipboard) gets the store's live status plus a link that opens
+// Line mode on that store (?store=<id>).
+function shareStore(s) {
+  var L = liveFor(s), url = 'https://toastybones.com/drops/?store=' + s.id + '#linemode';
+  var lines = [s.name + ' (' + shortTag(s) + '): ' + (L.fresh ? STOCK[L.stock.k].toUpperCase() + ', ' + since(L.stock.t) : 'no fresh stock reports yet')];
+  if (L.line) lines.push('Line: someone was #' + L.line.v + ', ' + since(L.line.t));
+  if (L.count) lines.push('About ' + L.count.v + ' boxes on hand, ' + since(L.count.t));
+  var text = lines.join('\n') + '\nLive on Drop Watch:';
+  if (navigator.share) { navigator.share({ title: 'Drop Watch', text: text, url: url }).catch(function () {}); return; }
+  var full = text + ' ' + url;
+  (navigator.clipboard ? navigator.clipboard.writeText(full) : Promise.reject())
+    .then(function () { toast('Copied. Paste it in your group chat.'); })
+    .catch(function () { window.prompt('Copy this:', full); });
+}
+function shareBtn(s, label) {
+  var b = el('button', 'sharebtn', label || 'Share'); b.type = 'button';
+  b.setAttribute('aria-label', 'Share live status for ' + s.name + ' ' + shortTag(s));
+  b.onclick = function () { shareStore(s); }; return b;
+}
 function liveRow(s) {
   var L = liveFor(s), row = el('div', 'live');
   var st = el('div', 'livest' + (L.fresh ? ' ' + L.stock.k : '')); st.appendChild(el('span', 'dot'));
-  st.appendChild(document.createTextNode(stockText(L))); row.appendChild(st);
+  st.appendChild(document.createTextNode(stockText(L))); st.appendChild(shareBtn(s)); row.appendChild(st);
   if (L.line) row.appendChild(el('div', 'liveln', 'Line: someone was #' + L.line.v + ' · ' + since(L.line.t)));
   if (L.count) row.appendChild(el('div', 'liveln', 'About ' + L.count.v + ' boxes on hand · ' + since(L.count.t)));
   row.appendChild(tapRow(s));
@@ -1147,7 +1168,8 @@ function renderLine() {
   r1.onclick = function () { var v = +LINE.spot; if (v >= 1 && v <= 500) liveReport(lineStore(), 'line', v); else toast('Put in your spot first (1 to 500).'); };
   var r2 = el('button', null, 'Share the box count'); r2.type = 'button';
   r2.onclick = function () { var v = +document.getElementById('lm-boxes').value; if (v >= 1 && v <= 2000) liveReport(lineStore(), 'count', v); else toast('Put in how many boxes they have first.'); };
-  row.appendChild(r1); row.appendChild(r2); od.appendChild(row);
+  var r3 = shareBtn(lineStore(), 'Share this store');
+  row.appendChild(r1); row.appendChild(r2); row.appendChild(r3); od.appendChild(row);
   od.appendChild(el('p', 'pnote', 'An estimate, not a promise: limits change, people buy less than the max, and counts are rough.'));
   card.appendChild(od); box.appendChild(card);
   updateLine();
@@ -1216,7 +1238,11 @@ fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(
   // A remembered area that no longer exists (or "near" without a zip yet) falls back to All.
   if (area !== 'all' && !data.areas.some(function (a) { return a.id === area; })) area = 'all';
   try { var ln = JSON.parse(localStorage.getItem('dropwatch-line') || 'null'); if (ln) LINE = ln; } catch (e) {}
+  // A shared link (?store=<id>) opens Line mode on that store.
+  var shared = new URLSearchParams(location.search).get('store');
+  if (shared && allStores().some(function (x) { return x.id === shared; })) { LINE.store = shared; LINE.boxes = ''; saveLine(); }
   renderNext(); renderReleases(); renderTabs(); renderFilters(); renderStores(); renderSightings(); renderLine();
+  if (location.hash === '#linemode') document.getElementById('linemode').scrollIntoView();
   if (savedZip) setZip(savedZip, true);
   liveFetch(); setInterval(liveFetch, 45000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) liveFetch(); });
