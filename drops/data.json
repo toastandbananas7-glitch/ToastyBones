@@ -26,6 +26,7 @@
    "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.2709&longitude=-79.9449",
    "stores": [
     {
+     "id": "blade-gaming-downtown",
      "name": "Blade Gaming",
      "tag": "Downtown · Play! Pokémon store",
      "type": "local",
@@ -43,6 +44,7 @@
      "lon": -79.94895
     },
     {
+     "id": "barnes-noble-valley-view-mall",
      "name": "Barnes & Noble",
      "tag": "Valley View Mall",
      "type": "big",
@@ -59,6 +61,7 @@
      "lon": -79.95954
     },
     {
+     "id": "best-buy-valley-view",
      "name": "Best Buy",
      "tag": "Valley View",
      "type": "big",
@@ -103,6 +106,7 @@
      "lon": -79.959475
     },
     {
+     "id": "gamestop-valley-view-crossing",
      "name": "GameStop",
      "tag": "Valley View Crossing",
      "type": "big",
@@ -147,6 +151,7 @@
      "lon": -79.95803251
     },
     {
+     "id": "target-valley-view",
      "name": "Target",
      "tag": "Valley View",
      "type": "big",
@@ -191,6 +196,7 @@
      "lon": -79.958603
     },
     {
+     "id": "the-collectors-lair-bennington-st",
      "name": "The Collector's Lair",
      "tag": "Bennington St · Play! Pokémon store",
      "type": "local",
@@ -207,6 +213,7 @@
      "lon": -79.91565
     },
     {
+     "id": "walmart-valley-view-2312",
      "name": "Walmart Supercenter",
      "tag": "Valley View #2312",
      "type": "big",
@@ -251,6 +258,7 @@
      "lon": -79.96068
     },
     {
+     "id": "barnes-noble-tanglewood",
      "name": "Barnes & Noble",
      "tag": "Tanglewood",
      "type": "big",
@@ -267,6 +275,7 @@
      "lon": -79.97476
     },
     {
+     "id": "sams-club-towne-square-8220",
      "name": "Sam's Club",
      "tag": "Towne Square #8220",
      "type": "big",
@@ -316,6 +325,7 @@
      "lon": -79.96534
     },
     {
+     "id": "star-city-comics-games-williamson-rd",
      "name": "Star City Comics & Games",
      "tag": "Williamson Rd · Play! Pokémon store",
      "type": "local",
@@ -358,6 +368,7 @@
      "lon": -79.95321
     },
     {
+     "id": "the-collectors-lair-north-williamson-rd",
      "name": "The Collector's Lair",
      "tag": "North · Williamson Rd",
      "type": "local",
@@ -374,6 +385,7 @@
      "lon": -79.95383
     },
     {
+     "id": "walmart-clearbrook-1301",
      "name": "Walmart Supercenter",
      "tag": "Clearbrook #1301",
      "type": "big",
@@ -418,6 +430,7 @@
      "lon": -79.95079
     },
     {
+     "id": "walmart-challenger-ave-3243",
      "name": "Walmart Supercenter",
      "tag": "Challenger Ave #3243",
      "type": "big",
@@ -462,6 +475,7 @@
      "lon": -79.87341
     },
     {
+     "id": "walmart-salem-1309",
      "name": "Walmart Supercenter",
      "tag": "Salem #1309",
      "type": "big",
@@ -513,6 +527,7 @@
    "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.1299&longitude=-80.4089",
    "stores": [
     {
+     "id": "fun-n-games-hobby-shoppe-blacksburg",
      "name": "Fun-N-Games Hobby Shoppe",
      "tag": "Blacksburg · Play! Pokémon store",
      "type": "local",
@@ -527,6 +542,7 @@
      "miles": 27
     },
     {
+     "id": "gamestop-spradlin-farm",
      "name": "GameStop",
      "tag": "Spradlin Farm",
      "type": "big",
@@ -570,6 +586,7 @@
      "miles": 27
     },
     {
+     "id": "barnes-noble-spradlin-farms",
      "name": "Barnes & Noble",
      "tag": "Spradlin Farms",
      "type": "big",
@@ -584,6 +601,7 @@
      "miles": 28
     },
     {
+     "id": "best-buy-christiansburg",
      "name": "Best Buy",
      "tag": "Christiansburg",
      "type": "big",
@@ -627,6 +645,7 @@
      "miles": 28
     },
     {
+     "id": "target-christiansburg",
      "name": "Target",
      "tag": "Christiansburg",
      "type": "big",
@@ -670,6 +689,7 @@
      "miles": 28
     },
     {
+     "id": "walmart-christiansburg-1292",
      "name": "Walmart Supercenter",
      "tag": "Christiansburg #1292",
      "type": "big",
@@ -713,6 +733,7 @@
      "miles": 28
     },
     {
+     "id": "walmart-fairlawn-2762",
      "name": "Walmart Supercenter",
      "tag": "Fairlawn #2762",
      "type": "big",
@@ -756,6 +777,7 @@
      "miles": 36
     },
     {
+     "id": "walmart-pearisburg-2646",
      "name": "Walmart Supercenter",
      "tag": "Pearisburg #2646",
      "type": "big",
@@ -799,6 +821,7 @@
      "miles": 42
     },
     {
+     "id": "walmart-dublin-1652",
      "name": "Walmart Supercenter",
      "tag": "Dublin #1652",
      "type": "big",
@@ -849,6 +872,7 @@
    "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.3343&longitude=-79.5231",
    "stores": [
     {
+     "id": "walmart-rocky-mount-2337",
      "name": "Walmart Supercenter",
      "tag": "Rocky Mount #2337",
      "type": "big",
@@ -893,6 +917,7 @@
      "lon": -79.86338
     },
     {
+     "id": "clerks-cards-comics-bedford",
      "name": "Clerks Cards & Comics",
      "tag": "Bedford · Play! Pokémon store",
      "type": "local",
@@ -909,6 +934,7 @@
      "lon": -79.53066
     },
     {
+     "id": "walmart-bedford-1399",
      "name": "Walmart Supercenter",
      "tag": "Bedford #1399",
      "type": "big",
@@ -960,6 +986,7 @@
    "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.4138&longitude=-79.1422",
    "stores": [
     {
+     "id": "bunker-42-forest",
      "name": "Bunker 42",
      "tag": "Forest · Play! Pokémon store",
      "type": "local",
@@ -973,6 +1000,7 @@
      "miles": 36
     },
     {
+     "id": "underground-cards-disc-shop-forest",
      "name": "Underground Cards & Disc Shop",
      "tag": "Forest · Play! Pokémon store",
      "type": "local",
@@ -989,6 +1017,7 @@
      "lon": -79.28824
     },
     {
+     "id": "walmart-altavista-3768",
      "name": "Walmart Supercenter",
      "tag": "Altavista #3768",
      "type": "big",
@@ -1033,6 +1062,7 @@
      "lon": -79.26972
     },
     {
+     "id": "walmart-old-forest-rd-4697",
      "name": "Walmart Supercenter",
      "tag": "Old Forest Rd #4697",
      "type": "big",
@@ -1077,6 +1107,7 @@
      "lon": -79.20947
     },
     {
+     "id": "barnes-noble-wards-crossing",
      "name": "Barnes & Noble",
      "tag": "Wards Crossing",
      "type": "big",
@@ -1093,6 +1124,7 @@
      "lon": -79.18823
     },
     {
+     "id": "best-buy-wards-rd",
      "name": "Best Buy",
      "tag": "Wards Rd",
      "type": "big",
@@ -1137,6 +1169,7 @@
      "lon": -79.1888991
     },
     {
+     "id": "gamestop-wards-crossing",
      "name": "GameStop",
      "tag": "Wards Crossing",
      "type": "big",
@@ -1181,6 +1214,7 @@
      "lon": -79.18896747
     },
     {
+     "id": "sams-club-wards-rd-6458",
      "name": "Sam's Club",
      "tag": "Wards Rd #6458",
      "type": "big",
@@ -1230,6 +1264,7 @@
      "lon": -79.18456
     },
     {
+     "id": "target-wards-rd",
      "name": "Target",
      "tag": "Wards Rd",
      "type": "big",
@@ -1274,6 +1309,7 @@
      "lon": -79.190985
     },
     {
+     "id": "the-collectors-lair-fort-ave",
      "name": "The Collectors Lair",
      "tag": "Fort Ave",
      "type": "local",
@@ -1290,6 +1326,7 @@
      "lon": -79.18523
     },
     {
+     "id": "walmart-wards-rd-1350",
      "name": "Walmart Supercenter",
      "tag": "Wards Rd #1350",
      "type": "big",
@@ -1334,6 +1371,7 @@
      "lon": -79.18564
     },
     {
+     "id": "dragon-fire-games-downtown",
      "name": "Dragon Fire Games",
      "tag": "Downtown · Play! Pokémon store",
      "type": "local",
@@ -1357,6 +1395,7 @@
    "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=36.6915&longitude=-79.8725",
    "stores": [
     {
+     "id": "gamestop-mountainview-plaza",
      "name": "GameStop",
      "tag": "Mountainview Plaza",
      "type": "big",
@@ -1400,6 +1439,7 @@
      "miles": 40
     },
     {
+     "id": "starling-cards-comics-uptown",
      "name": "Starling Cards & Comics",
      "tag": "Uptown · Play! Pokémon store",
      "type": "local",
@@ -1414,6 +1454,7 @@
      "miles": 40
     },
     {
+     "id": "walmart-martinsville-1243",
      "name": "Walmart Supercenter",
      "tag": "Martinsville #1243",
      "type": "big",
@@ -1457,6 +1498,7 @@
      "miles": 40
     },
     {
+     "id": "walmart-stuart-3770",
      "name": "Walmart Supercenter",
      "tag": "Stuart #3770",
      "type": "big",
@@ -1507,6 +1549,7 @@
    "events_url": "https://events.pokemon.com/EventLocator/?locale=en-US&range=25&iskm=false&latitude=37.784&longitude=-79.4428",
    "stores": [
     {
+     "id": "walmart-covington-2662",
      "name": "Walmart Supercenter",
      "tag": "Covington #2662",
      "type": "big",
@@ -1550,6 +1593,7 @@
      "miles": 34
     },
     {
+     "id": "just-games-lexington",
      "name": "Just Games",
      "tag": "Lexington · Play! Pokémon store",
      "type": "local",
@@ -1563,6 +1607,7 @@
      "miles": 45
     },
     {
+     "id": "villains-comics-lewisburg-wv",
      "name": "Villains Comics",
      "tag": "Lewisburg, WV · Play! Pokémon store",
      "type": "local",
@@ -1576,6 +1621,7 @@
      "miles": 46
     },
     {
+     "id": "walmart-lexington-1335",
      "name": "Walmart Supercenter",
      "tag": "Lexington #1335",
      "type": "big",
