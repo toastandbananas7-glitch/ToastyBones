@@ -1048,7 +1048,24 @@ var LIVE_API = location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8787' : 'ht
 var LIVE = {}, LIVE_OK = null, LINE = { store: null, spot: '', boxes: '', limit: '2' };
 var STOCK = { have: 'Have stock', low: 'Running low', out: 'Sold out' };
 function since(t) { var m = Math.round((Date.now() - t) / 6e4); return m < 1 ? 'just now' : ago(new Date(t)); }
-// Newest stock call wins; it's "fresh" for 6 h. agree = matching calls in the last 2 h.
+// Clock time of a report: "9:14 AM", "yesterday 9:14 PM", "Tue 9:14 PM".
+function clock(t) {
+  var d = new Date(t), now = new Date(), hm = fmt12(('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2));
+  var days = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
+  return days === 0 ? hm : days === 1 ? 'yesterday ' + hm : DAYNAMES[d.getDay()] + ' ' + hm;
+}
+function stamp(t) { return since(t) + ' (' + clock(t) + ')'; }
+// The store's most recent opening at or before now (midnight today when hours aren't posted).
+function lastOpen(s) {
+  var now = new Date();
+  for (var i = 0; i < 8 && s.hours && !s.warn; i++) {
+    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i), h = s.hours[DAYS[d.getDay()]];
+    if (h) { var o = new Date(d.getTime() + mins(h[0]) * 6e4); if (o <= now) return o.getTime(); }
+  }
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+}
+// Newest stock call wins. It's "fresh" only if it came in since the store last opened, and under 12 h old:
+// last night's "sold out" must not look current after a morning restock. agree = matching calls in the last 2 h.
 function liveFor(s) {
   var list = LIVE[s.id] || [], now = Date.now(), L = { stock: null, line: null, count: null, agree: 0 };
   list.forEach(function (r) {
@@ -1057,13 +1074,13 @@ function liveFor(s) {
     if (!L.count && r.k === 'count') L.count = r;
   });
   if (L.stock) list.forEach(function (r) { if (r.k === L.stock.k && now - r.t < 72e5) L.agree++; });
-  L.fresh = !!L.stock && now - L.stock.t < 216e5;
+  L.fresh = !!L.stock && now - L.stock.t < 432e5 && L.stock.t >= lastOpen(s);
   return L;
 }
 function stockText(L) {
   if (!L.stock) return LIVE_OK === false ? 'Live reports are offline right now' : 'No stock reports yet';
-  return (L.fresh ? STOCK[L.stock.k] : 'Last report: ' + STOCK[L.stock.k].toLowerCase()) + ' · ' + since(L.stock.t) +
-         (L.fresh && L.agree > 1 ? ' · ' + L.agree + ' people' : '');
+  if (!L.fresh) return STOCK[L.stock.k] + ' ' + clock(L.stock.t).replace(/^(\d)/, 'at $1') + ' · new day, may have restocked';
+  return STOCK[L.stock.k] + ' · ' + since(L.stock.t) + ' (' + clock(L.stock.t) + ')' + (L.agree > 1 ? ' · ' + L.agree + ' people' : '');
 }
 var TOAST = null;
 function toast(msg) {
@@ -1098,9 +1115,9 @@ function tapRow(s) {
 // Line mode on that store (?store=<id>).
 function shareStore(s) {
   var L = liveFor(s), url = 'https://toastybones.com/drops/?store=' + s.id + '#linemode';
-  var lines = [s.name + ' (' + shortTag(s) + '): ' + (L.fresh ? STOCK[L.stock.k].toUpperCase() + ', ' + since(L.stock.t) : 'no fresh stock reports yet')];
-  if (L.line) lines.push('Line: someone was #' + L.line.v + ', ' + since(L.line.t));
-  if (L.count) lines.push('About ' + L.count.v + ' boxes on hand, ' + since(L.count.t));
+  var lines = [s.name + ' (' + shortTag(s) + '): ' + (L.fresh ? STOCK[L.stock.k].toUpperCase() + ', ' + stamp(L.stock.t) : L.stock ? 'no report yet today (last: ' + STOCK[L.stock.k].toLowerCase() + ' ' + clock(L.stock.t) + ')' : 'no stock reports yet')];
+  if (L.line) lines.push('Line: someone was #' + L.line.v + ', ' + stamp(L.line.t));
+  if (L.count) lines.push('About ' + L.count.v + ' boxes on hand, ' + stamp(L.count.t));
   var text = lines.join('\n') + '\nLive on Drop Watch:';
   if (navigator.share) { navigator.share({ title: 'Drop Watch', text: text, url: url }).catch(function () {}); return; }
   var full = text + ' ' + url;
@@ -1117,8 +1134,8 @@ function liveRow(s) {
   var L = liveFor(s), row = el('div', 'live');
   var st = el('div', 'livest' + (L.fresh ? ' ' + L.stock.k : '')); st.appendChild(el('span', 'dot'));
   st.appendChild(document.createTextNode(stockText(L))); st.appendChild(shareBtn(s)); row.appendChild(st);
-  if (L.line) row.appendChild(el('div', 'liveln', 'Line: someone was #' + L.line.v + ' · ' + since(L.line.t)));
-  if (L.count) row.appendChild(el('div', 'liveln', 'About ' + L.count.v + ' boxes on hand · ' + since(L.count.t)));
+  if (L.line) row.appendChild(el('div', 'liveln', 'Line: someone was #' + L.line.v + ' · ' + stamp(L.line.t)));
+  if (L.count) row.appendChild(el('div', 'liveln', 'About ' + L.count.v + ' boxes on hand · ' + stamp(L.count.t)));
   row.appendChild(tapRow(s));
   return row;
 }
@@ -1131,7 +1148,7 @@ function saveLine() { try { localStorage.setItem('dropwatch-line', JSON.stringif
 // less than the limit, counts are rough), past that a long shot. Always labeled an estimate.
 function odds(spot, boxes, limit, L) {
   if (!spot) return ['', 'Your odds', 'Put in your spot in line.'];
-  if (L.fresh && L.stock.k === 'out') return ['long', 'Long shot', 'Someone reported this store sold out ' + since(L.stock.t) + '.'];
+  if (L.fresh && L.stock.k === 'out') return ['long', 'Long shot', 'Someone reported this store sold out ' + stamp(L.stock.t) + '.'];
   if (!boxes) return ['', 'Need a box count', 'Ask staff or the front of the line how many boxes they have, or use a report.'];
   var served = Math.max(1, Math.floor(boxes / Math.max(1, limit)));
   var why = boxes + ' boxes at ' + limit + ' each covers about ' + served + (served === 1 ? ' person' : ' people') + '. You are #' + spot + '.';
@@ -1189,15 +1206,15 @@ function updateLine() {
   bt.appendChild(el('small', null, L.stock ? stockText(L) : 'Be the first: tap what you see when doors open.'));
   big.appendChild(bt);
   var ln = document.getElementById('lmline'); ln.className = 'lmline'; ln.innerHTML = '';
-  if (L.line) { ln.appendChild(document.createTextNode('Latest line report: ')); ln.appendChild(el('b', null, '#' + L.line.v)); ln.appendChild(document.createTextNode(' · ' + since(L.line.t))); }
-  if (L.count) ln.appendChild(document.createTextNode((L.line ? '  ·  ' : '') + 'about ' + L.count.v + ' boxes · ' + since(L.count.t)));
+  if (L.line) { ln.appendChild(document.createTextNode('Latest line report: ')); ln.appendChild(el('b', null, '#' + L.line.v)); ln.appendChild(document.createTextNode(' · ' + stamp(L.line.t))); }
+  if (L.count) ln.appendChild(document.createTextNode((L.line ? '  ·  ' : '') + 'about ' + L.count.v + ' boxes · ' + stamp(L.count.t)));
   var tb = document.getElementById('lmtap'); tb.innerHTML = ''; tb.appendChild(tapRow(s));
   // A box count report from the last 12 h fills in when the visitor hasn't typed one.
   var bx = document.getElementById('lm-boxes'), rep = L.count && Date.now() - L.count.t < 432e5 ? L.count.v : '';
   bx.placeholder = rep ? String(rep) : '';
   var o = odds(+LINE.spot || 0, +LINE.boxes || +rep || 0, +LINE.limit || 1, L);
   var vd = document.getElementById('lmverdict'); vd.className = 'verdict' + (o[0] ? ' ' + o[0] : ''); vd.innerHTML = '';
-  vd.appendChild(el('b', null, o[1])); vd.appendChild(el('span', null, o[2] + (!LINE.boxes && rep && LINE.spot ? ' (box count from a report ' + since(L.count.t) + ')' : '')));
+  vd.appendChild(el('b', null, o[1])); vd.appendChild(el('span', null, o[2] + (!LINE.boxes && rep && LINE.spot ? ' (box count from a report ' + stamp(L.count.t) + ')' : '')));
 }
 
 // Zip: looked up in zips.json on this device; the zip is only kept in this browser.
