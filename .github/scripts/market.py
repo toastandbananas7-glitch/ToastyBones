@@ -26,9 +26,10 @@ MSRP = os.path.join(ROOT, "drops", "msrp.json")
 BASE = "https://tcgcsv.com/tcgplayer/3"
 UA = {"User-Agent": "DropWatch/1.0 (toastybones.com/drops)"}
 
-# Current era = Mega Evolution sets ("ME01: ...", "ME: 30th Celebration").
+# Current era = Mega Evolution sets ("ME01: ...", "ME: 30th Celebration"). The promo
+# set stays in: TCGplayer files the battle deck cards (Victini 102...) there.
 SET_RE = re.compile(r"^ME(\d+)?:")
-SKIP_SET = re.compile(r"Promo|Energies", re.I)
+SKIP_SET = re.compile(r"Energies", re.I)
 # Sealed items nobody lines up at Target for: wholesale cases/displays, bundles
 # of several SKUs, and online-only Pokemon Center exclusives.
 SKIP_SEALED = re.compile(r"\bCase\b|Display|Set of \d|Code Card|Pokemon Center|International Version", re.I)
