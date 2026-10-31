@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Drop Watch · Pokémon TCG · Roanoke &amp; 50 Miles Around</title>
+<title>Toasty's Drops · Pokémon TCG · Roanoke &amp; 50 Miles Around</title>
 <meta name="theme-color" content="#07080d">
 <meta name="description" content="Pokémon TCG release dates, store opening times on drop day, price check and sightings for every store within 50 miles of Roanoke, VA: the New River Valley, Lynchburg, Martinsville, Lexington and Smith Mountain Lake.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Drop Watch">
+<meta name="apple-mobile-web-app-title" content="Toasty's Drops">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <!--
-  Drop Watch (built 2026-09-25 for Evan and his buddy).
+  Toasty's Drops (called Drop Watch until 2026-10-30; built 2026-09-25 for Evan and his buddy).
   Data: data.json (stores + releases, every fact checked against the
   retailer's own page on the "verified" date; see "source"). Sightings come
   from a Google Form's published-CSV sheet (data.json "sightings_csv").
@@ -76,17 +76,18 @@
 
   /* Foil frame: an animated iridescent border on the hero panels. */
   .next, .lm { position: relative; border-radius: 24px; padding: 22px; background: var(--panel-s); isolation: isolate; overflow: hidden; }
-  .next::before, .lm::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: -1;
+  .next::before, .lm::before, .lmbar::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: -1;
     background: conic-gradient(from var(--ang), #ff6ad5, #ffd23f, #34e2a0, #3de0ff, #a77bff, #ff6ad5);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
     animation: spin 7s linear infinite; }
-  .lm::before { background: conic-gradient(from var(--ang), #34e2a0, #3de0ff, #34e2a0 40%, transparent 55%, transparent 85%, #34e2a0); }
-  .next::after, .lm::after { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  .lm::before, .lmbar::before { background: conic-gradient(from var(--ang), #34e2a0, #3de0ff, #34e2a0 40%, transparent 55%, transparent 85%, #34e2a0); }
+  .next::after, .lm::after, .lmbar::after { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none;
     background: radial-gradient(120% 80% at 0% 0%, rgba(255,210,63,0.14), transparent 55%), radial-gradient(100% 90% at 100% 100%, rgba(167,123,255,0.16), transparent 55%); }
-  .lm::after { background: radial-gradient(120% 80% at 0% 0%, rgba(52,226,160,0.15), transparent 55%), radial-gradient(100% 90% at 100% 100%, rgba(61,224,255,0.10), transparent 55%); }
+  .lm::after, .lmbar::after { background: radial-gradient(120% 80% at 0% 0%, rgba(52,226,160,0.15), transparent 55%), radial-gradient(100% 90% at 100% 100%, rgba(61,224,255,0.10), transparent 55%); }
   @keyframes spin { to { --ang: 360deg; } }
-  .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
-  .hero > * { min-width: 0; }
+  .nexttop { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .nextout:empty { display: none; }
+  .pareas { display: grid; grid-template-columns: minmax(0, 1fr); }
 
   /* Next drop */
   .next .label, .lmhead .label { display: inline-flex; align-items: center; gap: 8px; font: 800 12px var(--fb); letter-spacing: 0.08em; text-transform: uppercase;
@@ -101,18 +102,42 @@
   @keyframes flip { 0% { transform: rotateX(80deg); opacity: 0.2; } 100% { transform: none; opacity: 1; } }
   .count small { display: block; color: var(--dim); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
 
-  /* Release calendar */
-  .rel { display: grid; gap: 10px; }
-  .rel .card { display: grid; grid-template-columns: 78px 1fr; gap: 16px; align-items: start; transition: border-color .2s, transform .2s; }
-  .rel .card:hover { border-color: var(--line2); transform: translateY(-2px); }
-  .rel .date { text-align: center; background: var(--panel2); border-radius: 14px; padding: 8px 4px 9px; position: relative; overflow: hidden; }
-  .rel .date::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--holo); }
-  .rel .date .m { font: 800 12px var(--fb); color: var(--yellow); letter-spacing: 0.1em; margin-top: 2px; }
-  .rel .date .d { font: 800 32px/1.05 var(--fd); }
-  .rel .date .y { font-size: 11px; color: var(--dim); font-weight: 600; }
-  .rel .past { opacity: 0.5; }
-  .rel h3 { font: 700 18px/1.25 var(--fd); margin-bottom: 4px; }
+  /* Release calendar: month grids; drop days lit in foil, tap one for its releases. */
+  .calbar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .caltitle { font: 800 20px var(--fd); flex: 1; text-align: center; }
+  .calarrow { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line2); background: var(--panel2); color: var(--text); font-size: 22px; line-height: 1; cursor: pointer; }
+  .calarrow:hover { background: var(--text); color: #0b0c12; }
+  .calarrow[disabled] { opacity: 0.3; pointer-events: none; }
+  .months { display: grid; grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr)); gap: 14px; }
+  .month { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; }
+  .mhead { font: 800 17px var(--fd); margin: 0 0 10px 4px; }
+  .mgrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+  .wd { text-align: center; font: 800 11px var(--fb); color: var(--dim); padding-bottom: 4px; }
+  .day { aspect-ratio: 1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 600 14px var(--fb); color: var(--text); background: transparent; border: 1.5px solid transparent; }
+  .day.past { color: #565c72; }
+  .day.today { box-shadow: inset 0 0 0 1.5px var(--line2); }
+  button.day { cursor: pointer; font-weight: 800; background: linear-gradient(var(--panel-s), var(--panel-s)) padding-box, var(--holo) border-box; transition: transform .12s; }
+  button.day:hover { transform: scale(1.06); }
+  button.day.past { opacity: 0.5; }
+  button.day.sel { background: var(--holo) border-box; color: #141414; opacity: 1; box-shadow: 0 6px 18px rgba(167,123,255,0.35); }
+  .dots { display: flex; gap: 3px; margin-top: 3px; }
+  .dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--yellow); }
+  .sel .dots i { background: #141414; }
+  .calups { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 14px 0 0; padding-bottom: 2px; }
+  .calups::-webkit-scrollbar { display: none; }
+  .upchip { flex: none; display: flex; align-items: center; gap: 8px; max-width: 280px; font: 700 13px var(--fb); color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; cursor: pointer; }
+  .upchip b { color: var(--yellow); white-space: nowrap; }
+  .upchip span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upchip.on { border-color: var(--yellow); background: rgba(255,210,63,0.08); }
+  .daycard { margin-top: 12px; }
+  .dayhead { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+  .dayhead b { font: 800 20px var(--fd); }
+  .dayhead .pill { margin: 0; }
+  .relitem { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .relitem:last-of-type { border-bottom: 0; }
+  .relitem h3 { font: 700 17px/1.25 var(--fd); margin-bottom: 3px; }
   .kind { display: inline-block; font: 800 10px var(--fb); letter-spacing: 0.08em; text-transform: uppercase; color: #141414; background: var(--yellow); border-radius: 999px; padding: 2px 8px; margin-left: 8px; vertical-align: 3px; }
+  .daygo { font: 800 14px var(--fb); color: #141414; background: var(--yellow); border: 0; border-radius: 12px; padding: 11px 16px; margin-top: 6px; cursor: pointer; }
 
   /* Chips / tabs */
   .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -124,12 +149,59 @@
           -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23959bb1' stroke-width='2' fill='none'/%3E%3C/svg%3E");
           background-repeat: no-repeat; background-position: right 13px center; }
 
-  /* Stores */
-  .stores { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-  .store { display: flex; flex-direction: column; transition: border-color .2s, transform .2s, box-shadow .2s; }
-  .store:hover { border-color: var(--line2); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
-  .store h3 { font: 700 18px/1.25 var(--fd); padding-right: 64px; }
-  .store .tag { color: var(--dim); font-size: 13px; font-weight: 600; }
+  /* Stores: one slim row per store, tap it for the details. */
+  .stools { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; margin-bottom: 8px; }
+  .zipbar { display: flex; align-items: center; gap: 8px; background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 5px 5px 5px 16px; }
+  .zipbar:focus-within { border-color: var(--yellow); }
+  .zipbar label { flex: none; font: 800 12px var(--fb); letter-spacing: 0.06em; text-transform: uppercase; color: var(--yellow); }
+  .zipbar input { flex: 1; min-width: 60px; font: 700 16px var(--fb); color: var(--text); background: transparent; border: 0; padding: 6px 2px; }
+  .zipbar input:focus { outline: none; }
+  .zipbar button { flex: none; font: 800 14px var(--fb); color: #141414; background: var(--yellow); border: 0; border-radius: 999px; padding: 9px 15px; cursor: pointer; }
+  .zipbar button#zipclear { color: var(--text); background: var(--panel3); }
+  .zipmsg { font-size: 12px; color: var(--dim); padding: 0 8px; margin-top: -4px; }
+  .zipmsg.bad { color: #ff8592; }
+  .sfbar { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sfbar .mini { flex: 1 1 160px; }
+  .toggle { flex: none; font: 700 14px var(--fb); color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+  .toggle.on { background: var(--green); border-color: var(--green); color: #08130e; }
+  .smeta { font-size: 13px; color: var(--dim); margin: 6px 4px 10px; }
+  .slist { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .st { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; transition: border-color .15s, background .15s; }
+  .st:hover, .st.open { border-color: var(--line2); }
+  .st.open { background: rgba(24,27,42,0.94); }
+  .sthead { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: none; border: 0; border-radius: 16px; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+  .logo { position: relative; flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font: 800 13px var(--fd); color: #fff; letter-spacing: -0.02em; }
+  .lg-walmart { background: #0071ce; } .lg-target { background: #cc0000; } .lg-bestbuy { background: #0046be; color: #ffe000; }
+  .lg-gamestop { background: #1d1d1d; color: #ff4b4b; box-shadow: inset 0 0 0 1px #3a3a3a; } .lg-bn { background: #2a5934; } .lg-sams { background: #0067a0; }
+  .lg-shop { background: var(--holo); color: #141414; font-size: 17px; } .lg-other { background: var(--panel3); }
+  .lgdot { position: absolute; top: -3px; right: -3px; width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid var(--bg2); }
+  .lgdot.have { background: var(--green); } .lgdot.low { background: var(--amber); } .lgdot.out { background: var(--red); }
+  .stmid { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .stname { font: 700 16px/1.25 var(--fd); }
+  .playchip { font: 800 10px var(--fb); color: #fff; background: var(--blue); border-radius: 999px; padding: 1px 7px; margin-left: 7px; vertical-align: 2px; }
+  .stsub { font-size: 13px; font-weight: 600; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stmeta { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 12px; font-weight: 700; margin-top: 2px; }
+  .sstat { display: inline-flex; align-items: center; gap: 5px; color: var(--dim); }
+  .sstat::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .sstat.open { color: var(--green); } .sstat.soon { color: var(--amber); } .sstat.closed, .sstat.warn { color: #ff8592; }
+  .sstock.have { color: var(--green); } .sstock.low { color: var(--amber); } .sstock.out { color: #ff8592; }
+  .stright { flex: none; display: flex; align-items: center; gap: 6px; }
+  .stright b { font: 800 15px var(--fd); }
+  .chev { display: grid; color: var(--dim); transition: transform .2s; }
+  .chev svg { width: 18px; height: 18px; }
+  .st.open .chev { transform: rotate(180deg); }
+  .stbody { padding: 0 14px 14px 66px; }
+  .stlabel { font: 800 11px var(--fb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin: 14px 0 4px; }
+  .stnote { display: grid; gap: 4px; font-size: 13px; color: var(--dim); margin-top: 12px; }
+  .row { font-size: 14px; margin-top: 10px; }
+  .row a { color: var(--text); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px; }
+  .week { display: grid; grid-template-columns: 44px 1fr; gap: 2px 8px; font-size: 13px; color: var(--dim); }
+  .week .today { color: var(--yellow); font-weight: 700; }
+  .verified { font-size: 11px; color: var(--dim); margin-top: 10px; }
+  .lastseen { margin-top: 10px; font-size: 13px; background: rgba(255,210,63,0.07); border: 1px solid rgba(255,210,63,0.22); border-radius: 12px; padding: 8px 10px; }
+  .lastseen strong { color: var(--yellow); }
+  .pattern { color: var(--dim); font-size: 12px; margin-top: 3px; }
+  .spotted { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: #ff8592; }
   .pill { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 3px 11px; margin: 10px 0 4px; }
   .pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .pill.open { background: rgba(52,226,160,0.14); color: var(--green); }
@@ -137,27 +209,13 @@
   .pill.closed { background: rgba(255,77,94,0.13); color: #ff8592; }
   .pill.call { background: rgba(149,155,177,0.14); color: var(--dim); }
   .pill.warn { background: rgba(255,77,94,0.2); color: #ff8592; }
-  .local { background: linear-gradient(160deg, rgba(79,140,255,0.10), transparent 40%), var(--panel); border-color: rgba(79,140,255,0.3); }
   .badge { font: 800 10px var(--fb); letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: var(--blue); border-radius: 999px; padding: 2px 8px; margin-left: 8px; vertical-align: 3px; }
-  .row { font-size: 14px; margin-top: 6px; }
-  .row a { color: var(--text); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px; }
-  .note { font-size: 13px; color: var(--dim); margin-top: 6px; }
-  details { margin-top: 8px; font-size: 13px; color: var(--dim); }
-  summary { cursor: pointer; font-weight: 700; }
-  .week { display: grid; grid-template-columns: 44px 1fr; gap: 2px 8px; margin-top: 6px; }
-  .week .today { color: var(--yellow); font-weight: 700; }
-  .verified { font-size: 11px; color: var(--dim); margin-top: 10px; }
-  .lastseen { margin-top: 10px; font-size: 13px; background: rgba(255,210,63,0.07); border: 1px solid rgba(255,210,63,0.22); border-radius: 12px; padding: 8px 10px; }
-  .lastseen strong { color: var(--yellow); }
-  .pattern { color: var(--dim); font-size: 12px; margin-top: 3px; }
-  .spotted { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: #ff8592; }
-  .dist { float: right; margin-left: 8px; font: 800 13px var(--fd); color: var(--text); background: var(--panel3); border-radius: 999px; padding: 3px 10px; }
-  .store .dist { float: none; position: absolute; top: 14px; right: 14px; }
-  .store { position: relative; }
   .links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-  .links a { font-size: 13px; font-weight: 700; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; transition: border-color .15s, background .15s; }
+  .links a { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 9px 13px; transition: border-color .15s, background .15s; }
   .links a:hover { text-decoration: none; border-color: var(--line2); background: var(--panel3); }
   .links a.call { background: rgba(52,226,160,0.12); border-color: rgba(52,226,160,0.32); color: var(--green); }
+  .links svg { width: 15px; height: 15px; }
+  .smore { margin-top: 4px; }
   .events { margin-top: 14px; }
 
   /* Sightings */
@@ -267,7 +325,7 @@
   .sr .fin b { color: var(--text); font-weight: 700; }
   .sr .pr small { display: block; font: 600 12px var(--fb); color: var(--dim); }
 
-  /* Section bar (desktop, pinned) */
+  /* Section bar: a floating pill on mid-size screens, a side rail on wide ones. */
   .nav { position: sticky; top: 10px; z-index: 6; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; width: max-content; max-width: 100%;
          margin: 0 auto 22px; padding: 6px; border-radius: 999px; background: rgba(16,18,28,0.8); border: 1px solid var(--line2);
          -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
@@ -275,24 +333,37 @@
   .nav a { flex: none; font: 700 14px var(--fb); color: var(--dim); border-radius: 999px; padding: 8px 15px; transition: color .15s, background .15s; }
   .nav a:hover { text-decoration: none; color: var(--text); background: var(--panel2); }
   .nav a.on { color: #0b0c12; background: var(--text); }
-  h2, #next, #linemode { scroll-margin-top: calc(var(--navh) + 12px); }
+  .nav a svg { display: none; }
+  h2, #next { scroll-margin-top: calc(var(--navh) + 12px); }
   /* Bottom tab bar (phones) */
   .tabbar { display: none; }
 
-  /* Zip */
-  .zipbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 5px 5px 16px; }
-  .zipbar label { font: 800 12px var(--fb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--yellow); }
-  .zipbar input { width: 80px; font: 700 16px var(--fb); color: var(--text); background: transparent; border: 0; padding: 6px 2px; }
-  .zipbar input:focus { outline: none; }
-  .zipbar button { font: 800 14px var(--fb); color: #141414; background: var(--yellow); border: 0; border-radius: 999px; padding: 9px 15px; cursor: pointer; }
-  .zipbar button#zipclear { color: var(--text); background: var(--panel3); }
-  .zipmsg { font-size: 12px; color: var(--dim); flex-basis: 100%; text-align: right; margin-top: -8px; }
-  .zipmsg.bad { color: #ff8592; }
-  .zipwrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-  .zipwrap .zipmsg { margin: 0; }
+  /* Line mode bar (opens the drawer) */
+  .lmbar { position: relative; isolation: isolate; overflow: hidden; width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer; color: var(--text);
+           font: inherit; background: var(--panel-s); border: 0; border-radius: 20px; padding: 12px 14px; margin-bottom: 18px; transition: transform .15s; }
+  .lmbar:hover { transform: translateY(-1px); }
+  .lmb-ico { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: rgba(52,226,160,0.14); color: var(--green); }
+  .lmb-ico svg { width: 22px; height: 22px; }
+  .lmb-txt { flex: 1; min-width: 0; }
+  .lmb-txt b { display: block; font: 800 17px/1.2 var(--fd); }
+  .lmb-txt small { display: block; color: var(--dim); font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lmblive { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--panel3); }
+  .lmblive.have { background: var(--green); animation: ping 2s ease-out infinite; } .lmblive.low { background: var(--amber); } .lmblive.out { background: var(--red); }
+  .lmb-go { flex: none; font: 800 13px var(--fb); color: #08130e; background: var(--green); border-radius: 999px; padding: 8px 14px; transition: transform .15s; }
+  .lmbar:hover .lmb-go { transform: translateX(3px); }
+  .scrim { position: fixed; inset: 0; z-index: 14; background: rgba(3,4,8,0.6); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); opacity: 0; transition: opacity .25s; }
+  .scrim.on { opacity: 1; }
+  .drawer { position: fixed; z-index: 15; top: 0; right: 0; bottom: 0; width: min(480px, 100%); overflow-y: auto; overscroll-behavior: contain; background: var(--bg2); border-left: 1px solid var(--line2);
+            padding: 14px 16px 24px; transform: translateX(105%); visibility: hidden; box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+            transition: transform .35s cubic-bezier(.2,.8,.3,1), visibility 0s .35s; }
+  .drawer.on { transform: none; visibility: visible; transition: transform .35s cubic-bezier(.2,.8,.3,1), visibility 0s; }
+  .dhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .dhead b { font: 800 22px var(--fd); }
+  .dclose { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line2); background: var(--panel2); color: var(--text); font-size: 24px; line-height: 1; cursor: pointer; }
+  body.locked { overflow: hidden; }
 
   /* Line mode + live reports (drops-live Worker) */
-  .lm { margin-bottom: 0; }
+  .lm { margin-bottom: 0; padding: 18px; }
   .lmhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
   .lmhead select { flex: 1 1 220px; }
   .doors { font: 800 clamp(22px, 5.6vw, 30px)/1.15 var(--fd); letter-spacing: -0.01em; margin: 2px 0 12px; }
@@ -353,15 +424,23 @@
   /* Desktop: hero side by side, roomier grids, bigger chase cards. */
   @media (min-width: 980px) {
     .wrap { padding: 28px 32px 80px; }
-    .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; }
-    #linemode { position: sticky; top: calc(var(--navh) + 8px); }
-    .rel { grid-template-columns: repeat(2, 1fr); }
+    .nexttop { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: 24px; }
+    .nexttop.solo { grid-template-columns: minmax(0, 1fr); }
+    .pareas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; align-items: start; }
     .carousel .pc { flex-basis: 196px; }
     .grid { grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); }
     .lkbar::before { inset: 0 -32px; }
     .sealed, .lk { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .sealed > .sgroup, .sealed > .card, .sealed > .setpick, .lk > .tabs, .lk > .card, .lk > .setpick { grid-column: 1 / -1; }
     .sgroup { margin-top: 10px; }
+  }
+  @media (min-width: 1100px) {
+    :root { --navh: 0px; }
+    .shell { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 28px; align-items: start; }
+    .nav { position: sticky; top: 20px; flex-direction: column; width: auto; max-width: none; margin: 0; padding: 8px; border-radius: 20px; overflow: visible; gap: 2px; }
+    .nav a { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-radius: 13px; }
+    .nav a svg { display: block; width: 19px; height: 19px; flex: none; }
+    .lkbar { top: 0; }
   }
   /* Phones: bottom tab bar instead of the top section bar; search pins to the top. */
   @media (max-width: 760px) {
@@ -375,21 +454,23 @@
     .tabbar a:hover { text-decoration: none; }
     .tabbar svg { width: 22px; height: 22px; }
     .tabbar a.on { color: #0b0c12; background: var(--yellow); }
-    h2, #next, #linemode { scroll-margin-top: 12px; }
+    h2, #next { scroll-margin-top: 12px; }
     header { gap: 12px; margin-bottom: 16px; }
     .ball { width: 44px; height: 44px; }
-    .zipwrap { width: 100%; align-items: stretch; }
-    .zipbar { width: 100%; }
-    .zipbar input { flex: 1; width: auto; min-width: 60px; }
-    .zipwrap .zipmsg { text-align: left; padding-left: 4px; }
+    .drawer { top: auto; left: 0; width: 100%; max-height: 90vh; border-left: 0; border-top: 1px solid var(--line2); border-radius: 26px 26px 0 0; transform: translateY(105%);
+              padding: 10px 14px calc(24px + env(safe-area-inset-bottom)); box-shadow: 0 -20px 60px rgba(0,0,0,0.5); }
+    .drawer::before { content: ''; display: block; width: 44px; height: 5px; border-radius: 3px; background: var(--line2); margin: 0 auto 10px; }
+    .stbody { padding: 0 12px 14px; }
+    .lmb-go { display: none; }
     .lkbar::before { inset: 0 -16px; }
     h2 { margin-top: 38px; }
   }
   @media (max-width: 560px) {
     .card { padding: 14px; }
     .next, .lm { padding: 18px 16px; border-radius: 22px; }
-    .rel .card { grid-template-columns: 62px 1fr; gap: 12px; }
-    .rel .date .d { font-size: 26px; }
+    .month { padding: 10px; }
+    .mgrid { gap: 3px; }
+    .day { border-radius: 10px; font-size: 13px; }
     .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 12px; padding: 0 16px 2px; }
     .tabs button { flex: none; }
     .sr { grid-template-columns: 46px 1fr auto; gap: 10px; padding: 8px 11px 8px 8px; }
@@ -400,7 +481,10 @@
     .carousel .pc { flex-basis: 150px; }
     .count { gap: 6px; }
     .ofields input { font-size: 18px; padding: 8px 9px; }
-    .stores { grid-template-columns: 1fr; }
+    .sfbar .mini { flex: 1 1 calc(50% - 4px); min-width: 0; }
+    .zipbar label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .zipbar { padding-left: 18px; }
+    .toggle { flex: 1 1 calc(50% - 4px); }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -419,40 +503,29 @@
       <circle cx="50" cy="50" r="13" fill="#fff" stroke="#111" stroke-width="6"/>
     </svg>
     <div>
-      <h1>Drop <span>Watch</span></h1>
+      <h1>Toasty's <span>Drops</span></h1>
       <div class="sub"><b>Live</b> Pokémon TCG drops · 50 miles around Roanoke, VA</div>
     </div>
     </div>
-    <div class="zipwrap">
-    <form class="zipbar" id="zipbar" autocomplete="off">
-      <label for="zipin">Your zip</label>
-      <input id="zipin" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="24016" aria-describedby="zipmsg">
-      <button type="submit">Find closest</button>
-      <button type="button" id="zipclear" hidden>Clear</button>
-    </form>
-    <span class="zipmsg" id="zipmsg">Stores sort by distance from you. Stays on your phone.</span>
-    </div>
   </header>
 
+  <div class="shell">
   <nav class="nav" aria-label="Sections">
-    <a href="#linemode">In line?</a><a href="#next">Next drop</a><a href="#cal">Calendar</a><a href="#market">Market</a><a href="#lookup">Price check</a><a href="#storesec">Stores</a><a href="#sightsec">Sightings</a>
+    <a href="#linemode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M3 20v-3a4 4 0 0 1 8 0v3M13 20v-3a4 4 0 0 1 8 0v3"/></svg><span>In line?</span></a><a href="#next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span>Next drop</span></a><a href="#cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Calendar</span></a><a href="#market"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Market</span></a><a href="#lookup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Price check</span></a><a href="#storesec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Stores</span></a><a href="#sightsec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>Sightings</span></a>
   </nav>
-  <nav class="tabbar" aria-label="Quick sections">
-    <a href="#linemode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M3 20v-3a4 4 0 0 1 8 0v3M13 20v-3a4 4 0 0 1 8 0v3"/></svg><span>In line</span></a>
-    <a href="#next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Drops</span></a>
-    <a href="#market"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Market</span></a>
-    <a href="#lookup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Prices</span></a>
-    <a href="#storesec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Stores</span></a>
-  </nav>
+  <main>
+  <button class="lmbar" id="lmbar" type="button" aria-controls="drawer" aria-expanded="false">
+    <span class="lmb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M3 20v-3a4 4 0 0 1 8 0v3M13 20v-3a4 4 0 0 1 8 0v3"/></svg></span>
+    <span class="lmb-txt"><b>Already in line?</b><small id="lmbsub">Pick your store for live stock, line spots and your odds</small></span>
+    <span class="lmblive" id="lmblive"></span>
+    <span class="lmb-go">Open &#8250;</span>
+  </button>
 
-  <div class="hero">
-    <section id="linemode"><div class="skel" style="height:300px"></div></section>
-    <section id="next"><div class="skel" style="height:300px"></div></section>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <section id="next"><div class="skel" style="height:320px"></div></section>
 
   <h2 id="cal">Release calendar</h2>
-  <div class="rel" id="releases"></div>
+  <div id="calendar"><div class="skel" style="height:340px"></div></div>
+  <div id="calday"></div>
   <p class="muted" id="relnote" style="margin-top:10px"></p>
 
   <h2 id="market">Market</h2>
@@ -484,9 +557,18 @@
 
   <h2 id="storesec">Stores</h2>
   <p class="intro" id="radius"></p>
-  <div class="tabs" id="tabs"></div>
-  <div id="filters"></div>
-  <div class="stores" id="stores"><div class="skel" style="height:260px"></div><div class="skel" style="height:260px"></div></div>
+  <div class="stools">
+    <form class="zipbar" id="zipbar" autocomplete="off">
+      <label for="zipin">Where are you?</label>
+      <input id="zipin" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="Your zip code" aria-describedby="zipmsg">
+      <button type="submit">Closest first</button>
+      <button type="button" id="zipclear" hidden>Clear</button>
+    </form>
+    <span class="zipmsg" id="zipmsg">Put in your zip and the closest stores come first. It stays on your phone.</span>
+    <div class="sfbar" id="filters"></div>
+  </div>
+  <p class="smeta" id="smeta"></p>
+  <div class="slist" id="stores"><div class="skel" style="height:66px"></div><div class="skel" style="height:66px"></div><div class="skel" style="height:66px"></div></div>
   <div class="events muted" id="events"></div>
 
   <h2 id="sightsec">Sightings</h2>
@@ -496,7 +578,23 @@
     <p id="updated"></p>
     <p style="margin-top:6px">Every store address and hour was checked against the store's own website on the date shown on its card. Hours change on big release days, so call ahead if it matters. Prices are TCGplayer market prices (via tcgcsv.com), refreshed daily; the price check lists every card and sealed product of the current era; retail prices are shown only where an official price is confirmed. Not affiliated with Pokémon or any store.</p>
   </footer>
+  </main>
+  </div>
 </div>
+
+<nav class="tabbar" aria-label="Quick sections">
+  <a href="#linemode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M3 20v-3a4 4 0 0 1 8 0v3M13 20v-3a4 4 0 0 1 8 0v3"/></svg><span>In line</span></a>
+  <a href="#next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Drops</span></a>
+  <a href="#market"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Market</span></a>
+  <a href="#lookup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Prices</span></a>
+  <a href="#storesec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Stores</span></a>
+</nav>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Line mode" aria-hidden="true" inert>
+  <div class="dhead"><b>Already in line?</b><button class="dclose" id="dclose" type="button" aria-label="Close">&times;</button></div>
+  <section id="linemode"></section>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
@@ -568,11 +666,12 @@ function renderNext() {
                         .sort(function (a, b) { return a.date < b.date ? -1 : 1; });
   if (!up.length) { box.appendChild(el('div', 'card muted', 'No upcoming release announced yet.')); return; }
   var r = up[0], d = localDate(r.date);
-  var card = el('div', 'next');
-  card.appendChild(el('div', 'label', 'Next drop'));
-  card.appendChild(el('div', 'name', r.name));
-  if (r.kind === 'Sealed wave') card.appendChild(el('div', 'muted', r.detail));
-  card.appendChild(el('div', 'when', longDate(d)));
+  // Top: name and countdown on the left, what comes out that day (filled by renderPlan) on the right.
+  var card = el('div', 'next'), top = el('div', 'nexttop'), main = el('div');
+  main.appendChild(el('div', 'label', 'Next drop'));
+  main.appendChild(el('div', 'name', r.name));
+  if (r.kind === 'Sealed wave') main.appendChild(el('div', 'muted', r.detail));
+  main.appendChild(el('div', 'when', longDate(d)));
   var count = el('div', 'count'), cells = ['days', 'hrs', 'min', 'sec'].map(function (u) {
     var c = el('div'), b = el('b'); c.appendChild(b); c.appendChild(el('small', null, u)); count.appendChild(c); return b;
   });
@@ -586,7 +685,9 @@ function renderNext() {
     });
   }
   tick(); NEXT_TICK = setInterval(tick, 1000);
-  card.appendChild(count);
+  main.appendChild(count);
+  var out = el('div', 'nextout'); out.id = 'nextout';
+  top.appendChild(main); top.appendChild(out); card.appendChild(top);
   if (!planPicked || !upcomingDates().some(function (u) { return u.date === planDate; })) planDate = r.date;
   var plan = el('div', 'plan'); plan.id = 'plan'; card.appendChild(plan);
   box.appendChild(card);
@@ -643,7 +744,7 @@ function fillTabs(box) {
 }
 function setArea(id) {
   area = id; try { localStorage.setItem('dropwatch-area', area); } catch (e) {}
-  renderTabs(); renderFilters(); renderStores(); renderPlan();
+  renderFilters(); renderStores(); renderPlan();
 }
 
 function renderPlan() {
@@ -664,7 +765,8 @@ function renderPlan() {
   box.appendChild(head);
   var tabs = el('div', 'tabs'); fillTabs(tabs); box.appendChild(tabs);
 
-  var prods = dropProducts(planDate);
+  var out = document.getElementById('nextout'), prods = dropProducts(planDate);
+  out.innerHTML = ''; out.parentNode.classList.toggle('solo', !prods.length);
   if (prods.length) {
     var pb = el('div', 'dpbox'); pb.appendChild(el('div', 'pareahead', 'Out ' + dayLabel(planDate) + ' · market price'));
     prods.slice(0, 7).forEach(function (g) {
@@ -678,13 +780,14 @@ function renderPlan() {
       pb.appendChild(row);
     });
     if (prods.length > 7) pb.appendChild(el('div', 'pnote', '+ ' + (prods.length - 7) + ' more in the Market section below.'));
-    box.appendChild(pb);
+    out.appendChild(pb);
   }
 
+  var areas = el('div', 'pareas'); box.appendChild(areas);
   areaList().forEach(function (a) {
-    var p = planRows(a, day);
-    box.appendChild(el('div', 'pareahead', a.name + ' · doors open ' + dayLabel(planDate)));
-    if (!p.rows.length) box.appendChild(el('p', 'pnote', 'No posted hours for that day.'));
+    var p = planRows(a, day), sec = el('div'); areas.appendChild(sec);
+    sec.appendChild(el('div', 'pareahead', a.name + ' · doors open ' + dayLabel(planDate)));
+    if (!p.rows.length) sec.appendChild(el('p', 'pnote', 'No posted hours for that day.'));
     p.rows.forEach(function (x) {
       var row = el('div', 'prow'), o = mins(x.open), c = mins(x.close), st = null;
       if (isToday) st = nowM >= c ? ['call', 'closed for today'] : nowM >= o ? ['open', 'open now'] : ['soon', 'opens in ' + untilTxt(o - nowM)];
@@ -696,9 +799,9 @@ function renderPlan() {
       body.appendChild(nm);
       var ps = el('div', 'ps');
       x.stores.forEach(function (s) { ps.appendChild(el('span', null, shortTag(s) + (dist(s) != null ? ' · ' + dist(s) + ' mi' : ''))); });
-      body.appendChild(ps); row.appendChild(body); box.appendChild(row);
+      body.appendChild(ps); row.appendChild(body); sec.appendChild(row);
     });
-    if (p.closed.length) box.appendChild(el('p', 'pnote', 'Closed that day: ' + p.closed.map(function (s) { return s.name; }).join(', ') + '.'));
+    if (p.closed.length) sec.appendChild(el('p', 'pnote', 'Closed that day: ' + p.closed.map(function (s) { return s.name; }).join(', ') + '.'));
     if (p.unknown.length) {
       var u = el('p', 'pnote', 'Hours not posted, call first: ');
       p.unknown.forEach(function (s, i) {
@@ -707,61 +810,142 @@ function renderPlan() {
         l.href = s.phone ? 'tel:' + s.phone.replace(/[^0-9]/g, '') : (s.website || '#');
         u.appendChild(l);
       });
-      box.appendChild(u);
+      sec.appendChild(u);
     }
   });
   box.appendChild(el('p', 'pnote', 'Doors open is not the same as shelf time. Check Sightings below for what people actually found.'));
 }
 
+// Release calendar: one month on phones, two side by side on wide screens. Drop days are buttons;
+// the picked day's releases show under the grid, with a jump to that day's plan.
+var CAL = { sel: null, start: null, picked: false }, WIDE = matchMedia('(min-width: 980px)');
+var MONTHNAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function isoOf(y, m, d) { return y + '-' + ('0' + (m + 1)).slice(-2) + '-' + ('0' + d).slice(-2); }
+function monthKey(y, m) { y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + '-' + ('0' + (m + 1)).slice(-2); }
+function relsByDate() {
+  var by = {};
+  data.releases.forEach(function (r) { (by[r.date] = by[r.date] || []).push(r); });
+  return by;
+}
 function renderReleases() {
-  var box = document.getElementById('releases'); box.innerHTML = '';
-  var today = new Date(); today.setHours(0, 0, 0, 0);
-  data.releases.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; }).forEach(function (r) {
-    var d = localDate(r.date);
-    var card = el('div', 'card' + (d < today ? ' past' : ''));
-    var date = el('div', 'date');
-    date.appendChild(el('div', 'm', MONTHS[d.getMonth()]));
-    date.appendChild(el('div', 'd', d.getDate()));
-    date.appendChild(el('div', 'y', d.getFullYear() + (d < today ? ' · out now' : '')));
-    var body = el('div');
-    var h = el('h3', null, r.name); h.appendChild(el('span', 'kind', r.kind)); body.appendChild(h);
-    body.appendChild(el('p', 'muted', r.detail));
-    var src = el('a', 'src', 'Source: ' + (r.source_name || 'Pokémon')); src.href = r.source; src.target = '_blank'; src.rel = 'noopener';
-    body.appendChild(src);
-    card.appendChild(date); card.appendChild(body); box.appendChild(card);
-  });
+  var by = relsByDate(), dates = Object.keys(by).sort(), today = todayISO();
+  var box = document.getElementById('calendar'); box.innerHTML = '';
   document.getElementById('relnote').textContent = data.releases_note || '';
+  if (!dates.length) { box.appendChild(el('div', 'card muted', 'No releases announced yet.')); return; }
+  // Until someone taps a day, the soonest drop is picked (sealed waves join after market.json loads).
+  if (!CAL.picked || !by[CAL.sel]) CAL.sel = dates.filter(function (x) { return x >= today; })[0] || dates[dates.length - 1];
+  var n = WIDE.matches ? 2 : 1, minM = dates[0].slice(0, 7), maxM = dates[dates.length - 1].slice(0, 7);
+  if (!CAL.start) CAL.start = today.slice(0, 7);
+  if (CAL.start < minM) CAL.start = minM;
+  if (CAL.start > maxM) CAL.start = maxM;
+  var sy = +CAL.start.slice(0, 4), sm = +CAL.start.slice(5, 7) - 1, lastKey = monthKey(sy, sm + n - 1);
+  var ly = +lastKey.slice(0, 4), lm = +lastKey.slice(5, 7) - 1;
+  var bar = el('div', 'calbar'), prev = el('button', 'calarrow', '‹'), next = el('button', 'calarrow', '›');
+  prev.type = next.type = 'button'; prev.setAttribute('aria-label', 'Earlier month'); next.setAttribute('aria-label', 'Later month');
+  prev.disabled = CAL.start <= minM; next.disabled = lastKey >= maxM;
+  prev.onclick = function () { CAL.start = monthKey(sy, sm - 1); renderReleases(); };
+  next.onclick = function () { CAL.start = monthKey(sy, sm + 1); renderReleases(); };
+  bar.appendChild(prev);
+  bar.appendChild(el('div', 'caltitle', n === 1 ? MONTHNAMES[sm] + ' ' + sy
+    : sy === ly ? MONTHNAMES[sm] + ' – ' + MONTHNAMES[lm] + ' ' + sy : MONTHNAMES[sm] + ' ' + sy + ' – ' + MONTHNAMES[lm] + ' ' + ly));
+  bar.appendChild(next); box.appendChild(bar);
+  var months = el('div', 'months'); months.style.setProperty('--n', n);
+  for (var k = 0; k < n; k++) { var key = monthKey(sy, sm + k); months.appendChild(monthGrid(+key.slice(0, 4), +key.slice(5, 7) - 1, by, today)); }
+  box.appendChild(months);
+  var ups = dates.filter(function (x) { return x >= today; });
+  if (ups.length) {
+    var row = el('div', 'calups');
+    ups.forEach(function (x) {
+      var b = el('button', 'upchip' + (x === CAL.sel ? ' on' : '')); b.type = 'button';
+      b.appendChild(el('b', null, dayMonth(x)));
+      b.appendChild(el('span', null, by[x][0].name + (by[x].length > 1 ? ' +' + (by[x].length - 1) : '')));
+      b.onclick = function () { pickDay(x); };
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+  }
+  renderDay(by, today);
+}
+function monthGrid(y, m, by, today) {
+  var box = el('div', 'month'), g = el('div', 'mgrid');
+  box.appendChild(el('div', 'mhead', MONTHNAMES[m] + ' ' + y));
+  'SMTWTFS'.split('').forEach(function (c) { g.appendChild(el('span', 'wd', c)); });
+  for (var i = new Date(y, m, 1).getDay(); i > 0; i--) g.appendChild(el('span'));
+  for (var d = 1, days = new Date(y, m + 1, 0).getDate(); d <= days; d++) (function (iso, rs) {
+    var c = el(rs ? 'button' : 'span', 'day' + (iso < today ? ' past' : '') + (iso === today ? ' today' : '') + (iso === CAL.sel ? ' sel' : ''));
+    c.appendChild(el('span', null, +iso.slice(8)));
+    if (rs) {
+      c.type = 'button'; c.setAttribute('aria-pressed', iso === CAL.sel);
+      c.setAttribute('aria-label', longDate(localDate(iso)) + ': ' + rs.map(function (r) { return r.name; }).join(', '));
+      var dots = el('span', 'dots'); rs.slice(0, 3).forEach(function () { dots.appendChild(el('i')); }); c.appendChild(dots);
+      c.onclick = function () { pickDay(iso); };
+    }
+    g.appendChild(c);
+  })(isoOf(y, m, d), by[isoOf(y, m, d)]);
+  box.appendChild(g);
+  return box;
+}
+// Picks a drop day; the grid moves to show it if it's off screen.
+function pickDay(iso) {
+  var n = WIDE.matches ? 2 : 1, s = CAL.start, m = iso.slice(0, 7);
+  CAL.sel = iso; CAL.picked = true;
+  if (m < s || m > monthKey(+s.slice(0, 4), +s.slice(5, 7) - 1 + n - 1)) CAL.start = m;
+  renderReleases();
+}
+function renderDay(by, today) {
+  var box = document.getElementById('calday'); box.innerHTML = '';
+  var iso = CAL.sel, rs = by[iso]; if (!rs) return;
+  var card = el('div', 'card daycard'), head = el('div', 'dayhead');
+  var days = Math.round((localDate(iso) - localDate(today)) / 864e5);
+  head.appendChild(el('b', null, localDate(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })));
+  head.appendChild(el('span', 'pill ' + (days === 0 ? 'open' : days > 0 ? 'soon' : 'call'),
+    days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : days > 0 ? 'In ' + days + ' days' : 'Out now'));
+  card.appendChild(head);
+  rs.forEach(function (r) {
+    var it = el('div', 'relitem'), h = el('h3', null, r.name); h.appendChild(el('span', 'kind', r.kind)); it.appendChild(h);
+    it.appendChild(el('p', 'muted', r.detail));
+    var src = el('a', 'src', 'Source: ' + (r.source_name || 'Pokémon')); src.href = r.source; src.target = '_blank'; src.rel = 'noopener';
+    it.appendChild(src); card.appendChild(it);
+  });
+  if (days >= 0) {
+    var go = el('button', 'daygo', 'Who opens first that day ›'); go.type = 'button';
+    go.onclick = function () { planDate = iso; planPicked = true; renderPlan(); renderStores(); document.getElementById('next').scrollIntoView(); };
+    card.appendChild(go);
+  }
+  box.appendChild(card);
 }
 
-function renderTabs() { fillTabs(document.getElementById('tabs')); }
-
-var chainSel = 'all', sortBy = 'dist', openOnly = false;
+// Stores: one filter bar (area, store type, sort, open now) over slim rows.
+var chainSel = 'all', sortBy = 'dist', openOnly = false, OPEN_ST = {}, ST_ALL = false, ST_FIRST = 12;
+var LOGO = { 'Walmart': ['W', 'walmart'], 'Target': ['T', 'target'], 'Best Buy': ['BB', 'bestbuy'], 'GameStop': ['GS', 'gamestop'],
+             'Barnes & Noble': ['B&N', 'bn'], "Sam's Club": ['S', 'sams'], 'Card shop': ['★', 'shop'] };
+var ICONS = {
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>',
+  chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
+};
+function filterSel(label, opts, val, change) {
+  var s = el('select', 'mini'); s.setAttribute('aria-label', label);
+  opts.forEach(function (o) { var op = el('option', null, o[1]); op.value = o[0]; s.appendChild(op); });
+  s.value = val; s.onchange = function () { change(s.value); };
+  return s;
+}
 function renderFilters() {
   var box = document.getElementById('filters'); box.innerHTML = '';
-  var counts = {}, order = [];
+  var counts = {}, order = [], total = 0;
   areaList().forEach(function (a) {
-    a.stores.forEach(function (s) { var c = chainOf(s); if (!counts[c]) { counts[c] = 0; order.push(c); } counts[c]++; });
+    a.stores.forEach(function (s) { var c = chainOf(s); if (!counts[c]) { counts[c] = 0; order.push(c); } counts[c]++; total++; });
   });
   if (chainSel !== 'all' && !counts[chainSel]) chainSel = 'all';
   order.sort(function (a, b) { return (a === 'Card shop') - (b === 'Card shop') || counts[b] - counts[a]; });
-  var chips = el('div', 'tabs');
-  [['all', 'All stores']].concat(order.map(function (c) { return [c, c + ' · ' + counts[c]]; })).forEach(function (t) {
-    var b = el('button', t[0] === chainSel ? 'on' : '', t[1]);
-    b.onclick = function () { chainSel = t[0]; renderFilters(); renderStores(); };
-    chips.appendChild(b);
-  });
-  box.appendChild(chips);
-  var row = el('div', 'tabs');
-  var sel = el('select', 'mini'); sel.setAttribute('aria-label', 'Sort stores');
-  [['dist', 'Closest first'], ['drop', 'Opens earliest on drop day'], ['open', 'Open now first']].forEach(function (o) {
-    var op = el('option', null, o[1]); op.value = o[0]; sel.appendChild(op);
-  });
-  sel.value = sortBy; sel.onchange = function () { sortBy = sel.value; renderStores(); };
-  row.appendChild(sel);
-  var ob = el('button', openOnly ? 'on' : '', 'Open now');
+  box.appendChild(filterSel('Area', (ORIGIN ? [['near', 'Near ' + ORIGIN.zip]] : []).concat([['all', 'All areas']], data.areas.map(function (a) { return [a.id, a.name]; })),
+    area, setArea));
+  box.appendChild(filterSel('Store type', [['all', 'All stores · ' + total]].concat(order.map(function (c) { return [c, c + ' · ' + counts[c]]; })),
+    chainSel, function (v) { chainSel = v; ST_ALL = false; renderFilters(); renderStores(); }));
+  box.appendChild(filterSel('Sort stores', [['dist', 'Closest first'], ['drop', 'Earliest on drop day'], ['open', 'Open now first']],
+    sortBy, function (v) { sortBy = v; renderStores(); }));
+  var ob = el('button', 'toggle' + (openOnly ? ' on' : ''), 'Open now'); ob.type = 'button'; ob.setAttribute('aria-pressed', openOnly);
   ob.onclick = function () { openOnly = !openOnly; renderFilters(); renderStores(); };
-  row.appendChild(ob);
-  box.appendChild(row);
+  box.appendChild(ob);
 }
 
 // The Google Form's Store option for this store ("Area · Name (tag)" as of 2026-09-27),
@@ -789,91 +973,115 @@ function dropOpen(s) {
   return h ? mins(h[0]) : null;
 }
 
+// A store row: logo, name, status and miles; tapping it opens live stock, hours, phone and notes.
+// Open rows are remembered in OPEN_ST, so the 45 s live refresh doesn't fold them back up.
+function storeRow(s, now) {
+  var open = !!OPEN_ST[s.id], st = statusFor(s, now), L = liveFor(s), lg = LOGO[chainOf(s)] || [chainOf(s).charAt(0), 'other'];
+  var row = el('div', 'st' + (open ? ' open' : '')), head = el('button', 'sthead');
+  head.type = 'button'; head.setAttribute('aria-expanded', open);
+  var logo = el('span', 'logo lg-' + lg[1], lg[0]); if (L.fresh) logo.appendChild(el('i', 'lgdot ' + L.stock.k));
+  head.appendChild(logo);
+  var mid = el('span', 'stmid'), nm = el('span', 'stname', s.type === 'local' ? s.name : chainOf(s));
+  if (/Play!/.test(s.tag)) nm.appendChild(el('span', 'playchip', 'Play!'));
+  mid.appendChild(nm);
+  mid.appendChild(el('span', 'stsub', (area === 'all' || area === 'near' ? s._area.name + ' · ' : '') + (s.type === 'local' ? s.tag.split(' · Play!')[0] : shortTag(s))));
+  var meta = el('span', 'stmeta'); meta.appendChild(el('span', 'sstat ' + st.cls, st.text));
+  if (L.fresh) meta.appendChild(el('span', 'sstock ' + L.stock.k, STOCK[L.stock.k] + ' · ' + since(L.stock.t)));
+  mid.appendChild(meta); head.appendChild(mid);
+  var right = el('span', 'stright'); if (dist(s) != null) right.appendChild(el('b', null, dist(s) + ' mi'));
+  var chev = el('span', 'chev'); chev.innerHTML = ICONS.chev; right.appendChild(chev); head.appendChild(right);
+  row.appendChild(head);
+
+  var body = el('div', 'stbody'); body.hidden = !open;
+  head.onclick = function () { open = !open; OPEN_ST[s.id] = open; row.classList.toggle('open', open); head.setAttribute('aria-expanded', open); body.hidden = !open; };
+  body.appendChild(liveRow(s));
+  var op = dropOpen(s);
+  if (op != null) {
+    var dd = el('div', 'dropday'); dd.appendChild(el('b', null, dayLabel(planDate)));
+    dd.appendChild(document.createTextNode(' doors: ' + fmt12(s.hours[DAYS[localDate(planDate).getDay()]][0]) +
+      (s.early ? ' (' + s.early.label + ' ' + fmt12(s.early.open) + ')' : '')));
+    body.appendChild(dd);
+  } else if (s.hours && !s.warn && planDate) body.appendChild(el('div', 'dropday', dayLabel(planDate) + ': closed'));
+  var addr = el('div', 'row'), map = el('a', null, s.address);
+  map.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.name + ' ' + s.address); map.target = '_blank'; map.rel = 'noopener';
+  addr.appendChild(map); body.appendChild(addr);
+  var links = el('div', 'links');
+  function btn(text, href, cls) { var a = el('a', cls || null, text); a.href = href; if (href.indexOf('tel:') !== 0) { a.target = '_blank'; a.rel = 'noopener'; } links.appendChild(a); return a; }
+  if (s.phone) btn(s.phone, 'tel:' + s.phone.replace(/[^0-9]/g, ''), 'call').insertAdjacentHTML('afterbegin', ICONS.phone);
+  btn('Directions', 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.name + ' ' + s.address));
+  if (s.website) btn(/facebook\.com/.test(s.website) ? 'Facebook' : 'Website', s.website);
+  if (s.facebook) btn('Facebook', s.facebook);
+  body.appendChild(links);
+  if (s.hours) {
+    body.appendChild(el('div', 'stlabel', 'Hours'));
+    var wk = el('div', 'week');
+    DAYS.forEach(function (k, i) {
+      var cls = i === now.getDay() ? 'today' : '';
+      wk.appendChild(el('span', cls, DAYNAMES[i]));
+      wk.appendChild(el('span', cls, s.hours[k] ? fmt12(s.hours[k][0]) + ' – ' + fmt12(s.hours[k][1]) : 'Closed'));
+    });
+    body.appendChild(wk);
+  }
+  var ct = data.chains && data.chains[chainOf(s)];
+  if (s.note || ct) {
+    var nb = el('div', 'stnote');
+    if (s.note) nb.appendChild(el('div', null, s.note));
+    if (ct) {
+      var tip = el('div', null, ct.tip + ' ');
+      if (ct.source) { var ts = el('a', 'src', '(source)'); ts.href = ct.source; ts.target = '_blank'; ts.rel = 'noopener'; tip.appendChild(ts); }
+      nb.appendChild(tip);
+    }
+    body.appendChild(nb);
+  }
+  var mine = s.form_key ? SIGHTS.filter(function (x) { return x.store === s.form_key; }) : [];
+  if (mine.length) {
+    var last = mine[0], ls = el('div', 'lastseen');
+    ls.appendChild(el('strong', null, 'Last spotted: '));
+    ls.appendChild(document.createTextNode((last.when || last.ago) + ' · ' + last.what));
+    var pat = pattern(mine); if (pat) ls.appendChild(el('div', 'pattern', pat));
+    body.appendChild(ls);
+  }
+  if (data.report_form && s.form_key) {
+    var rep = el('a', 'spotted', 'Spotted something here?'); rep.href = reportLink(s); rep.target = '_blank'; rep.rel = 'noopener';
+    body.appendChild(rep);
+  }
+  var v = el('div', 'verified', 'Checked ' + localDate(s.verified).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ');
+  var src = el('a', null, 'source'); src.href = s.source; src.target = '_blank'; src.rel = 'noopener'; v.appendChild(src);
+  body.appendChild(v);
+  row.appendChild(body);
+  return row;
+}
 function renderStores() {
-  var box = document.getElementById('stores'); box.innerHTML = '';
-  var ev = document.getElementById('events'); ev.innerHTML = '';
-  var now = new Date(), shown = 0;
+  var box = document.getElementById('stores'), ev = document.getElementById('events'), meta = document.getElementById('smeta');
+  box.innerHTML = ''; ev.innerHTML = '';
+  var now = new Date(), list = [];
   areaList().forEach(function (a) {
-    var list = a.stores.filter(function (s) {
-      if (chainSel !== 'all' && chainOf(s) !== chainSel) return false;
-      if (openOnly) { var c = statusFor(s, now).cls; if (c !== 'open' && c !== 'soon') return false; }
-      return true;
-    });
-    if (sortBy === 'drop') list.sort(function (p, q) {
-      var x = dropOpen(p), y = dropOpen(q);
-      return (x == null) - (y == null) || (x - y) || (dist(p) - dist(q));
-    });
-    else if (sortBy === 'open') list.sort(function (p, q) {
-      function rank(s) { var c = statusFor(s, now).cls; return c === 'open' || c === 'soon' ? 0 : 1; }
-      return rank(p) - rank(q) || (dist(p) - dist(q));
-    });
-    else list.sort(function (p, q) { return dist(p) - dist(q); });
-    shown += list.length;
-    list.forEach(function (s) {
-      var card = el('div', 'card store' + (s.type === 'local' ? ' local' : ''));
-      if (dist(s) != null) card.appendChild(el('span', 'dist', dist(s) + ' mi'));
-      var h = el('h3', null, s.name); if (s.type === 'local') h.appendChild(el('span', 'badge', 'Card shop'));
-      card.appendChild(h);
-      card.appendChild(el('div', 'tag', (area === 'all' || area === 'near' ? s._area.name + ' · ' : '') + s.tag));
-      var st = statusFor(s, now); card.appendChild(el('span', 'pill ' + st.cls, st.text));
-      card.appendChild(liveRow(s));
-      var op = dropOpen(s);
-      if (op != null) {
-        var dd = el('div', 'dropday'); dd.appendChild(el('b', null, dayLabel(planDate)));
-        dd.appendChild(document.createTextNode(' doors: ' + fmt12(s.hours[DAYS[localDate(planDate).getDay()]][0]) +
-          (s.early ? ' (' + s.early.label + ' ' + fmt12(s.early.open) + ')' : '')));
-        card.appendChild(dd);
-      } else if (s.hours && !s.warn && planDate) card.appendChild(el('div', 'dropday', dayLabel(planDate) + ': closed'));
-      var addr = el('div', 'row'); var map = el('a', null, s.address);
-      map.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.name + ' ' + s.address); map.target = '_blank'; map.rel = 'noopener';
-      addr.appendChild(map); card.appendChild(addr);
-      if (s.note) card.appendChild(el('div', 'note', s.note));
-      var ct = data.chains && data.chains[chainOf(s)];
-      if (ct) {
-        var tip = el('div', 'note', ct.tip + ' ');
-        if (ct.source) { var ts = el('a', 'src', '(source)'); ts.href = ct.source; ts.target = '_blank'; ts.rel = 'noopener'; tip.appendChild(ts); }
-        card.appendChild(tip);
-      }
-      var links = el('div', 'links');
-      function btn(text, href, cls) { var a = el('a', cls || null, text); a.href = href; if (href.indexOf('tel:') !== 0) { a.target = '_blank'; a.rel = 'noopener'; } links.appendChild(a); }
-      if (s.phone) btn('Call ' + s.phone, 'tel:' + s.phone.replace(/[^0-9]/g, ''), 'call');
-      btn('Directions', 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.name + ' ' + s.address));
-      if (s.website) btn(/facebook\.com/.test(s.website) ? 'Facebook' : 'Website', s.website);
-      if (s.facebook) btn('Facebook', s.facebook);
-      card.appendChild(links);
-      if (s.hours) {
-        var det = el('details'); det.appendChild(el('summary', null, 'Weekly hours'));
-        var wk = el('div', 'week');
-        DAYS.forEach(function (k, i) {
-          var cls = i === now.getDay() ? 'today' : '';
-          wk.appendChild(el('span', cls, DAYNAMES[i]));
-          wk.appendChild(el('span', cls, s.hours[k] ? fmt12(s.hours[k][0]) + ' – ' + fmt12(s.hours[k][1]) : 'Closed'));
-        });
-        det.appendChild(wk); card.appendChild(det);
-      }
-      var v = el('div', 'verified', 'Checked ' + localDate(s.verified).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ');
-      var src = el('a', null, 'source'); src.href = s.source; src.target = '_blank'; src.rel = 'noopener'; v.appendChild(src);
-      var mine = s.form_key ? SIGHTS.filter(function (x) { return x.store === s.form_key; }) : [];
-      if (mine.length) {
-        var last = mine[0];
-        var ls = el('div', 'lastseen');
-        ls.appendChild(el('strong', null, 'Last spotted: '));
-        ls.appendChild(document.createTextNode((last.when || last.ago) + ' · ' + last.what));
-        var pat = pattern(mine); if (pat) ls.appendChild(el('div', 'pattern', pat));
-        card.appendChild(ls);
-      }
-      if (data.report_form && s.form_key) {
-        var rep = el('a', 'spotted', 'Spotted something here?'); rep.href = reportLink(s); rep.target = '_blank'; rep.rel = 'noopener';
-        card.appendChild(rep);
-      }
-      card.appendChild(v);
-      box.appendChild(card);
+    a.stores.forEach(function (s) {
+      if (chainSel !== 'all' && chainOf(s) !== chainSel) return;
+      if (openOnly) { var c = statusFor(s, now).cls; if (c !== 'open' && c !== 'soon') return; }
+      list.push(s);
     });
     var p = el('p', null, 'Prereleases and events ' + (a.id === 'near' ? 'near ' + ORIGIN.zip : 'around ' + a.name) + ': ');
     var link = el('a', null, 'Play! Pokémon event locator'); link.href = a.events_url; link.target = '_blank'; link.rel = 'noopener';
     p.appendChild(link); ev.appendChild(p);
   });
-  if (!shown) box.appendChild(el('div', 'card muted', openOnly ? 'Nothing matching that is open right now.' : 'No stores match.'));
+  if (sortBy === 'drop') list.sort(function (p, q) {
+    var x = dropOpen(p), y = dropOpen(q);
+    return (x == null) - (y == null) || (x - y) || (dist(p) - dist(q));
+  });
+  else if (sortBy === 'open') list.sort(function (p, q) {
+    function rank(s) { var c = statusFor(s, now).cls; return c === 'open' || c === 'soon' ? 0 : 1; }
+    return rank(p) - rank(q) || (dist(p) - dist(q));
+  });
+  else list.sort(function (p, q) { return dist(p) - dist(q); });
+  if (!list.length) { meta.textContent = ''; box.appendChild(el('div', 'card muted', openOnly ? 'Nothing matching that is open right now.' : 'No stores match.')); return; }
+  meta.textContent = list.length + (list.length === 1 ? ' store' : ' stores') + ' · miles from ' + (ORIGIN ? ORIGIN.zip : 'downtown Roanoke') + ' · tap a store for hours, phone and live stock';
+  (ST_ALL ? list : list.slice(0, ST_FIRST)).forEach(function (s) { box.appendChild(storeRow(s, now)); });
+  if (list.length > ST_FIRST) {
+    var more = el('button', 'setpick smore', ST_ALL ? 'Show fewer' : 'Show all ' + list.length + ' stores'); more.type = 'button';
+    more.onclick = function () { ST_ALL = !ST_ALL; renderStores(); if (!ST_ALL) document.getElementById('storesec').scrollIntoView(); };
+    box.appendChild(more);
+  }
 }
 
 // Minimal CSV parser (quoted fields, commas, newlines).
@@ -1311,8 +1519,8 @@ function shareStore(s) {
   var lines = [s.name + ' (' + shortTag(s) + '): ' + (L.fresh ? STOCK[L.stock.k].toUpperCase() + ', ' + stamp(L.stock.t) : L.stock ? 'no report yet today (last: ' + STOCK[L.stock.k].toLowerCase() + ' ' + clock(L.stock.t) + ')' : 'no stock reports yet')];
   if (L.line) lines.push('Line: someone was #' + L.line.v + ', ' + stamp(L.line.t));
   if (L.count) lines.push('About ' + L.count.v + ' boxes on hand, ' + stamp(L.count.t));
-  var text = lines.join('\n') + '\nLive on Drop Watch:';
-  if (navigator.share) { navigator.share({ title: 'Drop Watch', text: text, url: url }).catch(function () {}); return; }
+  var text = lines.join('\n') + "\nLive on Toasty's Drops:";
+  if (navigator.share) { navigator.share({ title: "Toasty's Drops", text: text, url: url }).catch(function () {}); return; }
   var full = text + ' ' + url;
   (navigator.clipboard ? navigator.clipboard.writeText(full) : Promise.reject())
     .then(function () { toast('Copied. Paste it in your group chat.'); })
@@ -1355,7 +1563,7 @@ function renderLine() {
   var stores = allStores().slice().sort(function (p, q) { return dist(p) - dist(q); });
   if (!lineStore()) LINE.store = stores[0].id;
   var card = el('div', 'lm'), head = el('div', 'lmhead');
-  head.appendChild(el('div', 'label', 'Line mode · already in line?'));
+  head.appendChild(el('div', 'label', 'Live from the line'));
   var pick = el('select', 'mini'); pick.setAttribute('aria-label', 'Store you are in line at');
   stores.forEach(function (x) { var o = el('option', null, x.name + (x.type === 'local' ? '' : ' · ' + shortTag(x)) + ' · ' + dist(x) + ' mi'); o.value = x.id; pick.appendChild(o); });
   pick.value = LINE.store;
@@ -1408,6 +1616,7 @@ function updateLine() {
   var o = odds(+LINE.spot || 0, +LINE.boxes || +rep || 0, +LINE.limit || 1, L);
   var vd = document.getElementById('lmverdict'); vd.className = 'verdict' + (o[0] ? ' ' + o[0] : ''); vd.innerHTML = '';
   vd.appendChild(el('b', null, o[1])); vd.appendChild(el('span', null, o[2] + (!LINE.boxes && rep && LINE.spot ? ' (box count from a report ' + stamp(L.count.t) + ')' : '')));
+  lineBar(s, L);
 }
 
 // Zip: looked up in zips.json on this device; the zip is only kept in this browser.
@@ -1459,13 +1668,14 @@ function initHolo() {
 // Highlights the section on screen in the top bar and the phone tab bar
 // (the tab bar has no Calendar or Sightings tab, so those light up Drops and Stores).
 function initSpy() {
-  var ids = ['linemode', 'next', 'cal', 'market', 'lookup', 'storesec', 'sightsec'], TAB = { cal: 'next', sightsec: 'storesec' }, last = null, nav = document.querySelector('.nav');
+  var ids = ['next', 'cal', 'market', 'lookup', 'storesec', 'sightsec'], TAB = { cal: 'next', sightsec: 'storesec' }, last = null, nav = document.querySelector('.nav');
   function spy() {
     var y = innerHeight * 0.3, cur = ids[0];
     ids.forEach(function (id) { var e = document.getElementById(id); if (e && e.getBoundingClientRect().top <= y) cur = id; });
     if (cur === last) return; last = cur;
     document.querySelectorAll('.nav a, .tabbar a').forEach(function (a) {
-      var id = a.getAttribute('href').slice(1), on = a.parentNode.classList.contains('tabbar') ? id === (TAB[cur] || cur) : id === cur;
+      var id = a.getAttribute('href').slice(1); if (id === 'linemode') return;
+      var on = a.parentNode.classList.contains('tabbar') ? id === (TAB[cur] || cur) : id === cur;
       a.classList.toggle('on', on);
       if (on && a.parentNode === nav) nav.scrollTo({ left: a.offsetLeft - 20, behavior: CALM ? 'auto' : 'smooth' });
     });
@@ -1475,6 +1685,42 @@ function initSpy() {
   spy();
 }
 initHolo(); initSpy();
+
+// Line mode drawer: slides in from the right (a bottom sheet on phones). The top bar,
+// every "In line" link and a shared ?store= link open it.
+var LAST_FOCUS = null;
+function lineBar(s, L) {
+  document.getElementById('lmbsub').textContent = (s.type === 'local' ? s.name : chainOf(s) + ' ' + shortTag(s)) + ' · ' +
+    (L.fresh ? STOCK[L.stock.k] + ' ' + since(L.stock.t) : 'tap for live stock, line spots and your odds');
+  document.getElementById('lmblive').className = 'lmblive' + (L.fresh ? ' ' + L.stock.k : '');
+}
+function openLine() {
+  var d = document.getElementById('drawer'), sc = document.getElementById('scrim');
+  if (d.classList.contains('on')) return;
+  LAST_FOCUS = document.activeElement;
+  d.classList.add('on'); d.removeAttribute('inert'); d.setAttribute('aria-hidden', 'false');
+  sc.hidden = false; requestAnimationFrame(function () { sc.classList.add('on'); });
+  document.body.classList.add('locked'); document.getElementById('lmbar').setAttribute('aria-expanded', 'true');
+  document.querySelectorAll('a[href="#linemode"]').forEach(function (a) { a.classList.add('on'); });
+  setTimeout(function () { document.getElementById('dclose').focus(); }, 60);
+}
+function closeLine() {
+  var d = document.getElementById('drawer'), sc = document.getElementById('scrim');
+  if (!d.classList.contains('on')) return;
+  d.classList.remove('on'); d.setAttribute('inert', ''); d.setAttribute('aria-hidden', 'true');
+  sc.classList.remove('on'); setTimeout(function () { sc.hidden = true; }, 260);
+  document.body.classList.remove('locked'); document.getElementById('lmbar').setAttribute('aria-expanded', 'false');
+  document.querySelectorAll('a[href="#linemode"]').forEach(function (a) { a.classList.remove('on'); });
+  if (LAST_FOCUS && LAST_FOCUS.focus) LAST_FOCUS.focus({ preventScroll: true });
+}
+document.getElementById('lmbar').onclick = openLine;
+document.getElementById('dclose').onclick = closeLine;
+document.getElementById('scrim').onclick = closeLine;
+document.addEventListener('click', function (e) {
+  var a = e.target.closest ? e.target.closest('a[href="#linemode"]') : null;
+  if (a) { e.preventDefault(); openLine(); }
+});
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLine(); });
 
 var savedZip = null, wantNear = false;
 try { area = localStorage.getItem('dropwatch-area') || 'all'; savedZip = localStorage.getItem('dropwatch-zip'); } catch (e) {}
@@ -1488,8 +1734,9 @@ fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(
   // A shared link (?store=<id>) opens Line mode on that store.
   var shared = new URLSearchParams(location.search).get('store');
   if (shared && allStores().some(function (x) { return x.id === shared; })) { LINE.store = shared; LINE.boxes = ''; saveLine(); }
-  renderNext(); renderReleases(); renderTabs(); renderFilters(); renderStores(); renderSightings(); renderLine();
-  if (location.hash === '#linemode') document.getElementById('linemode').scrollIntoView();
+  renderNext(); renderReleases(); renderFilters(); renderStores(); renderSightings(); renderLine();
+  if (location.hash === '#linemode') openLine();
+  if (WIDE.addEventListener) WIDE.addEventListener('change', renderReleases); else WIDE.addListener(renderReleases);
   if (savedZip) setZip(savedZip, true);
   liveFetch(); setInterval(liveFetch, 45000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) liveFetch(); });
