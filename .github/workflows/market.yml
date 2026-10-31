@@ -16,6 +16,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: python .github/scripts/market.py
+      - run: python .github/scripts/catalog.py _catalog/catalog.json
+      # The full catalog (~3 MB, every set) goes on its own branch, replaced each run, so it
+      # never piles up in main's history. The page reads it from raw.githubusercontent.com.
+      - name: Publish full catalog
+        run: |
+          cd _catalog
+          git init -q -b catalog
+          git config user.name "Drop Watch bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          git commit -q -m "Full catalog $(date -u +%F)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" catalog
       - name: Commit if changed
         run: |
           git add drops/market.json drops/market-history.json drops/search.json

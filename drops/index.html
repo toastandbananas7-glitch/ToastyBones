@@ -559,8 +559,8 @@
 
   <section class="lksec">
   <h2 id="lookup">Price check</h2>
-  <p class="intro">Standing at a shelf or a card case? Look up any card or sealed product from the Mega Evolution era. Market is what it has recently sold for; low is the cheapest listing right now.</p>
-  <div class="lkbar"><input id="lkq" type="search" placeholder="Try: charizard, 125/094, ETB, booster bundle" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search cards and sealed product"></div>
+  <p class="intro">Standing at a shelf or a card case? Look up any card or sealed product from any set, old or new. Market is what it has recently sold for; low is the cheapest listing right now.</p>
+  <div class="lkbar"><input id="lkq" type="search" placeholder="Try: blissey, charizard, 125/094, ETB" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search cards and sealed product"></div>
   <div class="lkctl">
     <div class="tabs" id="lkkind"></div>
     <select class="mini" id="lkset" aria-label="Set"><option value="all">All sets</option></select>
@@ -591,7 +591,7 @@
 
   <footer>
     <p id="updated"></p>
-    <p style="margin-top:6px">Every store address and hour was checked against the store's own website on the date shown on its card. Hours change on big release days, so call ahead if it matters. Prices are TCGplayer market prices (via tcgcsv.com), refreshed daily; the price check lists every card and sealed product of the current era; retail prices are shown only where an official price is confirmed. Not affiliated with Pokémon or any store.</p>
+    <p style="margin-top:6px">Every store address and hour was checked against the store's own website on the date shown on its card. Hours change on big release days, so call ahead if it matters. Prices are TCGplayer market prices (via tcgcsv.com), refreshed daily; the price check covers every English card and product TCGplayer lists; retail prices are shown only where an official price is confirmed. Not affiliated with Pokémon or any store.</p>
   </footer>
   </main>
   </div>
@@ -1362,9 +1362,28 @@ function initMarket() {
   }).catch(function () { var sb = document.getElementById('sealed'); sb.innerHTML = ''; sb.appendChild(el('div', 'card muted', 'Could not load prices right now.')); });
 }
 
-// Price check: search.json is rebuilt daily by .github/scripts/market.py
-// (every card and sealed product of the era, all finishes).
+// Price check: search.json (current era, with 7-day change and x-retail) is rebuilt daily by
+// .github/scripts/market.py. Every older set comes from the full catalog (.github/scripts/catalog.py,
+// published nightly on the repo's `catalog` branch), loaded the first time someone searches.
 var IDX = null, LK = { q: '', set: 'all', kind: 'all', sort: 'price', n: 30 };
+var CAT = null, CAT_STATE = '', CAT_URL = location.hostname === '127.0.0.1' ? '/_catalog/catalog.json'
+  : 'https://raw.githubusercontent.com/toastandbananas7-glitch/ToastyBones/catalog/catalog.json';
+function loadCatalog() {
+  if (CAT_STATE) return; CAT_STATE = 'loading'; lookupRender();
+  fetch(CAT_URL).then(function (r) { return r.json(); }).then(function (c) {
+    var have = {}; IDX.items.forEach(function (it) { have[it.id] = 1; });
+    CAT = [];
+    c.items.forEach(function (x) {
+      if (have[x[0]]) return;
+      var st = c.sets[x[2]], it = { id: x[0], n: x[1], s: -1, sn: st[0], yr: st[1], no: x[3], r: x[4], v: x[5], k: x[4] ? null : 's' };
+      var no = it.no ? it.no + ' ' + it.no.replace(/\b0+(\d)/g, '$1') : '';
+      it.nm = norm(it.n);
+      it.hay = ' ' + norm([it.n, it.sn, no, it.r || '', it.k ? 'sealed' : 'card'].join(' '));
+      CAT.push(it);
+    });
+    CAT_STATE = 'ready'; lookupRender();
+  }).catch(function () { CAT_STATE = 'failed'; lookupRender(); });
+}
 var ALIAS = { etb: 'elite trainer box', upc: 'ultra premium collection', sir: 'special illustration rare' };
 function norm(s) {
   return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\/ ]+/g, ' ').replace(/\s+/g, ' ').trim();
@@ -1381,7 +1400,8 @@ function lookupTokens(q) {
 }
 function lookupRun() {
   var toks = lookupTokens(LK.q), today = todayISO();
-  var res = IDX.items.filter(function (it) {
+  var pool = LK.set === 'all' && CAT ? IDX.items.concat(CAT) : IDX.items;
+  var res = pool.filter(function (it) {
     if (LK.set !== 'all' && it.s !== +LK.set) return false;
     if (LK.kind === 'cards' && it.k) return false;
     if (LK.kind === 'sealed' && !it.k) return false;
@@ -1405,9 +1425,9 @@ function lookupRow(it, today) {
   var b = bestVariant(it), mid = el('div'), nm = el('div', 'nm', it.n);
   if (it.ms && b && b[1]) { var x = b[1] / it.ms; nm.appendChild(el('span', 'mult' + (x >= 2 ? ' hot' : ''), x.toFixed(1) + 'x retail')); }
   mid.appendChild(nm);
-  var set = IDX.sets[it.s].name;
+  var set = it.sn ? it.sn + ' (' + it.yr + ')' : IDX.sets[it.s].name;
   var rt = el('div', 'rt', it.k
-    ? set + ' · ' + (it.rel > today ? 'out ' + shortDate(it.rel) : 'released ' + shortDate(it.rel)) + (it.ms ? ' · retail ' + money(it.ms) : '')
+    ? set + (it.rel ? ' · ' + (it.rel > today ? 'out ' + shortDate(it.rel) : 'released ' + shortDate(it.rel)) : '') + (it.ms ? ' · retail ' + money(it.ms) : '')
     : [set, it.no].filter(Boolean).join(' · '));
   if (!it.k && it.r) rt.appendChild(rchip(it.r));
   mid.appendChild(rt);
@@ -1431,17 +1451,18 @@ function lookupRender() {
   var box = document.getElementById('lkres'), meta = document.getElementById('lkmeta'); box.innerHTML = '';
   var toks = lookupTokens(LK.q);
   if (!toks.length && LK.set === 'all' && LK.kind === 'all') {
-    meta.textContent = IDX.items.length.toLocaleString('en-US') + ' cards and products · prices from ' + shortDate(IDX.updated);
+    meta.textContent = (CAT ? (IDX.items.length + CAT.length).toLocaleString('en-US') + ' cards and products from every set' : 'Every card and product, every set')
+      + ' · prices from ' + shortDate(IDX.updated);
     var ex = el('div', 'tabs');
     ['Elite Trainer Box', 'Booster Bundle', 'Booster Box', 'Mega Charizard', 'Mega Gardevoir', 'Special Illustration Rare'].forEach(function (t) {
-      var b = el('button', null, t); b.onclick = function () { document.getElementById('lkq').value = t; LK.q = t; LK.n = 30; lookupRender(); }; ex.appendChild(b);
+      var b = el('button', null, t); b.onclick = function () { document.getElementById('lkq').value = t; LK.q = t; LK.n = 30; loadCatalog(); lookupRender(); }; ex.appendChild(b);
     });
     box.appendChild(ex);
     return;
   }
-  var res = lookupRun(), today = todayISO();
-  meta.textContent = res.length + (res.length === 1 ? ' match' : ' matches') + (res.length > LK.n ? ' · showing ' + LK.n : '') + ' · prices from ' + shortDate(IDX.updated);
-  if (!res.length) { box.appendChild(el('div', 'card muted', 'Nothing matches. Try fewer words, or a card number like 125/094.')); return; }
+  var res = lookupRun(), today = todayISO(), older = LK.set !== 'all' ? '' : CAT_STATE === 'loading' ? ' · loading older sets…' : CAT_STATE === 'failed' ? ' · older sets did not load' : '';
+  meta.textContent = res.length + (res.length === 1 ? ' match' : ' matches') + (res.length > LK.n ? ' · showing ' + LK.n : '') + ' · prices from ' + shortDate(IDX.updated) + older;
+  if (!res.length) { box.appendChild(el('div', 'card muted', CAT_STATE === 'loading' && LK.set === 'all' ? 'Searching every set… one second.' : 'Nothing matches. Try fewer words, or a card number like 125/094.')); return; }
   res.slice(0, LK.n).forEach(function (it) { box.appendChild(lookupRow(it, today)); });
   if (res.length > LK.n) {
     var more = el('button', 'setpick', 'Show 30 more');
@@ -1458,10 +1479,11 @@ function initLookup() {
       it.nm = norm(it.n);
       it.hay = ' ' + norm([it.n, set, no, it.r || '', it.k ? 'sealed' : 'card'].join(' '));
     });
-    var sp = document.getElementById('lkset');
+    var sp = document.getElementById('lkset'); sp.options[0].textContent = 'Every set';
     IDX.sets.forEach(function (s, i) { var o = el('option', null, s.name); o.value = i; sp.appendChild(o); });
     var q = document.getElementById('lkq'), t;
-    q.oninput = function () { clearTimeout(t); t = setTimeout(function () { LK.q = q.value; LK.n = 30; lookupRender(); }, 120); };
+    q.onfocus = loadCatalog;
+    q.oninput = function () { loadCatalog(); clearTimeout(t); t = setTimeout(function () { LK.q = q.value; LK.n = 30; lookupRender(); }, 120); };
     sp.onchange = function () { LK.set = sp.value; LK.n = 30; lookupRender(); };
     document.getElementById('lksort').onchange = function (e) { LK.sort = e.target.value; lookupRender(); };
     var kinds = document.getElementById('lkkind');
