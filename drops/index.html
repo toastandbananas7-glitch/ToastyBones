@@ -16,8 +16,9 @@
 <!--
   Toasty's Drops (called Drop Watch until 2026-10-30; built 2026-09-25 for Evan and his buddy).
   Data: data.json (stores + releases, every fact checked against the
-  retailer's own page on the "verified" date; see "source"). Sightings come
-  from a Google Form's published-CSV sheet (data.json "sightings_csv").
+  retailer's own page on the "verified" date; see "source"). Sightings are
+  posted on the page and kept 30 days by the drops-live Worker (since 2026-10-30;
+  the Google Form and sheet before that are retired).
   Centered on Roanoke, 50 mi, since 2026-10-30. zips.json (Census 2025 ZCTA
   centroids within 100 mi) lets a visitor measure from their own zip.
 -->
@@ -201,7 +202,7 @@
   .lastseen { margin-top: 10px; font-size: 13px; background: rgba(255,210,63,0.07); border: 1px solid rgba(255,210,63,0.22); border-radius: 12px; padding: 8px 10px; }
   .lastseen strong { color: var(--yellow); }
   .pattern { color: var(--dim); font-size: 12px; margin-top: 3px; }
-  .spotted { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: #ff8592; }
+  .spotted { display: inline-block; margin-top: 10px; font: 700 13px var(--fb); color: #ff8592; background: none; border: 0; padding: 0; cursor: pointer; }
   .pill { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 3px 11px; margin: 10px 0 4px; }
   .pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .pill.open { background: rgba(52,226,160,0.14); color: var(--green); }
@@ -218,12 +219,26 @@
   .smore { margin-top: 4px; }
   .events { margin-top: 14px; }
 
-  /* Sightings */
+  /* Sightings: post box + feed (drops-live Worker) */
+  .compose { display: grid; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 12px; }
+  .chead { font: 800 18px var(--fd); }
+  .compose textarea { width: 100%; min-height: 66px; resize: vertical; font: 600 16px/1.4 var(--fb); color: var(--text); background: var(--panel2); border: 1.5px solid var(--line); border-radius: 14px; padding: 11px 13px; }
+  .compose textarea:focus, .cfoot input:focus { outline: none; border-color: var(--yellow); }
+  .cfoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .cfoot input { flex: 1 1 160px; min-width: 0; font: 600 16px var(--fb); color: var(--text); background: var(--panel2); border: 1.5px solid var(--line); border-radius: 999px; padding: 9px 14px; }
+  .ccount { font-size: 12px; font-weight: 700; color: var(--dim); }
+  .cpost { font: 800 15px var(--fb); color: #fff; background: var(--red); border: 0; border-radius: 999px; padding: 10px 22px; cursor: pointer; box-shadow: 0 6px 18px rgba(255,77,94,0.3); }
+  .cpost[disabled] { opacity: 0.5; }
   .sight { display: grid; gap: 8px; }
-  .sight .card { padding: 12px 14px; }
-  .sight .who { font-size: 12px; color: var(--dim); }
-  .btn { display: inline-block; font: 800 15px var(--fb); background: var(--red); color: #fff; border-radius: 14px; padding: 13px 20px; margin-top: 10px; box-shadow: 0 8px 24px rgba(255,77,94,0.3); }
-  .btn:hover { text-decoration: none; filter: brightness(1.08); }
+  .spost { padding: 12px 14px; }
+  .sptop { display: flex; align-items: center; gap: 10px; }
+  .logo.sm { width: 32px; height: 32px; border-radius: 10px; font-size: 11px; }
+  .spwho { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .spwho b { font: 700 15px/1.25 var(--fd); }
+  .spwho span { font-size: 12px; color: var(--dim); }
+  .spflag { flex: none; font: 700 12px var(--fb); color: var(--dim); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+  .spflag:hover { color: #ff8592; border-color: rgba(255,77,94,0.4); }
+  .sptext { margin-top: 8px; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
 
   /* Market */
   .setpick { width: 100%; font: 700 16px var(--fb); color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; cursor: pointer; }
@@ -948,11 +963,6 @@ function renderFilters() {
   box.appendChild(ob);
 }
 
-// The Google Form's Store option for this store ("Area · Name (tag)" as of 2026-09-27),
-// kept in data.json "form_key". Stores added later aren't in the form, so they get no report link.
-function reportLink(s) {
-  return data.report_form + '?usp=pp_url&' + data.form_store_entry + '=' + encodeURIComponent(s.form_key);
-}
 // "Usually spotted Tuesdays around 8 AM" once a store has 3+ sightings.
 function pattern(list) {
   if (list.length < 3) return '';
@@ -1033,18 +1043,16 @@ function storeRow(s, now) {
     }
     body.appendChild(nb);
   }
-  var mine = s.form_key ? SIGHTS.filter(function (x) { return x.store === s.form_key; }) : [];
+  var mine = SIGHTS.filter(function (x) { return x.s === s.id; });
   if (mine.length) {
     var last = mine[0], ls = el('div', 'lastseen');
     ls.appendChild(el('strong', null, 'Last spotted: '));
-    ls.appendChild(document.createTextNode((last.when || last.ago) + ' · ' + last.what));
+    ls.appendChild(document.createTextNode(stamp(last.t) + ' · ' + last.what));
     var pat = pattern(mine); if (pat) ls.appendChild(el('div', 'pattern', pat));
     body.appendChild(ls);
   }
-  if (data.report_form && s.form_key) {
-    var rep = el('a', 'spotted', 'Spotted something here?'); rep.href = reportLink(s); rep.target = '_blank'; rep.rel = 'noopener';
-    body.appendChild(rep);
-  }
+  var rep = el('button', 'spotted', 'Post a sighting here'); rep.type = 'button';
+  rep.onclick = function () { sightAt(s); }; body.appendChild(rep);
   var v = el('div', 'verified', 'Checked ' + localDate(s.verified).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ');
   var src = el('a', null, 'source'); src.href = s.source; src.target = '_blank'; src.rel = 'noopener'; v.appendChild(src);
   body.appendChild(v);
@@ -1084,62 +1092,99 @@ function renderStores() {
   }
 }
 
-// Minimal CSV parser (quoted fields, commas, newlines).
-function parseCSV(t) {
-  var rows = [], row = [], f = '', q = false;
-  for (var i = 0; i < t.length; i++) {
-    var c = t[i];
-    if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
-    else if (c === '"') q = true;
-    else if (c === ',') { row.push(f); f = ''; }
-    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
-    else if (c !== '\r') f += c;
-  }
-  if (f || row.length) { row.push(f); rows.push(row); }
-  return rows;
-}
-
 function ago(d) {
   var m = Math.round((Date.now() - d) / 60000);
   if (m < 60) return m + ' min ago';
   if (m < 1440) return Math.round(m / 60) + ' hr ago';
   return Math.round(m / 1440) + ' days ago';
 }
-// Google Forms timestamps look like 9/25/2026 14:05:31 (sheet locale US).
-function parseTs(t) {
-  var m = (t || '').match(/(\d+)\/(\d+)\/(\d{4}) (\d+):(\d+):?(\d+)?/);
-  return m ? new Date(+m[3], +m[1] - 1, +m[2], +m[4], +m[5], +(m[6] || 0)) : null;
+// Sightings: posted right here and kept 30 days by the drops-live Worker; they arrive with /status.
+// Links and phone numbers are refused (spam), one post per network every 2 min, three flags hide a post.
+var SIGHT_STORE = null, FLAGGED = {};
+var SIGHT_LINK = /https?:|www\.|\.(com|net|org|io|co|gg|ly|me|app|shop|store|xyz|info|biz)\b/i, SIGHT_PHONE = /(\d[\s().-]*){7,}/;
+try { FLAGGED = JSON.parse(localStorage.getItem('dropwatch-flagged') || '{}'); } catch (e) {}
+function setSights(list) {
+  SIGHTS = (list || []).map(function (x) { return { id: x.id, s: x.s, t: x.t, ts: new Date(x.t), what: x.x, name: x.n }; });
 }
+function storeById(id) { return allStores().filter(function (x) { return x.id === id; })[0]; }
+function storeLabel(s) { return s.type === 'local' ? s.name : chainOf(s) + ' ' + shortTag(s); }
+// The post box is built once (so the live refresh never eats what someone is typing); the feed redraws.
 function renderSightings() {
   var box = document.getElementById('sightings'); box.innerHTML = '';
-  if (data.report_form) {
-    var b = el('a', 'btn', 'Report a sighting'); b.href = data.report_form; b.target = '_blank'; b.rel = 'noopener';
-    box.appendChild(b);
-  }
-  var list = el('div', 'sight'); list.style.marginTop = '14px'; box.appendChild(list);
-  if (!data.sightings_csv) { list.appendChild(el('div', 'card muted', 'The sightings log is getting set up. Reports from the field land here.')); return; }
-  fetch(data.sightings_csv + (data.sightings_csv.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now())
-    .then(function (r) { return r.text(); })
-    .then(function (t) {
-      var rows = parseCSV(t); var head = rows.shift() || [];
-      var col = function (name) { for (var i = 0; i < head.length; i++) if (head[i].toLowerCase().indexOf(name) >= 0) return i; return -1; };
-      var iT = col('timestamp'), iS = col('store'), iW = col('what'), iWhen = col('when'), iN = col('name');
-      SIGHTS = rows.filter(function (r) { return r.join('').trim(); }).map(function (r) {
-        var ts = parseTs(r[iT]);
-        return { ts: ts, ago: ts ? ago(ts) : r[iT], store: r[iS] || '', what: r[iW] || '', when: (r[iWhen] || '').trim(), name: r[iN] || '' };
-      }).sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
-      renderStores();
-      list.innerHTML = '';
-      if (!SIGHTS.length) { list.appendChild(el('div', 'card muted', 'No sightings yet. Be the first.')); return; }
-      SIGHTS.slice(0, 20).forEach(function (x) {
-        var c = el('div', 'card');
-        c.appendChild(el('strong', null, x.store + ': '));
-        c.appendChild(document.createTextNode(x.what));
-        c.appendChild(el('div', 'who', [x.when || x.ago, x.name ? 'reported by ' + x.name : ''].filter(Boolean).join(' · ')));
-        list.appendChild(c);
-      });
+  var form = el('form', 'compose'); form.autocomplete = 'off';
+  form.appendChild(el('div', 'chead', 'Seen something? Tell everyone.'));
+  var sel = el('select', 'mini'); sel.id = 'cstore'; sel.setAttribute('aria-label', 'Store');
+  allStores().slice().sort(function (p, q) { return dist(p) - dist(q); }).forEach(function (x) {
+    var o = el('option', null, storeLabel(x) + ' · ' + dist(x) + ' mi'); o.value = x.id; sel.appendChild(o);
+  });
+  if (SIGHT_STORE) sel.value = SIGHT_STORE;
+  var ta = el('textarea'); ta.id = 'ctext'; ta.maxLength = 140; ta.rows = 2; ta.setAttribute('aria-label', 'What did you see?');
+  ta.placeholder = 'What did you see? e.g. "Fresh ETBs at the front, limit 2"';
+  var foot = el('div', 'cfoot'), nm = el('input'), cnt = el('span', 'ccount', '0/140'), post = el('button', 'cpost', 'Post');
+  nm.id = 'cname'; nm.maxLength = 24; nm.placeholder = 'Your name (optional)'; nm.setAttribute('aria-label', 'Your name, optional');
+  try { nm.value = localStorage.getItem('dropwatch-name') || ''; } catch (e) {}
+  post.type = 'submit'; post.id = 'cpost';
+  ta.oninput = function () { cnt.textContent = ta.value.length + '/140'; };
+  form.onsubmit = function (e) { e.preventDefault(); postSighting(); };
+  foot.appendChild(nm); foot.appendChild(cnt); foot.appendChild(post);
+  form.appendChild(sel); form.appendChild(ta); form.appendChild(foot);
+  box.appendChild(form);
+  var feed = el('div', 'sight'); feed.id = 'feed'; box.appendChild(feed);
+  renderFeed();
+}
+function renderFeed() {
+  var feed = document.getElementById('feed'); if (!feed) return; feed.innerHTML = '';
+  var list = SIGHTS.filter(function (x) { return storeById(x.s); });
+  if (!list.length) { feed.appendChild(el('div', 'card muted', LIVE_OK === false ? 'Sightings are offline right now.' : 'No sightings in the last 30 days. Be the first.')); return; }
+  list.slice(0, 30).forEach(function (x) {
+    var st = storeById(x.s), c = el('div', 'card spost'), top = el('div', 'sptop'), lg = LOGO[chainOf(st)] || [chainOf(st).charAt(0), 'other'];
+    top.appendChild(el('span', 'logo sm lg-' + lg[1], lg[0]));
+    var who = el('div', 'spwho'); who.appendChild(el('b', null, storeLabel(st)));
+    who.appendChild(el('span', null, [x.name, stamp(x.t)].filter(Boolean).join(' · '))); top.appendChild(who);
+    if (!FLAGGED[x.id]) {
+      var fl = el('button', 'spflag', 'Flag'); fl.type = 'button'; fl.setAttribute('aria-label', 'Flag this sighting as spam or nasty');
+      fl.onclick = function () { flagSighting(x.id); }; top.appendChild(fl);
+    }
+    c.appendChild(top); c.appendChild(el('p', 'sptext', x.what)); feed.appendChild(c);
+  });
+}
+function sightMsg(e) {
+  return { 'no links': "Links aren't allowed in sightings.", 'no phone numbers': "Phone numbers aren't allowed in sightings.",
+           'too short': 'Say a little more than that.', 'slow down': 'One sighting every couple of minutes, please.' }[e] || "That didn't go through.";
+}
+function postSighting() {
+  var ta = document.getElementById('ctext'), nm = document.getElementById('cname'), btn = document.getElementById('cpost');
+  var x = ta.value.trim(), n = nm.value.trim(), s = document.getElementById('cstore').value;
+  if (x.length < 2) { toast(sightMsg('too short')); return; }
+  if (SIGHT_LINK.test(x + ' ' + n)) { toast(sightMsg('no links')); return; }
+  if (SIGHT_PHONE.test(x + ' ' + n)) { toast(sightMsg('no phone numbers')); return; }
+  try { localStorage.setItem('dropwatch-name', n); } catch (e) {}
+  btn.disabled = true;
+  fetch(LIVE_API + '/sighting', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ s: s, x: x, n: n }) })
+    .then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); })
+    .then(function (r) {
+      if (!r[1].ok) { toast(sightMsg(r[0] === 429 ? 'slow down' : r[1].error)); return; }
+      LIVE = r[1].stores; setSights(r[1].sightings); LIVE_OK = true;
+      ta.value = ''; ta.oninput(); renderFeed(); renderStores(); toast('Posted. The line thanks you.');
     })
-    .catch(function () { list.appendChild(el('div', 'card muted', 'Could not load sightings right now.')); });
+    .catch(function () { toast("No signal? That sighting didn't go through."); })
+    .then(function () { btn.disabled = false; });
+}
+function flagSighting(id) {
+  fetch(LIVE_API + '/flag', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      FLAGGED[id] = 1; try { localStorage.setItem('dropwatch-flagged', JSON.stringify(FLAGGED)); } catch (e) {}
+      if (j.ok) { setSights(j.sightings); renderStores(); }
+      renderFeed(); toast('Flagged. Three flags and it disappears.');
+    })
+    .catch(function () { toast("That flag didn't go through."); });
+}
+// From a store row: jump to the post box with that store picked.
+function sightAt(s) {
+  SIGHT_STORE = s.id; document.getElementById('cstore').value = s.id;
+  document.getElementById('sightsec').scrollIntoView();
+  setTimeout(function () { document.getElementById('ctext').focus({ preventScroll: true }); }, 450);
 }
 
 // Market: market.json is rebuilt daily by .github/scripts/market.py.
@@ -1491,14 +1536,14 @@ function toast(msg) {
 function liveFetch() {
   if (document.hidden || !data) return;
   fetch(LIVE_API + '/status').then(function (r) { return r.json(); })
-    .then(function (j) { LIVE = j.stores || {}; LIVE_OK = true; renderStores(); updateLine(); })
-    .catch(function () { if (LIVE_OK !== false) { LIVE_OK = false; renderStores(); updateLine(); } });
+    .then(function (j) { LIVE = j.stores || {}; setSights(j.sightings); LIVE_OK = true; renderStores(); updateLine(); renderFeed(); })
+    .catch(function () { if (LIVE_OK !== false) { LIVE_OK = false; renderStores(); updateLine(); renderFeed(); } });
 }
 function liveReport(s, k, v) {
   fetch(LIVE_API + '/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ s: s.id, k: k, v: v }) })
     .then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); })
     .then(function (x) {
-      if (x[1].ok) { LIVE = x[1].stores; LIVE_OK = true; renderStores(); updateLine(); toast('Reported for ' + s.name + '. The line thanks you.'); if (k === 'have') confetti(); }
+      if (x[1].ok) { LIVE = x[1].stores; setSights(x[1].sightings); LIVE_OK = true; renderStores(); updateLine(); toast('Reported for ' + s.name + '. The line thanks you.'); if (k === 'have') confetti(); }
       else toast(x[0] === 429 ? 'Got yours already. You can send that one again in a few minutes.' : "That report didn't go through.");
     })
     .catch(function () { toast("No signal? That report didn't go through."); });
@@ -1745,7 +1790,6 @@ fetch('data.json?t=' + Date.now()).then(function (r) { return r.json(); }).then(
   document.getElementById('radius').textContent = d.radius_note || '';
   document.getElementById('updated').textContent = 'Last updated ' + localDate(d.updated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.';
   setInterval(function () { renderStores(); renderPlan(); }, 60000);
-  setInterval(renderSightings, 300000);
 });
 </script>
 </body>

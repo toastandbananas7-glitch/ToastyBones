@@ -1,7 +1,5 @@
 {
  "updated": "2026-10-30",
- "sightings_csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9XSlxanEdN-cfL5_IR0wH8psVQvREL4SBnzZJYNJuQz-vvHsLdWIuLpXFNbSMOdzZUUaCJ0vtOHiU/pub?output=csv",
- "report_form": "https://docs.google.com/forms/d/e/1FAIpQLScJgEXQJdpLlnTJkr8ZKBoMp750M9p2IIRy3XYONJoymn3emA/viewform",
  "releases": [
   {
    "date": "2026-11-06",
@@ -39,7 +37,6 @@
      "miles": 0,
      "website": "https://blade.tcgplayerpro.com/",
      "facebook": "https://www.facebook.com/BladeGaminginc/",
-     "form_key": "Roanoke · Blade Gaming (Downtown)",
      "lat": 37.27229,
      "lon": -79.94895
     },
@@ -56,7 +53,6 @@
      "verified": "2026-09-25",
      "miles": 2,
      "website": "https://stores.barnesandnoble.com/store/2294",
-     "form_key": "Roanoke · Barnes & Noble (Valley View Mall)",
      "lat": 37.30412,
      "lon": -79.95954
     },
@@ -101,7 +97,6 @@
      "verified": "2026-10-30",
      "miles": 2,
      "website": "https://stores.bestbuy.com/va/roanoke/4707-valley-view-blvd-nw-434.html",
-     "form_key": "Roanoke · Best Buy (Valley View)",
      "lat": 37.299242,
      "lon": -79.959475
     },
@@ -146,7 +141,6 @@
      "verified": "2026-10-30",
      "miles": 2,
      "website": "https://www.gamestop.com/store/us/va/roanoke/902/valley-view-mall-gamestop",
-     "form_key": "Roanoke · GameStop (Valley View Crossing)",
      "lat": 37.30258162,
      "lon": -79.95803251
     },
@@ -191,7 +185,6 @@
      "verified": "2026-10-30",
      "miles": 2,
      "website": "https://www.target.com/sl/roanoke/1162",
-     "form_key": "Roanoke · Target (Valley View)",
      "lat": 37.299674,
      "lon": -79.958603
     },
@@ -208,7 +201,6 @@
      "source": "https://events.pokemon.com/EventLocator/?locale=en-US&range=50&iskm=false&latitude=37.2710&longitude=-79.9414",
      "verified": "2026-10-30",
      "miles": 2,
-     "form_key": "Roanoke · The Collector's Lair (Bennington St)",
      "lat": 37.25351,
      "lon": -79.91565
     },
@@ -253,7 +245,6 @@
      "verified": "2026-10-30",
      "miles": 2,
      "website": "https://www.walmart.com/store/2312-roanoke-va",
-     "form_key": "Roanoke · Walmart Supercenter (Valley View #2312)",
      "lat": 37.30085,
      "lon": -79.96068
     },
@@ -270,7 +261,6 @@
      "verified": "2026-09-25",
      "miles": 3,
      "website": "https://stores.barnesandnoble.com/store/2870",
-     "form_key": "Roanoke · Barnes & Noble (Tanglewood)",
      "lat": 37.23086,
      "lon": -79.97476
     },
@@ -320,7 +310,6 @@
       "label": "Plus members",
       "open": "08:00"
      },
-     "form_key": "Roanoke · Sam's Club (Towne Square #8220)",
      "lat": 37.31829,
      "lon": -79.96534
     },
@@ -363,7 +352,6 @@
      "verified": "2026-09-25",
      "miles": 4,
      "website": "https://www.starcitycomicsandgames.com/",
-     "form_key": "Roanoke · Star City Comics & Games (Williamson Rd)",
      "lat": 37.32879,
      "lon": -79.95321
     },
@@ -380,7 +368,6 @@
      "source": "https://www.facebook.com/CollectorsLairRoanokeNorth/about",
      "verified": "2026-09-25",
      "miles": 4,
-     "form_key": "Roanoke · The Collector's Lair (North · Williamson Rd)",
      "lat": 37.32303,
      "lon": -79.95383
     },
@@ -425,7 +412,6 @@
      "verified": "2026-10-30",
      "miles": 4,
      "website": "https://www.walmart.com/store/1301-roanoke-va",
-     "form_key": "Roanoke · Walmart Supercenter (Clearbrook #1301)",
      "lat": 37.20676,
      "lon": -79.95079
     },
@@ -470,7 +456,6 @@
      "verified": "2026-10-30",
      "miles": 5,
      "website": "https://www.walmart.com/store/3243-roanoke-va",
-     "form_key": "Roanoke · Walmart Supercenter (Challenger Ave #3243)",
      "lat": 37.3255,
      "lon": -79.87341
     },
@@ -515,7 +500,6 @@
      "website": "https://www.walmart.com/store/1309-salem-va",
      "verified": "2026-10-30",
      "miles": 8,
-     "form_key": "Roanoke · Walmart Supercenter (Salem #1309)",
      "lat": 37.29005,
      "lon": -80.08903
     }
@@ -912,7 +896,6 @@
      "website": "https://www.walmart.com/store/2337-rocky-mount-va",
      "verified": "2026-10-30",
      "miles": 18,
-     "form_key": "Around the Lake · Walmart Supercenter (Rocky Mount #2337)",
      "lat": 37.01362,
      "lon": -79.86338
     },
@@ -929,7 +912,6 @@
      "verified": "2026-09-25",
      "miles": 23,
      "website": "https://www.facebook.com/p/clerks-cards-and-comics-61567770271296/",
-     "form_key": "Around the Lake · Clerks Cards & Comics (Bedford)",
      "lat": 37.33553,
      "lon": -79.53066
     },
@@ -974,7 +956,6 @@
      "website": "https://www.walmart.com/store/1399-bedford-va",
      "verified": "2026-10-30",
      "miles": 25,
-     "form_key": "Around the Lake · Walmart Supercenter (Bedford #1399)",
      "lat": 37.32597,
      "lon": -79.49697
     }
@@ -1012,7 +993,6 @@
      "verified": "2026-09-25",
      "miles": 36,
      "website": "https://www.facebook.com/profile.php?id=61580091503524",
-     "form_key": "Lynchburg · Underground Cards & Disc Shop (Forest)",
      "lat": 37.36274,
      "lon": -79.28824
     },
@@ -1057,7 +1037,6 @@
      "website": "https://www.walmart.com/store/3768-altavista-va",
      "verified": "2026-10-30",
      "miles": 38,
-     "form_key": "Around the Lake · Walmart Supercenter (Altavista #3768)",
      "lat": 37.14329,
      "lon": -79.26972
     },
@@ -1102,7 +1081,6 @@
      "verified": "2026-10-30",
      "miles": 41,
      "website": "https://www.walmart.com/store/4697-lynchburg-va",
-     "form_key": "Lynchburg · Walmart Supercenter (Old Forest Rd #4697)",
      "lat": 37.41076,
      "lon": -79.20947
     },
@@ -1119,7 +1097,6 @@
      "verified": "2026-09-25",
      "miles": 42,
      "website": "https://stores.barnesandnoble.com/store/2026",
-     "form_key": "Lynchburg · Barnes & Noble (Wards Crossing)",
      "lat": 37.34538,
      "lon": -79.18823
     },
@@ -1164,7 +1141,6 @@
      "verified": "2026-10-30",
      "miles": 42,
      "website": "https://stores.bestbuy.com/va/lynchburg/4024-wards-rd-444.html",
-     "form_key": "Lynchburg · Best Buy (Wards Rd)",
      "lat": 37.3491468,
      "lon": -79.1888991
     },
@@ -1209,7 +1185,6 @@
      "verified": "2026-10-30",
      "miles": 42,
      "website": "https://www.gamestop.com/store/us/va/lynchburg/4828/wards-crossing-gamestop",
-     "form_key": "Lynchburg · GameStop (Wards Crossing)",
      "lat": 37.34650773,
      "lon": -79.18896747
     },
@@ -1259,7 +1234,6 @@
       "label": "Plus members",
       "open": "08:00"
      },
-     "form_key": "Lynchburg · Sam's Club (Wards Rd #6458)",
      "lat": 37.35154,
      "lon": -79.18456
     },
@@ -1304,7 +1278,6 @@
      "verified": "2026-10-30",
      "miles": 42,
      "website": "https://www.target.com/sl/lynchburg/1275",
-     "form_key": "Lynchburg · Target (Wards Rd)",
      "lat": 37.346211,
      "lon": -79.190985
     },
@@ -1321,7 +1294,6 @@
      "source": "https://www.facebook.com/TheCollectorsLair/about",
      "verified": "2026-09-25",
      "miles": 42,
-     "form_key": "Lynchburg · The Collectors Lair (Fort Ave)",
      "lat": 37.37693,
      "lon": -79.18523
     },
@@ -1366,7 +1338,6 @@
      "verified": "2026-10-30",
      "miles": 42,
      "website": "https://www.walmart.com/store/1350-lynchburg-va",
-     "form_key": "Lynchburg · Walmart Supercenter (Wards Rd #1350)",
      "lat": 37.35386,
      "lon": -79.18564
     },
@@ -1383,7 +1354,6 @@
      "verified": "2026-09-25",
      "miles": 45,
      "website": "https://www.facebook.com/profile.php?id=100057461079514",
-     "form_key": "Lynchburg · Dragon Fire Games (Downtown)",
      "lat": 37.41581,
      "lon": -79.15129
     }
@@ -1669,7 +1639,6 @@
  ],
  "origin": "Roanoke",
  "radius_note": "Every store within 50 miles of downtown Roanoke that sells Pokémon cards. Distances are straight-line; put in your zip to measure from you.",
- "form_store_entry": "entry.1663992212",
  "chains": {
   "Target": {
    "tip": "Pokémon restocks come from third-party vendor routes, so the day differs store to store and there is no official schedule. A line has formed at the Roanoke store two hours before doors."
