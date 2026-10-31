@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Toasty's Drops · Pokémon TCG · Roanoke &amp; 50 Miles Around</title>
+<title>Toasty's Drop Watch · Pokémon TCG · Roanoke &amp; 50 Miles Around</title>
 <meta name="theme-color" content="#07080d">
 <meta name="description" content="Pokémon TCG release dates, store opening times on drop day, price check and sightings for every store within 50 miles of Roanoke, VA: the New River Valley, Lynchburg, Martinsville, Lexington and Smith Mountain Lake.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Toasty's Drops">
+<meta name="apple-mobile-web-app-title" content="Drop Watch">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <!--
-  Toasty's Drops (called Drop Watch until 2026-10-30; built 2026-09-25 for Evan and his buddy).
+  Toasty's Drop Watch (Drop Watch until 2026-10-30, Toasty's Drops 10-30 to 10-31; built 2026-09-25 for Evan and his buddy).
   Data: data.json (stores + releases, every fact checked against the
   retailer's own page on the "verified" date; see "source"). Sightings are
   posted on the page and kept 30 days by the drops-live Worker (since 2026-10-30;
@@ -518,7 +518,7 @@
       <circle cx="50" cy="50" r="13" fill="#fff" stroke="#111" stroke-width="6"/>
     </svg>
     <div>
-      <h1>Toasty's <span>Drops</span></h1>
+      <h1>Toasty's <span>Drop Watch</span></h1>
       <div class="sub"><b>Live</b> Pokémon TCG drops · 50 miles around Roanoke, VA</div>
     </div>
     </div>
@@ -1586,8 +1586,8 @@ function shareStore(s) {
   var lines = [s.name + ' (' + shortTag(s) + '): ' + (L.fresh ? STOCK[L.stock.k].toUpperCase() + ', ' + stamp(L.stock.t) : L.stock ? 'no report yet today (last: ' + STOCK[L.stock.k].toLowerCase() + ' ' + clock(L.stock.t) + ')' : 'no stock reports yet')];
   if (L.line) lines.push('Line: someone was #' + L.line.v + ', ' + stamp(L.line.t));
   if (L.count) lines.push('About ' + L.count.v + ' boxes on hand, ' + stamp(L.count.t));
-  var text = lines.join('\n') + "\nLive on Toasty's Drops:";
-  if (navigator.share) { navigator.share({ title: "Toasty's Drops", text: text, url: url }).catch(function () {}); return; }
+  var text = lines.join('\n') + "\nLive on Toasty's Drop Watch:";
+  if (navigator.share) { navigator.share({ title: "Toasty's Drop Watch", text: text, url: url }).catch(function () {}); return; }
   var full = text + ' ' + url;
   (navigator.clipboard ? navigator.clipboard.writeText(full) : Promise.reject())
     .then(function () { toast('Copied. Paste it in your group chat.'); })

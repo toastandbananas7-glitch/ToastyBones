@@ -1,4 +1,4 @@
-"""Toasty's Drops full catalog: every English Pokemon TCG card and product with
+"""Toasty's Drop Watch full catalog: every English Pokemon TCG card and product with
 today's TCGplayer prices, for the price check's all-eras search.
 
 Source: tcgcsv.com (Pokemon is category 3), the same daily TCGplayer mirror as

@@ -1,6 +1,6 @@
 {
-  "name": "Toasty's Drops",
-  "short_name": "Toasty's Drops",
+  "name": "Toasty's Drop Watch",
+  "short_name": "Drop Watch",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
