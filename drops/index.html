@@ -220,7 +220,10 @@
   .events { margin-top: 14px; }
 
   /* Sightings: post box + feed (drops-live Worker) */
-  .compose { display: grid; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 12px; }
+  .compose { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 12px; }
+  /* the store picker sized itself to its longest store name; with the phone's text at 130% that pushed the
+     whole page wider than the screen (sideways scrolling, 2026-11-01). Fill the box instead. */
+  .compose select { width: 100%; min-width: 0; text-overflow: ellipsis; }
   .chead { font: 800 18px var(--fd); }
   .compose textarea { width: 100%; min-height: 66px; resize: vertical; font: 600 16px/1.4 var(--fb); color: var(--text); background: var(--panel2); border: 1.5px solid var(--line); border-radius: 14px; padding: 11px 13px; }
   .compose textarea:focus, .cfoot input:focus { outline: none; border-color: var(--yellow); }
